@@ -7,7 +7,7 @@ body {
 .header {
   background-color: #F7E7DC;
   color: white;
-  padding: 10px 40px;
+  padding: 20px 40px;
   width: 100%;
   box-sizing: border-box;
   z-index: 10;
@@ -18,40 +18,56 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
 .navbar-links {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+}
+
+.navbar-links-left {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar-links-right {
+  display: flex;
 }
 
 .navbar-links a {
   text-decoration: none;
   color: inherit;
+  margin-right: 15px;
 }
 
-.navbar-links .botones_izquierda,
-.navbar-links .boton_derecha {
+.navbar-links-center {
+  color: #405D72;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links .botones_derecha, .botones_izquierda {
   background-color: #405D72;
   color: #FFFFFF;
   padding: 8px 16px;
   border-radius: 6px;
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
-  gap: 5px;
+  gap: 10px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
-.navbar-links .botones_izquierda:hover {
+.navbar-links .botones_derecha:hover, .botones_izquierda:hover {
   background-color: #758694;
   color: #2b3f4e;
-}
-
-.navbar-links .boton_derecha:hover {
-  background-color: #758694;
-  color: #FFFFFF;
 }
 
 .input {

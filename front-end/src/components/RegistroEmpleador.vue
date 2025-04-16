@@ -4,12 +4,24 @@
     <header class="header">
       <div class="navbar">
         <nav class="navbar-links">
-          <a href="#" class="botones_izquierda" style="color: #FFFFFF;">Personal</a>
-          <a href="#" class="botones_izquierda" style="color: #FFFFFF;">Empresa</a>
-          <a href="#" style="color: #405D72;">Inicio</a>
-          <a href="#" style="color: #405D72;">Sobre Nosotros</a>
-          <a href="#" style="color: #405D72;">Ingresar</a>
-          <a href="#" class="boton_derecha" style="color: #FFFFFF;">Registrá tu empresa</a>
+          <!-- Contenedor de los botones de la izquierda -->
+          <div class="navbar-links-left">
+            <a href="#" class="botones_izquierda" style="color: #FFFFFF;">Personal</a>
+            <a href="#" class="botones_izquierda" style="color: #FFFFFF;">Empresa</a>
+          </div>
+
+          <!-- Contenedor de los enlaces principales -->
+          <div class="navbar-links-center">
+            <a href="#"> Inicio</a>
+            <a href="#"> Sobre Nosotros</a>
+            <a href="#"> ¿Tenés dudas?</a>
+          </div>
+
+          <!-- Contenedor de los botones de la derecha -->
+          <div class="navbar-links-right">
+            <a href="#" class="botones_derecha" style="color: #FFFFFF;">Ingresar</a>
+            <a href="#" class="botones_derecha" style="color: #FFFFFF;">Registrá tu empresa</a>
+          </div>
         </nav>
       </div>
     </header>
