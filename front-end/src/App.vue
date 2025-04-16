@@ -1,26 +1,55 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <!-- Iterar sobre los "pasos" -->
+    <div v-for="(step, index) in steps" :key="index">
+      <component
+        :is="step.component"
+        v-if="index === currentStep"
+        @next="goToNextStep"
+        @previous="goToPreviousStep"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import RegistroEmpleador from './components/RegistroEmpleador.vue'
+import RegistroEmpresa from './components/RegistroEmpresa.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    RegistroEmpleador,
+    RegistroEmpresa,
+  },
+  data() {
+    return {
+      currentStep: 0,
+      steps: [
+        { title: 'Registro Empleador', component: 'RegistroEmpleador' },
+        { title: 'Registro Empresa', component: 'RegistroEmpresa' },
+      ],
+    }
+  },
+  methods: {
+    goToNextStep() {
+      if (this.currentStep < this.steps.length - 1) {
+        this.currentStep++
+      }
+    },
+    goToPreviousStep() {
+      if (this.currentStep > 0) {
+        this.currentStep--
+      }
+    }
   }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', sans-serif;
   text-align: center;
-  color: #2c3e50;
   margin-top: 60px;
 }
 </style>
