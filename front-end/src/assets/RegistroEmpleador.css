@@ -4,14 +4,27 @@ body {
   background-color: #FFF8F3;
 }
 
+.logo_empresa {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.logo_img {
+  max-width: 100%;
+  height: auto;
+  width: 400px;
+}
+
 .header {
-  background-color: #F7E7DC;
   color: white;
   padding: 20px 40px;
   width: 100%;
   box-sizing: border-box;
   z-index: 10;
   margin: 0;
+  border-bottom: #758694 1px solid;
 }
 
 .navbar {
@@ -45,6 +58,7 @@ body {
 }
 
 .navbar-links-center {
+  font-weight: bold;
   color: #405D72;
   position: absolute;
   left: 50%;
@@ -53,7 +67,24 @@ body {
   gap: 20px;
 }
 
-.navbar-links .botones_derecha, .botones_izquierda {
+.navbar-links .botones_derecha {
+  background-color: #F7E7DC;
+  color: #2b3f4e;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+  gap: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.navbar-links .botones_derecha:hover {
+  background-color: #FFF8F3;
+  color: #2b3f4e;
+}
+
+.navbar-links .botones_izquierda {
   background-color: #405D72;
   color: #FFFFFF;
   padding: 8px 16px;
@@ -65,7 +96,7 @@ body {
   vertical-align: middle;
 }
 
-.navbar-links .botones_derecha:hover, .botones_izquierda:hover {
+.navbar-links .botones_izquierda:hover {
   background-color: #758694;
   color: #2b3f4e;
 }
