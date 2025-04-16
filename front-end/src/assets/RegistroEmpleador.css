@@ -1,0 +1,118 @@
+/* RegistroEmpleador.css */
+
+body {
+  background-color: #FFF8F3;
+}
+
+.header {
+  background-color: #F7E7DC;
+  color: white;
+  padding: 10px 40px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 10;
+  margin: 0;
+}
+
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-links .botones_izquierda,
+.navbar-links .boton_derecha {
+  background-color: #405D72;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+  gap: 5px;
+}
+
+.navbar-links .botones_izquierda:hover {
+  background-color: #758694;
+  color: #2b3f4e;
+}
+
+.navbar-links .boton_derecha:hover {
+  background-color: #758694;
+  color: #FFFFFF;
+}
+
+.input {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: #FFF8F3;
+  border: 1px solid #758694;
+  border-radius: 4px;
+}
+
+.nombre {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+.nombre > div {
+  flex: 1;
+  max-width: 300px;
+}
+
+.direccion {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.direccion > div {
+  width: 32%;
+}
+
+.boton_siguiente {
+  padding: 10px 20px;
+  background-color: #405D72;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.boton_siguiente:hover {
+  background-color: #758694;
+}
+
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
