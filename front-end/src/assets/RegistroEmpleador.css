@@ -65,6 +65,11 @@ body {
   transform: translateX(-50%);
   display: flex;
   gap: 20px;
+  transition: color 0.3s ease;
+}
+
+.navbar-links-center a:hover {
+  color: #758694;
 }
 
 .navbar-links .botones_derecha {
