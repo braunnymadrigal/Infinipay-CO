@@ -148,7 +148,7 @@
             id="telefono"
             required
             pattern="\d{8}"
-            title="Formato: 8 dígitos"
+            title="Formato: 8 dígitos, sin guión"
             placeholder="XXXX-XXXX"
           />
         </div>
@@ -206,7 +206,7 @@
             id="distrito" 
             required 
             maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
+            pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
             title="Sólo se permiten letras y acentos del abecedario español"
           />
         </div>
@@ -221,7 +221,7 @@
           required 
           maxlength="100"
           pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
-          title="Sólo se permiten letras y acentos del abecedario español"
+          title="Sólo se permiten números, letras y acentos del abecedario español"
         />
       </div>
       <button class="boton_siguiente" type="submit">Siguiente</button>
