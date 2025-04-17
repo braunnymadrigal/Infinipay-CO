@@ -117,8 +117,8 @@
           required 
           maxlength="30"
           pattern="^[a-z_\.]+$" 
-          title="Sólo se permiten letras minúsculas, '_' y '.'" 
-          placeholder="ejemplo_usuario"
+          title="ejemplo_de_usuario" 
+          placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
         />
       </div>
 
@@ -148,8 +148,8 @@
             id="telefono"
             required
             pattern="\d{8}"
-            title="Formato: 8 dígitos, sin guión"
-            placeholder="XXXX-XXXX"
+            title="Formato: XXXX-XXXX"
+            placeholder="8 dígitos, sin guión"
           />
         </div>
       </div>
@@ -210,21 +210,24 @@
             title="Sólo se permiten letras y acentos del abecedario español"
           />
         </div>
-      </div>
-      
-      <div class="input">
+  
+      <div>
         <label for="otras_señas">Otras señas</label>
-        <input 
+        <textarea 
           type="text" 
           v-model="otras_señas" 
           id="otras_señas" 
           required 
           maxlength="100"
           pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
-          title="Sólo se permiten números, letras y acentos del abecedario español"
-        />
+          placeholder="Sólo se permiten números, letras y acentos del abecedario español"
+          rows="1"
+          style="resize: vertical"
+        ></textarea>
       </div>
-      <button class="boton_siguiente" type="submit">Siguiente</button>
+    </div>
+
+    <button class="boton_siguiente" type="submit">Siguiente</button>
     </form>
   </div>
 </template>
