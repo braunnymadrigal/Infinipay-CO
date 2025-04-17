@@ -1,13 +1,16 @@
 /* RegistroEmpresa.css */
 
+/* Color de fondo de la página */
 body {
   background-color: #FFF8F3;
 }
 
+/* Fuente de la página */
 textarea {
   font-family: 'Inter', sans-serif;
 }
 
+/* Contenedor para el logo */
 .logo_empresa {
   display: flex;
   justify-content: center;
@@ -15,12 +18,14 @@ textarea {
   padding: 10px 0;
 }
 
+/* Dimensiones de la imagen */
 .logo_img {
   max-width: 100%;
   height: auto;
   width: 400px;
 }
 
+/* Contenedor principal del header */
 .header {
   color: white;
   padding: 20px 40px;
@@ -31,6 +36,7 @@ textarea {
   border-bottom: #758694 1px solid;
 }
 
+/* Contenedor general de la barra de navegación*/
 .navbar {
   max-width: 1200px;
   margin: 0 auto;
@@ -39,6 +45,7 @@ textarea {
   align-items: center;
 }
 
+/* Contenedor principal que agrupa enlaces y botones de navegación */
 .navbar-links {
   display: flex;
   width: 100%;
@@ -46,21 +53,25 @@ textarea {
   align-items: center;
 }
 
+/* Contenedor para agrupar los enlaces que se encuentran a la izquierda de la barra de navegación */
 .navbar-links-left {
   display: flex;
   justify-content: space-between;
 }
 
+/* Contenedor para agrupar los enlaces que se encuentran a la derecha de la barra de navegación */
 .navbar-links-right {
   display: flex;
 }
 
+/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
 .navbar-links a {
   text-decoration: none;
   color: inherit;
   margin-right: 15px;
 }
 
+/* Contenedor para agrupar los enlaces que se encuentran en el centro de la barra de navegación */
 .navbar-links-center {
   font-weight: bold;
   color: #405D72;
@@ -72,10 +83,12 @@ textarea {
   transition: color 0.3s ease;
 }
 
+/* Efecto al pasar el cursor */
 .navbar-links-center a:hover {
   color: #758694;
 }
 
+/* Estilo para los botones ubicados a la derecha de la barra de navegación */
 .navbar-links .botones_derecha {
   background-color: #F7E7DC;
   color: #2b3f4e;
@@ -88,11 +101,13 @@ textarea {
   vertical-align: middle;
 }
 
+/* Efecto al pasar el cursor */
 .navbar-links .botones_derecha:hover {
   background-color: #d3c8c1;
   color: #2b3f4e;
 }
 
+/* Estilo para los botones ubicados a la izquierda de la barra de navegación */
 .navbar-links .botones_izquierda {
   background-color: #405D72;
   color: #FFFFFF;
@@ -105,11 +120,13 @@ textarea {
   vertical-align: middle;
 }
 
+/* Efecto al pasar el cursor */
 .navbar-links .botones_izquierda:hover {
   background-color: #758694;
   color: #2b3f4e;
 }
 
+/* Estilos globales para los campos del formulario */
 input,
 textarea,
 select {
@@ -121,63 +138,14 @@ select {
   border-radius: 4px;
 }
 
+/* Estilo global para etiquetas dentro del formulario */
 label {
   display: block;
   margin-bottom: 5px;
   text-align: left;
 }
 
-.nombre {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 15px;
-  justify-content: center;
-}
-
-.nombre > div {
-  flex: 1;
-  max-width: 300px;
-}
-
-.direccion {
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.direccion > div {
-  width: 32%;
-}
-
-.contenedor_botones {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 5px;
-}
-
-.boton_siguiente, .boton_volver {
-  padding: 10px 20px;
-  background-color: #405D72;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-}
-
-.boton_siguiente:hover, .boton_volver:hover {
-  background-color: #758694;
-}
-
-.form {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
+/* Contenedor para campos de dirección */
 .direccion {
   margin-bottom: 16px;
   border: 1px solid #ccc;
@@ -188,12 +156,44 @@ label {
   gap: 16px;
 }
 
+/* Estilo para los campos de dirección dentro del contenedor */
 .direccion > div {
   flex: 1 1 45%;
   min-width: 200px;
 }
 
-/* Botón de eliminar dirección o teléfono */
+/* Contenedor para los botones de navegación */
+.contenedor_botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+/* Estilo para los botones de navegación */
+.boton_siguiente, .boton_volver {
+  padding: 10px 20px;
+  background-color: #405D72;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+/* Efecto al pasar el cursor */
+.boton_siguiente:hover, .boton_volver:hover {
+  background-color: #758694;
+}
+
+/* Contenedor principal del formulario */
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Botón para eliminar dirección o teléfono */
 .boton_eliminar {
   padding: 8px 12px;
   background-color: #f7e7dc;
@@ -203,15 +203,16 @@ label {
   transition: background-color 0.3s;
 }
 
+/* Efecto al pasar el cursor */
 .boton_eliminar:hover {
   background-color: #e99b9b;
   color: white;
 }
 
-/* Botón de añadir dirección o teléfono */
+/* Botón para añadir dirección o teléfono */
 .boton_añadir {
   padding: 10px 16px;
-  background-color: #405D72;
+  background-color: #283f50;
   color: white;
   border: none;
   border-radius: 8px;
@@ -220,11 +221,12 @@ label {
   transition: background-color 0.3s;
 }
 
+/* Efecto al pasar el cursor */
 .boton_añadir:hover {
   background-color: #758694;
 }
 
-/* Cuando ya se hayan agregado 100 direcciones o teléfonos*/
+/* Cuando ya se hayan agregado 100 direcciones o teléfonosm, se deshabilita el botón*/
 .boton_añadir:disabled {
   background-color: #e99b9b;
   cursor: not-allowed;
