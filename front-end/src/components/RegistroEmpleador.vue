@@ -2,7 +2,7 @@
   <div>
     <!-- Logo de la empresa -->
     <div class="logo_empresa">
-      <img src="../assets/logo.png" alt="Logo de la empresa" class="logo_img"/>
+      <img src="../assets/images/logo.png" alt="Logo de la empresa" class="logo_img"/>
     </div>
     <!-- Header -->
     <header class="header">
@@ -245,5 +245,5 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/RegistroEmpleador.css';
+@import '../assets/css/RegistroEmpleador.css';
 </style>
