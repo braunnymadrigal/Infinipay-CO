@@ -2,7 +2,8 @@
   <div>
     <!-- Logo de la empresa -->
     <div class="logo_empresa">
-      <img src="../assets/images/logo.png" alt="Logo de la empresa" class="logo_img"/>
+      <img src="../assets/images/logo.png" alt="Logo de la empresa"
+        class="logo_img"/>
     </div>
     <!-- Header -->
     <header class="header">
@@ -32,126 +33,80 @@
   <!-- Formulario de Registro -->
   <div class="form">
     <h1 style="color: #405D72;">Registrá tu empresa</h1>
-    <h2 style="color: #758694;">Datos del dueño de la empresa</h2>
-    <form @submit.prevent="submitForm">
+    <h2 style="color: #758694;">Datos de la empresa</h2>
+    <form @submit.prevent="submit_form">
 
-      <!-- Primer y segundo nombre -->
-      <div class="nombre">
-        <div>
-          <label for="primer_nombre">Primer nombre</label>
-          <input 
-            type="text" 
-            v-model="primer_nombre" 
-            id="primer_nombre" 
-            required 
-            maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
-
-        <div>
-          <label for="segundo_nombre">Segundo nombre</label>
-          <input 
-            type="text" 
-            v-model="segundo_nombre" 
-            id="segundo_nombre" 
-            required 
-            maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
+      <!-- Nombre -->
+      <div class="input">
+        <label for="nombre">Nombre</label>
+        <input 
+          type="text" 
+          v-model="nombre" 
+          id="nombre"
+          required 
+          maxlength="30"
+          pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ&.\s]+$"
+          title="Sólo se permiten letras y acentos del abecedario español
+            , '&', '.' y espacios" 
+        />
       </div>
 
-      <!-- Primer y segundo apellido -->
-      <div class="nombre">
-        <div>
-          <label for="primer_apellido">Primer apellido</label>
-          <input 
-            type="text" 
-            v-model="primer_apellido" 
-            id="primer_apellido" 
-            required 
-            maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
-
-        <div>
-          <label for="segundo_apellido">Segundo apellido</label>
-          <input 
-            type="text" 
-            v-model="segundo_apellido" 
-            id="segundo_apellido" 
-            required 
-            maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
+      <!-- Descripción -->
+      <div class="input">
+        <label for="descripcion">Descripción de la empresa</label>
+        <textarea 
+          v-model="descripcion" 
+          id="descripcion"
+          maxlength="300"
+          pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
+          placeholder="Sólo se permiten espacios, letras y acentos del abecedario español."
+          rows="4"
+          style="resize: vertical; width: 100%;"
+        ></textarea>
       </div>
 
       <!-- Cédula -->
       <div class="input">
-        <label for="cedula">Cédula</label>
+        <label for="cedula">Cédula jurídica</label>
         <input 
           type="text" 
           v-model="cedula" 
           id="cedula"
           required
-          pattern="^\d{9}$"
-          title="Formato: X-XXXX-XXXX"
-          placeholder="9 dígitos, sin guiones"
+          pattern="^\d{10}$"
+          title="Formato: X-XXX-XXXXXX"
+          placeholder="10 dígitos, sin guiones"
         />
       </div>
 
-      <!-- Nombre de usuario -->
-      <div class="input">
-        <label for="usuario">Nombre de usuario</label>
-        <input 
-          type="text" 
-          v-model="usuario" 
-          id="usuario"
-          required 
-          maxlength="30"
-          pattern="^[a-z_\.]+$" 
-          title="Sólo se permiten letras minúsculas, '_' y '.'" 
-          placeholder="ejemplo_usuario"
-        />
-      </div>
-
-      <!-- Contraseña -->
-      <div class="input">
-        <label for="password">Contraseña</label>
-        <input 
-          type="password" 
-          v-model="password" 
-          id="password"
-          required
-          minlength="10"
-          maxlength="100"
-          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,100}$"
-          title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
-          placeholder="Al menos 10 caracteres"
-        />
-      </div>
-
+      <!-- Teléfono -->
       <div class="input">
         <label for="telefono">Teléfono</label>
-        <div style="display: flex; align-items: center;">
+        <div 
+          v-for="(tel, index) in telefonos" 
+          :key="index"
+          style="display: flex; align-items: center; margin-bottom: 8px;">
           <span style="padding: 0 8px;">+506</span>
           <input 
             type="text" 
-            v-model="telefono" 
-            id="telefono"
+            v-model="telefonos[index]"
+            :id="'telefono-' + index"
             required
             pattern="\d{8}"
-            title="Formato: 8 dígitos, sin guión"
-            placeholder="XXXX-XXXX"
+            title="Formato: XXXX-XXXX"
+            placeholder="8 dígitos, sin guiones"
           />
+          <button
+            type="button" 
+            class="boton_eliminar" style="margin-left: 8px;"
+            @click="borrar_telefono(index)">🗑️
+          </button>
         </div>
+        <button 
+          type="button" class= "boton_añadir"
+          @click="agregar_telefono"
+          :disabled="telefonos.length >= 100">Añadir teléfono
+        </button>
       </div>
 
       <!-- Correo Electrónico -->
@@ -168,16 +123,30 @@
         />
       </div>
 
-      <h3 style="text-align: left; font-weight: normal; margin-bottom: 20px;">Dirección</h3>
-
       <!-- Dirección -->
-      <div class="direccion">
+      <h3 style="text-align: left; font-weight: normal;
+        margin-bottom: 20px;">Dirección </h3>
+
+      <div class="direccion" v-for="(dir, index) in direcciones" :key="index">
         <div>
-          <label for="provincia">Provincia</label>
+          <label :for="'provincia-' + index">Provincia</label>
           <input 
             type="text" 
-            v-model="provincia" 
-            id="provincia" 
+            v-model="dir.provincia" 
+            :id="'provincia-' + index" 
+            required 
+            maxlength="10"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
+            title="Sólo se permiten letras y acentos del abecedario español"
+          />
+        </div>
+
+        <div>
+          <label :for="'canton-' + index">Cantón</label>
+          <input 
+            type="text" 
+            v-model="dir.canton" 
+            :id="'canton-' + index" 
             required 
             maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
@@ -186,11 +155,11 @@
         </div>
 
         <div>
-          <label for="canton">Cantón</label>
+          <label :for="'distrito-' + index">Distrito</label>
           <input 
             type="text" 
-            v-model="canton" 
-            id="canton" 
+            v-model="dir.distrito" 
+            :id="'distrito-' + index" 
             required 
             maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
@@ -199,45 +168,119 @@
         </div>
 
         <div>
-          <label for="distrito">Distrito</label>
-          <input 
-            type="text" 
-            v-model="distrito" 
-            id="distrito" 
+          <label :for="'otras_señas-' + index">Otras señas</label>
+          <textarea 
+            v-model="dir.otras_señas" 
+            :id="'otras_señas-' + index" 
             required 
-            maxlength="100"
+            maxlength="300"
             pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
+            title="Sólo se permiten letras, números y espacios en blanco"
+            rows="1"
+            style="resize: vertical;"
+          ></textarea>
         </div>
+
+        <button
+          type="button"
+          class="boton_eliminar" style="margin-top: 8px;"
+          @click="borrar_direccion(index)">🗑️
+        </button>
       </div>
+
+      <button type="button"
+        class="boton_añadir"
+        @click="agregar_direccion" :disabled="direcciones.length >= 100">
+        Añadir otra dirección
+      </button>
       
+      <!-- Razón social -->
       <div class="input">
-        <label for="otras_señas">Otras señas</label>
-        <input 
+        <label for="razonSocial">Razón social</label>
+        <textarea 
           type="text" 
-          v-model="otras_señas" 
-          id="otras_señas" 
+          id="razonSocial" 
+          v-model="razonSocial"
           required 
           maxlength="100"
-          pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
-          title="Sólo se permiten números, letras y acentos del abecedario español"
-        />
+          pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
+          placeholder="Sólo letras, acentos, espacios y '&'"
+          title="Sólo se permiten letras, acentos, espacios y el símbolo '&'"
+          rows="2"
+        ></textarea>
       </div>
-      <button class="boton_siguiente" type="submit">Siguiente</button>
+      
+      <!-- Beneficios -->
+      <div class="input">
+        <label for="beneficios">Cantidad máxima de beneficios por
+          empleado</label>
+        <select id="beneficios" v-model="beneficios" required>
+          <option disabled value="">Seleccione una cantidad</option>
+          <option v-for="n in 100" :key="n" :value="n-1">{{ n-1 }}</option>
+        </select>
+      </div>
+
+      <!-- Tipo de Pago -->
+      <div class="input">
+        <label for="tipo_pago">Tipo de pago</label>
+        <select id="tipo_pago" v-model="tipoPago" required>
+          <option disabled value="">Seleccione un tipo de pago</option>
+          <option value="semana">Semanal</option>
+          <option value="quincenal">Quincenal</option>
+          <option value="mensual">Mensual</option>
+        </select>
+    </div>
+
+    <div class="contenedor_botones">
+      <button class="boton_volver" type="button" @click="back">Volver</button>
+      <button class="boton_siguiente" type="submit">Terminar registro</button>
+    </div>
     </form>
   </div>
+
 </template>
 
 <script>
 export default {
   data() {
     return {
-      // Datos del formulario
+      nombre: '',
+      descripcion: '',
+      cedula: '',
+      telefonos: [''],
+      email: '',
+      direcciones: [{ provincia: '', canton: '', distrito: ''
+        , otras_señas: '' }],
+      beneficios: 0,
+      tipoPago: '',
     };
   },
   methods: {
-    submitForm() {
+    agregar_telefono() {
+      if (this.telefonos.length < 100) {
+        this.telefonos.push('');
+      }
+    },
+    borrar_telefono(index) {
+      if (this.telefonos.length > 1) {
+        this.telefonos.splice(index, 1);
+      }
+    },
+    agregar_direccion() {
+      if (this.direcciones.length < 100) {
+        this.direcciones.push({ provincia: '', canton: '', distrito: ''
+          , otras_señas: '' });
+      }
+    },
+    borrar_direccion(index) {
+      if (this.direcciones.length > 1) {
+        this.direcciones.splice(index, 1);
+      }
+    },
+    back() {
+      this.$emit('previous');
+    },
+    submit() {
       this.$emit('next');
     }
   }
@@ -245,5 +288,5 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/css/RegistroEmpleador.css';
+@import '../assets/css/RegistroEmpresa.css';
 </style>
