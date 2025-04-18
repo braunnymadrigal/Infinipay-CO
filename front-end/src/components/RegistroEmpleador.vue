@@ -2,7 +2,8 @@
   <div>
     <!-- Logo de la empresa -->
     <div class="logo_empresa">
-      <img src="../assets/images/logo.png" alt="Logo de la empresa" class="logo_img"/>
+      <img src="../assets/images/logo.png" alt="Logo de la empresa"
+        class="logo_img"/>
     </div>
     <!-- Header -->
     <header class="header">
@@ -13,16 +14,9 @@
             <a href="#" class="botones_izquierda">Personal</a>
             <a href="#" class="botones_izquierda">Empresa</a>
           </div>
-          <!-- Contenedor de los enlaces principales -->
-          <div class="navbar-links-center">
-            <a href="#"> Inicio</a>
-            <a href="#"> Sobre Nosotros</a>
-            <a href="#"> ¿Tenés dudas?</a>
-          </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <a href="#" class="botones_derecha">Ingresar</a>
-            <a href="#" class="botones_derecha">Registrá tu empresa</a>
+            <a href="#" class="botones_derecha">Página principal</a>
           </div>
         </nav>
       </div>
@@ -32,14 +26,14 @@
   <!-- Formulario de Registro -->
   <div class="form">
     <h1 style="color: #405D72;">Registrá tu empresa</h1>
-    <h2 style="color: #758694;">Datos del dueño de la empresa</h2>
+    <h2 style="color: #758694; margin-bottom: 50px;">Datos del dueño de la empresa</h2>
     <form @submit.prevent="submitForm">
 
       <!-- Primer y segundo nombre -->
       <div class="nombre">
         <div>
-          <label for="primer_nombre">Primer nombre</label>
-          <input 
+          <label class="label" for="primer_nombre">Primer nombre</label>
+          <input class="input"
             type="text" 
             v-model="primer_nombre" 
             id="primer_nombre" 
@@ -51,8 +45,8 @@
         </div>
 
         <div>
-          <label for="segundo_nombre">Segundo nombre</label>
-          <input 
+          <label class="label" for="segundo_nombre">Segundo nombre</label>
+          <input class="input"
             type="text" 
             v-model="segundo_nombre" 
             id="segundo_nombre" 
@@ -67,8 +61,8 @@
       <!-- Primer y segundo apellido -->
       <div class="nombre">
         <div>
-          <label for="primer_apellido">Primer apellido</label>
-          <input 
+          <label class="label" for="primer_apellido">Primer apellido</label>
+          <input class="input"
             type="text" 
             v-model="primer_apellido" 
             id="primer_apellido" 
@@ -80,8 +74,8 @@
         </div>
 
         <div>
-          <label for="segundo_apellido">Segundo apellido</label>
-          <input 
+          <label class="label" for="segundo_apellido">Segundo apellido</label>
+          <input class="input"
             type="text" 
             v-model="segundo_apellido" 
             id="segundo_apellido" 
@@ -94,9 +88,9 @@
       </div>
 
       <!-- Cédula -->
-      <div class="input">
-        <label for="cedula">Cédula</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="cedula">Cédula</label>
+        <input class="input"
           type="text" 
           v-model="cedula" 
           id="cedula"
@@ -108,9 +102,9 @@
       </div>
 
       <!-- Nombre de usuario -->
-      <div class="input">
-        <label for="usuario">Nombre de usuario</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="usuario">Nombre de usuario</label>
+        <input class="input"
           type="text" 
           v-model="usuario" 
           id="usuario"
@@ -123,9 +117,9 @@
       </div>
 
       <!-- Contraseña -->
-      <div class="input">
-        <label for="password">Contraseña</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="password">Contraseña</label>
+        <input class="input"
           type="password" 
           v-model="password" 
           id="password"
@@ -138,11 +132,11 @@
         />
       </div>
 
-      <div class="input">
-        <label for="telefono">Teléfono</label>
+      <div class="caja_input">
+        <label class="label" for="telefono">Teléfono</label>
         <div style="display: flex; align-items: center;">
           <span style="padding: 0 8px;">+506</span>
-          <input 
+          <input class="input"
             type="text" 
             v-model="telefono" 
             id="telefono"
@@ -155,9 +149,9 @@
       </div>
 
       <!-- Correo Electrónico -->
-      <div class="input">
-        <label for="email">Correo electrónico</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="email">Correo electrónico</label>
+        <input class="input"
           type="email" 
           v-model="email" 
           id="email"
@@ -173,8 +167,8 @@
       <!-- Dirección -->
       <div class="direccion">
         <div>
-          <label for="provincia">Provincia</label>
-          <input 
+          <label class="label" for="provincia">Provincia</label>
+          <input class="input"
             type="text" 
             v-model="provincia" 
             id="provincia" 
@@ -186,8 +180,8 @@
         </div>
 
         <div>
-          <label for="canton">Cantón</label>
-          <input 
+          <label class="label" for="canton">Cantón</label>
+          <input class="input"
             type="text" 
             v-model="canton" 
             id="canton" 
@@ -199,8 +193,8 @@
         </div>
 
         <div>
-          <label for="distrito">Distrito</label>
-          <input 
+          <label class="label" for="distrito">Distrito</label>
+          <input class="input"
             type="text" 
             v-model="distrito" 
             id="distrito" 
@@ -212,8 +206,8 @@
         </div>
   
       <div>
-        <label for="otras_señas">Otras señas</label>
-        <textarea 
+        <label class="label" for="otras_señas">Otras señas</label>
+        <textarea class="textarea"
           type="text" 
           v-model="otras_señas" 
           id="otras_señas" 
@@ -222,7 +216,7 @@
           pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
           placeholder="Sólo se permiten números, letras y acentos del abecedario español"
           rows="1"
-          style="resize: vertical"
+          style="resize: vertical; margin-top: 15px;"
         ></textarea>
       </div>
     </div>
@@ -236,7 +230,19 @@
 export default {
   data() {
     return {
-      // Datos del formulario
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      cedula: '',
+      usuario: '',
+      password: '',
+      telefono: '',
+      email: '',
+      provincia: '',
+      canton: '',
+      distrito: '',
+      otras_señas: ''
     };
   },
   methods: {
