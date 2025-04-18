@@ -13,12 +13,14 @@
 </template>
 
 <script>
+import PaginaPrincipal from './components/PaginaPrincipal.vue'
 import RegistroEmpleador from './components/RegistroEmpleador.vue'
 import RegistroEmpresa from './components/RegistroEmpresa.vue'
 
 export default {
   name: 'App',
   components: {
+    PaginaPrincipal,
     RegistroEmpleador,
     RegistroEmpresa,
   },
@@ -26,6 +28,7 @@ export default {
     return {
       currentStep: 0,
       steps: [
+        { title: 'Pagina Principal', component: 'PaginaPrincipal' },
         { title: 'Registro Empleador', component: 'RegistroEmpleador' },
         { title: 'Registro Empresa', component: 'RegistroEmpresa' },
       ],
