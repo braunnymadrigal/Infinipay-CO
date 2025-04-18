@@ -14,16 +14,9 @@
             <a href="#" class="botones_izquierda">Personal</a>
             <a href="#" class="botones_izquierda">Empresa</a>
           </div>
-          <!-- Contenedor de los enlaces principales -->
-          <div class="navbar-links-center">
-            <a href="#"> Inicio</a>
-            <a href="#"> Sobre Nosotros</a>
-            <a href="#"> ¿Tenés dudas?</a>
-          </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <a href="#" class="botones_derecha">Ingresar</a>
-            <a href="#" class="botones_derecha">Registrá tu empresa</a>
+            <a href="#" class="botones_derecha">Pantalla Principal</a>
           </div>
         </nav>
       </div>
@@ -33,13 +26,13 @@
   <!-- Formulario de Registro -->
   <div class="form">
     <h1 style="color: #405D72;">Registrá tu empresa</h1>
-    <h2 style="color: #758694;">Datos de la empresa</h2>
+    <h2 style="color: #758694;  margin-bottom: 50px;">Datos de la empresa</h2>
     <form @submit.prevent="submit_form">
 
       <!-- Nombre -->
-      <div class="input">
-        <label for="nombre">Nombre</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="nombre">Nombre</label>
+        <input class="input"
           type="text" 
           v-model="nombre" 
           id="nombre"
@@ -52,9 +45,9 @@
       </div>
 
       <!-- Descripción -->
-      <div class="input">
-        <label for="descripcion">Descripción de la empresa</label>
-        <textarea 
+      <div class="caja_input">
+        <label class="label" for="descripcion">Descripción de la empresa</label>
+        <textarea class="textarea"
           v-model="descripcion" 
           id="descripcion"
           maxlength="300"
@@ -66,9 +59,9 @@
       </div>
 
       <!-- Cédula -->
-      <div class="input">
-        <label for="cedula">Cédula jurídica</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="cedula">Cédula jurídica</label>
+        <input class="input"
           type="text" 
           v-model="cedula" 
           id="cedula"
@@ -80,14 +73,14 @@
       </div>
 
       <!-- Teléfono -->
-      <div class="input">
-        <label for="telefono">Teléfono</label>
+      <div class="caja_input">
+        <label class="label" for="telefono">Teléfono</label>
         <div 
           v-for="(tel, index) in telefonos" 
           :key="index"
           style="display: flex; align-items: center; margin-bottom: 8px;">
           <span style="padding: 0 8px;">+506</span>
-          <input 
+          <input class="input"
             type="text" 
             v-model="telefonos[index]"
             :id="'telefono-' + index"
@@ -105,14 +98,14 @@
         <button 
           type="button" class= "boton_añadir"
           @click="agregar_telefono"
-          :disabled="telefonos.length >= 100">Añadir teléfono
+          :disabled="telefonos.length >= 100">Añadir otro teléfono
         </button>
       </div>
 
       <!-- Correo Electrónico -->
-      <div class="input">
-        <label for="email">Correo electrónico</label>
-        <input 
+      <div class="caja_input">
+        <label class="label" for="email">Correo electrónico</label>
+        <input class="input"
           type="email" 
           v-model="email" 
           id="email"
@@ -129,8 +122,8 @@
 
       <div class="direccion" v-for="(dir, index) in direcciones" :key="index">
         <div>
-          <label :for="'provincia-' + index">Provincia</label>
-          <input 
+          <label class="label" :for="'provincia-' + index">Provincia</label>
+          <input class="input"
             type="text" 
             v-model="dir.provincia" 
             :id="'provincia-' + index" 
@@ -142,8 +135,8 @@
         </div>
 
         <div>
-          <label :for="'canton-' + index">Cantón</label>
-          <input 
+          <label class="label" :for="'canton-' + index">Cantón</label>
+          <input class="input"
             type="text" 
             v-model="dir.canton" 
             :id="'canton-' + index" 
@@ -155,8 +148,8 @@
         </div>
 
         <div>
-          <label :for="'distrito-' + index">Distrito</label>
-          <input 
+          <label class="label" :for="'distrito-' + index">Distrito</label>
+          <input class="input"
             type="text" 
             v-model="dir.distrito" 
             :id="'distrito-' + index" 
@@ -168,16 +161,16 @@
         </div>
 
         <div>
-          <label :for="'otras_señas-' + index">Otras señas</label>
-          <textarea 
+          <label class="label" :for="'otras_señas-' + index">Otras señas</label>
+          <textarea class="textarea"
             v-model="dir.otras_señas" 
             :id="'otras_señas-' + index" 
             required 
             maxlength="300"
             pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
-            title="Sólo se permiten letras, números y espacios en blanco"
+            placeholder="Sólo se permiten letras, números y espacios en blanco"
             rows="1"
-            style="resize: vertical;"
+            style="resize: vertical; margin-top: 15px;"
           ></textarea>
         </div>
 
@@ -195,9 +188,9 @@
       </button>
       
       <!-- Razón social -->
-      <div class="input">
-        <label for="razonSocial">Razón social</label>
-        <textarea 
+      <div class="caja_input">
+        <label class="label" for="razonSocial">Razón social</label>
+        <textarea class="textarea"
           type="text" 
           id="razonSocial" 
           v-model="razonSocial"
@@ -211,19 +204,19 @@
       </div>
       
       <!-- Beneficios -->
-      <div class="input">
-        <label for="beneficios">Cantidad máxima de beneficios por
+      <div class="caja_input">
+        <label class="label" for="beneficios">Cantidad máxima de beneficios por
           empleado</label>
-        <select id="beneficios" v-model="beneficios" required>
+        <select id="beneficios" class="select" v-model="beneficios" required>
           <option disabled value="">Seleccione una cantidad</option>
           <option v-for="n in 100" :key="n" :value="n-1">{{ n-1 }}</option>
         </select>
       </div>
 
       <!-- Tipo de Pago -->
-      <div class="input">
-        <label for="tipo_pago">Tipo de pago</label>
-        <select id="tipo_pago" v-model="tipoPago" required>
+      <div class="caja_input">
+        <label class="label" for="tipo_pago">Tipo de pago</label>
+        <select id="tipo_pago" class="select" v-model="tipoPago" required>
           <option disabled value="">Seleccione un tipo de pago</option>
           <option value="semana">Semanal</option>
           <option value="quincenal">Quincenal</option>
