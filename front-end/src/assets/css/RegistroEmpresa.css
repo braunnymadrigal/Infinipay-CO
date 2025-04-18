@@ -36,32 +36,36 @@ textarea {
   border-bottom: #758694 1px solid;
 }
 
-/* Contenedor general de la barra de navegación*/
+/* Contenedor general de la barra de navegación */
 .navbar {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 /* Contenedor principal que agrupa enlaces y botones de navegación */
 .navbar-links {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  gap: 1vw;
 }
 
 /* Contenedor para agrupar los enlaces que se encuentran a la izquierda de la barra de navegación */
-.navbar-links-left {
-  display: flex;
-  justify-content: space-between;
-}
-
-/* Contenedor para agrupar los enlaces que se encuentran a la derecha de la barra de navegación */
+.navbar-links-left,
 .navbar-links-right {
   display: flex;
+  gap: 1vw;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  flex-wrap: nowrap;
 }
 
 /* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
@@ -69,23 +73,45 @@ textarea {
   text-decoration: none;
   color: inherit;
   margin-right: 15px;
+  display: inline-block;
+  white-space: nowrap;
 }
 
-/* Contenedor para agrupar los enlaces que se encuentran en el centro de la barra de navegación */
-.navbar-links-center {
-  font-weight: bold;
-  color: #405D72;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 20px;
-  transition: color 0.3s ease;
+/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
+@media (max-width: 768px) {
+  .navbar-links-left,
+  .navbar-links-right {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 2vw;
+  }
+
+  .navbar-links-left,
+  .navbar-links-right {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .navbar-links a {
+    width: 100%;
+    text-align: center;
+  }
 }
 
-/* Efecto al pasar el cursor */
-.navbar-links-center a:hover {
-  color: #758694;
+/* Acomodar los elementos de la barra de navegación para pantallas grandes */
+@media (min-width: 769px) {
+  .navbar-links-left,
+  .navbar-links-right {
+    justify-content: flex-start;
+  }
+}
+
+/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
+.navbar-links a {
+  text-decoration: none;
+  color: inherit;
+  margin-right: 15px;
 }
 
 /* Estilo para los botones ubicados a la derecha de la barra de navegación */
@@ -103,7 +129,7 @@ textarea {
 
 /* Efecto al pasar el cursor */
 .navbar-links .botones_derecha:hover {
-  background-color: #e4c3ae;
+  background-color: #FFF8F3;
   color: #2b3f4e;
 }
 
