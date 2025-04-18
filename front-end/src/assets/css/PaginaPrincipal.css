@@ -147,3 +147,59 @@ body {
   color: #2b3f4e;
 }
 
+/* Dimesiones de imagen */
+.imagen_principal {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Contenedor principal de la imagen */
+.contenedor_imagen {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+/* Aplicar una capa sobre la imagen para que el texto sea legible */
+.filtro_oscuro {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Contenedor de textos sobre imagen */
+.contenedor_textos_sobre_imagen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+}
+
+/* Estilo para el texto que se encuentra sobre la imagen */
+.texto-sobre-imagen {
+  font-size: 1.5rem;
+}
+
+/* Diferentes tamaños para textos */
+.titulo {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+/* Diferentes tamaños para textos */
+.subtitulo {
+  font-size: 1.2em;
+}
