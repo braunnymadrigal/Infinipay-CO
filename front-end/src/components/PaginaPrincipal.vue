@@ -29,8 +29,8 @@
 
         <!-- Textos sobre imagen -->
         <div class="contenedor_textos_sobre_imagen">
-          <div class="texto-sobre-imagen titulo">Sobre Nosotros</div>
-          <div class="texto-sobre-imagen subtitulo">
+          <div class="texto-sobre-imagen titulo_principal">Sobre Nosotros</div>
+          <div class="texto-sobre-imagen subtitulo_principal">
             Simplificamos el proceso, vos solo tenés que enfocarte en hacer crecer tu empresa.
           </div>
         </div>
@@ -38,23 +38,44 @@
 
     <!-- Más textos -->
     <div>
-      <p style=" 
-        font-size: 25px;
-        text-align: justify;
-        margin-top: 30px;
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 900px;
-      ">
+      <p class="texto_principal">
         Infinipay CO está dirigido a emprendedores y pymes en Costa Rica para automatizar la gestión de planillas, asegurando el cálculo preciso de salarios, deducciones y beneficios según la legislación vigente.
       </p>
-      <h1 style="
-        font-size: 35px;
-        text-align: justify;
-        margin-top: 50px;
-        margin-left: 200px;
-        color: #405D72;
-        ">¿Por qué elegir Infinipay CO?</h1>
+      <h1 class ="titulo">¿Por qué elegir Infinipay CO?</h1>
+
+      <div class="contenedor_cajas">
+        <div class="cajas_texto subtitulo">Solución automatizada para Costa Rica 
+            <br><span class="texto">Plataforma web que simplifica la gestión de planillas, asegurando el cálculo correcto de salarios, deducciones y beneficios según la legislación costarricense.</span>
+        </div>
+        <div class="cajas_texto subtitulo">Cumplimiento legal garantizado
+          <br><span class="texto">Aplicamos las deducciones obligatorias de ley como el CCSS, impuesto sobre la renta y asociaciones solidaristas, con cálculos basados en fuentes oficiales.</span>
+        </div>
+      </div>
+
+      <div class="contenedor_cajas">
+        <div class="cajas_texto subtitulo">Optimización para emprendedores y pymes
+          <br><span class="texto">Diseñada para dueños de negocios que necesitan gestionar pagos sin depender de terceros, reduciendo errores y ahorrando tiempo.</span>
+        </div>
+        <div class="cajas_texto subtitulo">Reportes claros y completos
+          <br><span class="texto">Generamos informes detallados sobre salarios brutos, deducciones y pagos, brindando control total sobre la planilla y las obligaciones fiscales.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mas texto -->
+    <div>
+      <h1 class ="titulo">Nuestro equipo</h1>
+      <div class="contenedor_cajas" style="gap: 30px;">
+        <div class="cajas_texto texto">Daniel Gómez Solís
+            <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
+        </div>
+        <div class="cajas_texto texto">María Fernanda Herrera Gutiérrez</div>
+      </div>
+
+      <div class="contenedor_cajas" style="gap: 30px;">
+        <div class="cajas_texto texto">Braunny Madrigal Barrantes</div>
+        <div class="cajas_texto texto">Fabián Mora Arias</div>
+      </div>
     </div>
   </div>
 </template>
