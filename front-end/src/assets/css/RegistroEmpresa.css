@@ -103,7 +103,7 @@ textarea {
 
 /* Efecto al pasar el cursor */
 .navbar-links .botones_derecha:hover {
-  background-color: #d3c8c1;
+  background-color: #e4c3ae;
   color: #2b3f4e;
 }
 
@@ -126,10 +126,14 @@ textarea {
   color: #2b3f4e;
 }
 
-/* Estilos globales para los campos del formulario */
-input,
-textarea,
-select {
+.caja_input {
+  margin-bottom: 16px;
+}
+
+/* Estilos para los campos del formulario */
+.input,
+.textarea,
+.select {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
@@ -138,11 +142,20 @@ select {
   border-radius: 4px;
 }
 
-/* Estilo global para etiquetas dentro del formulario */
-label {
+.textarea {
+  background-color: #FFF8F3;
+}
+
+.input, .select{
+  margin-top: 15px;
+}
+
+/* Estilo para etiquetas dentro del formulario */
+.label {
   display: block;
-  margin-bottom: 5px;
   text-align: left;
+  margin-top: 0px;
+  margin-bottom:  4px;
 }
 
 /* Contenedor para campos de dirección */
@@ -212,7 +225,7 @@ label {
 /* Botón para añadir dirección o teléfono */
 .boton_añadir {
   padding: 10px 16px;
-  background-color: #283f50;
+  background-color: #405D72;
   color: white;
   border: none;
   border-radius: 8px;

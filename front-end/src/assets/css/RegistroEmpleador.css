@@ -148,7 +148,7 @@ body {
 }
 
 /* Estilo para los campos del formulario */
-input {
+.input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
@@ -160,10 +160,18 @@ input {
 }
 
 /* Estilo global para etiquetas dentro del formulario */
-label {
+.label {
   display: block;
   margin-bottom: 5px;
   text-align: left;
+}
+
+.textarea {
+  background-color: #FFF8F3;
+}
+
+.caja_input {
+  margin-bottom: 16px;
 }
 
 /* Estilo para los contenedores de primer, segundo nombre o apellido */
