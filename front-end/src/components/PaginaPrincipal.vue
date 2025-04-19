@@ -29,8 +29,8 @@
 
         <!-- Textos sobre imagen -->
         <div class="contenedor_textos_sobre_imagen">
-          <div class="texto-sobre-imagen titulo_principal">Sobre Nosotros</div>
-          <div class="texto-sobre-imagen subtitulo_principal">
+          <div class="titulo_principal">Sobre Nosotros</div>
+          <div class="subtitulo_principal">
             Simplificamos el proceso, vos solo tenés que enfocarte en hacer crecer tu empresa.
           </div>
         </div>
@@ -64,7 +64,7 @@
 
     <!-- Mas texto -->
     <div>
-      <h1 class ="titulo" style="text-align: center; margin-left: 10px;">Nuestro equipo</h1>
+      <h1 class ="titulo">Nuestro equipo</h1>
       <div class="contenedor_cajas">
         <div class="cajas_texto texto" style="margin-left: 100px;">Daniel Gómez Solís
             <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
@@ -80,7 +80,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <div class="footer_columnas">
+      <div>
         <p class="footer_text">Contacto</p>
         <p class="footer_text">Infinipay CO.</p>
         <div class="contenedor_redes">
@@ -91,7 +91,7 @@
         </div>
       </div>
 
-      <div class="footer-columnas">
+      <div>
         <p class="footer_subtitulo">Empresa y equipo</p>
         <div class="contenedor_enlaces">
           <a href="#">Sobre nosotros</a>
@@ -99,7 +99,7 @@
         </div>
       </div>
 
-      <div class="footer-columnas">
+      <div >
         <p class="footer_subtitulo">Recursos</p>
         <div class="contenedor_enlaces">
           <a href="#">¿Cómo registro mi empresa?</a>
@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      <div class="footer-columnas">
+      <div>
         <p class="footer_subtitulo">Contacto</p>
         <div class="contenedor_enlaces">
 
