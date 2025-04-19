@@ -124,8 +124,8 @@ body {
 
 /* Efecto al pasar el cursor */
 .navbar-links .botones_derecha:hover {
-  background-color: #FFF8F3;
-  color: #2b3f4e;
+  background-color: #f1d4bf;
+  color: #405D72;
 }
 
 /* Estilo para los botones ubicados a la izquierda de la barra de navegación */
