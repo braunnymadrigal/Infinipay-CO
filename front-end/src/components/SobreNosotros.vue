@@ -15,7 +15,7 @@
           </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <a href="#" class="botones_derecha">Sobre nosotros</a>
+            <router-link to="/" class="botones_derecha">Sobre nosotros</router-link>
             <a href="#" class="botones_derecha">¿Necesitás ayuda?</a>
           </div>
         </nav>
@@ -127,5 +127,5 @@
 </template>
 
 <style scoped>
-@import '../assets/css/PaginaPrincipal.css';
+@import '../assets/css/SobreNosotros.css';
 </style>
