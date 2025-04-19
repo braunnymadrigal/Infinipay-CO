@@ -221,7 +221,7 @@
       </div>
     </div>
 
-    <router-link to="/registrar_empresa" class="boton_siguiente">Siguiente</router-link>
+    <button class="boton_siguiente" type="submit">Siguiente</button>
     </form>
   </div>
 </template>
@@ -246,6 +246,9 @@ export default {
     };
   },
   methods: {
+    submitForm() {
+      this.$router.push('/registrar_empresa');
+    }
   }
 };
 </script>
