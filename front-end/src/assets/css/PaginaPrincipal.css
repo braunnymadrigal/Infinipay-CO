@@ -214,7 +214,7 @@ body {
 .titulo {
   font-size: 35px;
   text-align: justify;
-  margin-top: 50px;
+  margin-top: 70px;
   margin-left: 200px;
   color: #405D72;
 }
@@ -245,11 +245,11 @@ body {
 .contenedor_cajas{
   display: flex;
   flex-wrap: wrap;
-  gap: 100px;
+  gap: 50px;
   justify-content: center;
   margin-top: 40px;
   margin-bottom: 15px;
-  margin-left: 100px;
+  margin-left: 50px;
 }
 
 /* Estilo para las cajas de texto */
@@ -259,4 +259,91 @@ body {
   text-align: left;
   display: flex;
   flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+/* Estilo para enlaces de redes sociales
+
+Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
+
+.contenedor_redes {
+  text-align: left;
+  margin-left: 140px;
+}
+
+.fa {
+  padding: 10px;
+  font-size: 15px;
+  width: 15px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+  color: white;
+}
+
+.fa-youtube {
+  background: #bb0000;
+  color: white;
+}
+
+.fa-instagram {
+  background: #125688;
+  color: white;
+}
+
+/* Contenedor para el footer */
+.footer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 0px;
+  background-color: #F7E7DC;
+  color: #000000;
+  margin-top: 30px;
+}
+
+/* Estilo de texto para los enlaces del footer */
+.footer_text {
+  font-size: 25px;
+  color: #405D72;
+  text-align: left;
+  margin-left: 150px;
+}
+
+/* Estilo de texto para los enlaces del footer */
+.contenedor_enlaces a {
+  display: block;
+  color: #000000;
+  text-decoration: none;
+  margin-bottom: 15px;
+  text-align: left;
+  max-width: 250px;
+  font-size: 15px;
+}
+
+/* Efecto al pasar el cursor */
+.contenedor_enlaces a:hover {
+  color: #2b3f4e;
+}
+
+/* Estilo de texto para los subtitulos de enlaces del footer */
+.footer_subtitulo {
+  font-size: 15px;
+  color: #405D72;
+  text-align: left;
+  margin-top: 30px;
 }
