@@ -11,12 +11,12 @@
         <nav class="navbar-links">
           <!-- Contenedor de los botones de la izquierda -->
           <div class="navbar-links-left">
-            <a href="#" class="botones_izquierda">Personal</a>
-            <a href="#" class="botones_izquierda">Empresa</a>
+            <a href="#" class="botones_izquierda">Iniciar sesión</a>
+            <router-link to="/registrar_empleador" class="botones_izquierda">Registrá tu empresa</router-link>
           </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <a href="#" class="botones_derecha">Pantalla Principal</a>
+            <router-link to="/" class="botones_derecha">Página principal</router-link>
           </div>
         </nav>
       </div>
