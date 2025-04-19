@@ -64,19 +64,65 @@
 
     <!-- Mas texto -->
     <div>
-      <h1 class ="titulo">Nuestro equipo</h1>
-      <div class="contenedor_cajas" style="gap: 30px;">
-        <div class="cajas_texto texto">Daniel Gómez Solís
+      <h1 class ="titulo" style="text-align: center; margin-left: 10px;">Nuestro equipo</h1>
+      <div class="contenedor_cajas">
+        <div class="cajas_texto texto" style="margin-left: 100px;">Daniel Gómez Solís
             <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
         </div>
         <div class="cajas_texto texto">María Fernanda Herrera Gutiérrez</div>
       </div>
 
-      <div class="contenedor_cajas" style="gap: 30px;">
-        <div class="cajas_texto texto">Braunny Madrigal Barrantes</div>
+      <div class="contenedor_cajas">
+        <div class="cajas_texto texto" style="margin-left: 100px;">Braunny Madrigal Barrantes</div>
         <div class="cajas_texto texto">Fabián Mora Arias</div>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer_columnas">
+        <p class="footer_text">Contacto</p>
+        <p class="footer_text">Infinipay CO.</p>
+        <div class="contenedor_redes">
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-linkedin"></a>
+          <a href="#" class="fa fa-youtube"></a>
+          <a href="#" class="fa fa-instagram"></a>
+        </div>
+      </div>
+
+      <div class="footer-columnas">
+        <p class="footer_subtitulo">Empresa y equipo</p>
+        <div class="contenedor_enlaces">
+          <a href="#">Sobre nosotros</a>
+          <a href="#">¿Necesitás ayuda?</a>
+        </div>
+      </div>
+
+      <div class="footer-columnas">
+        <p class="footer_subtitulo">Recursos</p>
+        <div class="contenedor_enlaces">
+          <a href="#">¿Cómo registro mi empresa?</a>
+          <a href="#">¿Cómo registro empleados a mi empresa?</a>
+          <a href="#">¿Cómo accedo a mi perfil?</a>
+        </div>
+      </div>
+
+      <div class="footer-columnas">
+        <p class="footer_subtitulo">Contacto</p>
+        <div class="contenedor_enlaces">
+
+          <!-- Iconos obtenidos de https://www.w3schools.com/css/css_icons.asp -->
+          
+          <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
+             +506 8000-0000</a>
+          <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
+             +506 2000-0000</a>
+          <a href="#"> <i class="material-icons" style="color:#405D72;">home</i>
+             San José, Montes de Oca, San Pedro</a>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
