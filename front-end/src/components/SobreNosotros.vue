@@ -15,7 +15,7 @@
           </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <router-link to="/" class="botones_derecha">Sobre nosotros</router-link>
+            <router-link to="/" class="botones_derecha">Página principal</router-link>
             <a href="#" class="botones_derecha">¿Necesitás ayuda?</a>
           </div>
         </nav>
