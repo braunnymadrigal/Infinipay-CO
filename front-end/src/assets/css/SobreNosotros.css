@@ -68,10 +68,12 @@
 /* Diferentes tamaños para textos */
 .titulo {
   font-size: 35px;
-  text-align: justify;
+  text-align: center;
   margin-top: 70px;
-  margin-left: 200px;
+  margin-left: auto;
+  margin-right: auto;
   color: #405D72;
+  width: fit-content;
 }
 
 /* Diferentes tamaños para textos */
@@ -116,47 +118,41 @@
   margin: 0;
 }
 
-/* Estilo para enlaces de redes sociales
-
-Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
-
-.contenedor_redes {
-  text-align: left;
-  margin-left: 140px;
+.contenedor_equipo{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  margin: 40px auto;
+  flex-wrap: wrap;
 }
 
-.fa {
-  padding: 10px;
-  font-size: 15px;
-  width: 15px;
+.equipo {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 300px;
   text-align: center;
-  text-decoration: none;
+  border: 1px solid #D9D9D9;
+}
+
+.imagen_redonda {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   border-radius: 50%;
-  margin-left: 5px;
+  margin-bottom: 15px;
 }
 
-.fa:hover {
-    opacity: 0.7;
+.nombre {
+  color: #555;
+  margin-bottom: 10px;
 }
 
-.fa-facebook {
-  background: #3B5998;
-  color: white;
-}
-
-.fa-linkedin {
-  background: #007bb5;
-  color: white;
-}
-
-.fa-youtube {
-  background: #bb0000;
-  color: white;
-}
-
-.fa-instagram {
-  background: #125688;
-  color: white;
+.rol {
+  font-weight: bold;
+  color: #222;
+  margin: 5px 0 0 0;
 }
 
 /* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
@@ -211,11 +207,5 @@ Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
 
   .cajas_texto.texto{
     margin-left: 0 !important;
-  }
-
-  .contenedor_redes {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 10px;
   }
 }

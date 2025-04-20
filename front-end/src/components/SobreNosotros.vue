@@ -63,20 +63,32 @@
     </div>
 
     <!-- Mas texto -->
-    <div>
-      <h1 class ="titulo">Nuestro equipo</h1>
-      <div class="contenedor_cajas">
-        <div class="cajas_texto texto">Daniel Gómez Solís
-            <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
-        </div>
-        <div class="cajas_texto texto">María Fernanda Herrera Gutiérrez</div>
+    <h1 class ="titulo">Nuestro equipo</h1>
+    <div class="contenedor_equipo">
+      <div class="equipo">
+        <img src="../assets/images/PantallaPrincipal/Reviews/kirby_review.png" 
+          alt="Persona 1" class="imagen_redonda" />
+        <p class="nombre">Daniel Gómez Solís</p>
       </div>
 
-      <div class="contenedor_cajas">
-        <div class="cajas_texto texto">Braunny Madrigal Barrantes</div>
-        <div class="cajas_texto texto">Fabián Mora Arias</div>
+      <div class="equipo">
+        <img src="../assets/images/SobreNosotros/EquipoDesarrollo/mafer.jpg"
+          alt="Persona 2" class="imagen_redonda" />
+        <p class="nombre">María Fernanda Herrera Gutiérrez</p>
       </div>
-    </div>
+
+      <div class="equipo">
+        <img src="../assets/images/PantallaPrincipal/Reviews/fallguys_review.jpg"
+          alt="Persona 3" class="imagen_redonda" />
+        <p class="nombre">Braunny Madrigal Barrantes</p>
+      </div>
+
+      <div class="equipo">
+        <img src="../assets/images/PantallaPrincipal/Reviews/fallguys_review.jpg"
+          alt="Persona 4" class="imagen_redonda" />
+        <p class="nombre">Fabián Mora Arias</p>
+      </div>
+  </div>
 
     <!-- Footer -->
     <footer class="footer">
