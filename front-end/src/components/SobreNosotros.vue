@@ -66,15 +66,15 @@
     <div>
       <h1 class ="titulo">Nuestro equipo</h1>
       <div class="contenedor_cajas">
-        <div class="cajas_texto texto" style="margin-left: 100px;">Daniel Gómez Solís
+        <div class="cajas_texto texto">Daniel Gómez Solís
             <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
         </div>
-        <div class="cajas_texto texto" style="margin-right: 100px;">María Fernanda Herrera Gutiérrez</div>
+        <div class="cajas_texto texto">María Fernanda Herrera Gutiérrez</div>
       </div>
 
       <div class="contenedor_cajas">
-        <div class="cajas_texto texto" style="margin-left: 100px;">Braunny Madrigal Barrantes</div>
-        <div class="cajas_texto texto" style="margin-right: 100px;">Fabián Mora Arias</div>
+        <div class="cajas_texto texto">Braunny Madrigal Barrantes</div>
+        <div class="cajas_texto texto">Fabián Mora Arias</div>
       </div>
     </div>
 

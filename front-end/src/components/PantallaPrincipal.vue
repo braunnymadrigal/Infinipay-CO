@@ -57,7 +57,7 @@
     </div>
 
     <div class="contenedor_imagen_derecha">
-        <img src="../assets/images/PantallaPrincipal/imagen2.jpg"
+        <img src="../assets/images/PantallaPrincipal/imagen2.webp"
           alt="Imagen" class="imagen_derecha" />
       </div>
   </div>

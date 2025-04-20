@@ -212,4 +212,10 @@ Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
   .cajas_texto.texto{
     margin-left: 0 !important;
   }
+
+  .contenedor_redes {
+    margin-left: 0;
+    text-align: center;
+    margin-top: 10px;
+  }
 }
