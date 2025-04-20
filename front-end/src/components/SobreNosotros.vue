@@ -24,7 +24,7 @@
 
       <!-- Imagen de fondo -->
       <div class="contenedor_imagen">
-        <img src="../assets/images/pagina_principal.jpeg" alt="Fondo de la página" class="imagen_principal" />
+        <img src="../assets/images/SobreNosotros/imagen1.jpeg" alt="Imagen" class="imagen_principal" />
         <div class="filtro_oscuro"></div>
 
         <!-- Textos sobre imagen -->
@@ -69,12 +69,12 @@
         <div class="cajas_texto texto" style="margin-left: 100px;">Daniel Gómez Solís
             <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
         </div>
-        <div class="cajas_texto texto">María Fernanda Herrera Gutiérrez</div>
+        <div class="cajas_texto texto" style="margin-right: 100px;">María Fernanda Herrera Gutiérrez</div>
       </div>
 
       <div class="contenedor_cajas">
         <div class="cajas_texto texto" style="margin-left: 100px;">Braunny Madrigal Barrantes</div>
-        <div class="cajas_texto texto">Fabián Mora Arias</div>
+        <div class="cajas_texto texto" style="margin-right: 100px;">Fabián Mora Arias</div>
       </div>
     </div>
 
@@ -95,7 +95,6 @@
         <p class="footer_subtitulo">Empresa y equipo</p>
         <div class="contenedor_enlaces">
           <a href="#">Sobre nosotros</a>
-          <a href="#">¿Necesitás ayuda?</a>
         </div>
       </div>
 
@@ -115,8 +114,6 @@
           <!-- Iconos obtenidos de https://www.w3schools.com/css/css_icons.asp -->
           
           <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
-             +506 8000-0000</a>
-          <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
              +506 2000-0000</a>
           <a href="#"> <i class="material-icons" style="color:#405D72;">home</i>
              San José, Montes de Oca, San Pedro</a>
@@ -128,4 +125,5 @@
 
 <style scoped>
 @import '../assets/css/SobreNosotros.css';
+@import '../assets/css/HeaderFooter.css';
 </style>
