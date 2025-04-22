@@ -11,12 +11,12 @@
         <nav class="navbar-links">
           <!-- Contenedor de los botones de la izquierda -->
           <div class="navbar-links-left">
-            <a href="#" class="botones_izquierda">Personal</a>
-            <a href="#" class="botones_izquierda">Empresa</a>
+            <a href="#" class="botones_izquierda">Iniciar sesión</a>
+            <router-link to="/registrar_empleador" class="botones_izquierda">Registrá tu empresa</router-link>
           </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <a href="#" class="botones_derecha">Pantalla Principal</a>
+            <router-link to="/" class="botones_derecha">Página principal</router-link>
           </div>
         </nav>
       </div>
@@ -225,7 +225,7 @@
     </div>
 
     <div class="contenedor_botones">
-      <button class="boton_volver" type="button" @click="back">Volver</button>
+      <router-link to="/registrar_empleador" class="boton_volver" @click="back">Volver</router-link>
       <button class="boton_siguiente" type="submit">Terminar registro</button>
     </div>
     </form>
@@ -270,11 +270,8 @@ export default {
         this.direcciones.splice(index, 1);
       }
     },
-    back() {
-      this.$emit('previous');
-    },
-    submit() {
-      this.$emit('next');
+    submitForm() {
+      this.$router.push('/'); // Redirigir a la página principal de momento, cuando se implemente el perfil se redirigirá a esa página
     }
   }
 };

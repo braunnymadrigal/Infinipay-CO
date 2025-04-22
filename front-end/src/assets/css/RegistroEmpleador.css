@@ -72,36 +72,6 @@ body {
   white-space: nowrap;
 }
 
-/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
-@media (max-width: 768px) {
-  .navbar-links-left,
-  .navbar-links-right {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 2vw;
-  }
-
-  .navbar-links-left,
-  .navbar-links-right {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .navbar-links a {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-/* Acomodar los elementos de la barra de navegación para pantallas grandes */
-@media (min-width: 769px) {
-  .navbar-links-left,
-  .navbar-links-right {
-    justify-content: flex-start;
-  }
-}
-
 /* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
 .navbar-links a {
   text-decoration: none;
@@ -124,8 +94,8 @@ body {
 
 /* Efecto al pasar el cursor */
 .navbar-links .botones_derecha:hover {
-  background-color: #FFF8F3;
-  color: #2b3f4e;
+  background-color: #f1d4bf;
+  color: #405D72;
 }
 
 /* Estilo para los botones ubicados a la izquierda de la barra de navegación */
@@ -222,4 +192,34 @@ body {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
+}
+
+/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
+@media (max-width: 768px) {
+  .navbar-links-left,
+  .navbar-links-right {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 2vw;
+  }
+
+  .navbar-links-left,
+  .navbar-links-right {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .navbar-links a {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Acomodar los elementos de la barra de navegación para pantallas grandes */
+@media (min-width: 769px) {
+  .navbar-links-left,
+  .navbar-links-right {
+    justify-content: flex-start;
+  }
 }
