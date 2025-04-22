@@ -1,122 +1,5 @@
 /* SobreNosotros.css */
 
-/* Color de fondo de la página */
-body {
-  background-color: #FFF8F3;
-}
-
-/* Contenedor para el logo */
-.logo_empresa {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 0;
-}
-
-/* Dimensiones de la imagen */
-.logo_img {
-  max-width: 100%;
-  height: auto;
-  width: 400px;
-}
-
-/* Contenedor principal del header */
-.header {
-  color: white;
-  padding: 20px 40px;
-  width: 100%;
-  box-sizing: border-box;
-  z-index: 10;
-  margin: 0;
-  border-bottom: #758694 1px solid;
-}
-
-/* Contenedor general de la barra de navegación */
-.navbar {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-/* Contenedor principal que agrupa enlaces y botones de navegación */
-.navbar-links {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1vw;
-}
-
-/* Contenedor para agrupar los enlaces que se encuentran a la izquierda de la barra de navegación */
-.navbar-links-left,
-.navbar-links-right {
-  display: flex;
-  gap: 1vw;
-  justify-content: flex-start;
-  align-items: center;
-  width: auto;
-  flex-wrap: nowrap;
-}
-
-/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
-.navbar-links a {
-  text-decoration: none;
-  color: inherit;
-  margin-right: 15px;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
-.navbar-links a {
-  text-decoration: none;
-  color: inherit;
-  margin-right: 15px;
-}
-
-/* Estilo para los botones ubicados a la derecha de la barra de navegación */
-.navbar-links .botones_derecha {
-  background-color: #F7E7DC;
-  color: #2b3f4e;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color 0.3s, color 0.3s;
-  gap: 10px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Efecto al pasar el cursor */
-.navbar-links .botones_derecha:hover {
-  background-color: #f1d4bf;
-  color: #405D72;
-}
-
-/* Estilo para los botones ubicados a la izquierda de la barra de navegación */
-.navbar-links .botones_izquierda {
-  background-color: #405D72;
-  color: #FFFFFF;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color 0.3s, color 0.3s;
-  gap: 10px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Efecto al pasar el cursor */
-.navbar-links .botones_izquierda:hover {
-  background-color: #758694;
-  color: #2b3f4e;
-}
-
 /* Dimesiones de imagen */
 .imagen_principal {
   width: 100%;
@@ -185,10 +68,12 @@ body {
 /* Diferentes tamaños para textos */
 .titulo {
   font-size: 35px;
-  text-align: justify;
+  text-align: center;
   margin-top: 70px;
-  margin-left: 200px;
+  margin-left: auto;
+  margin-right: auto;
   color: #405D72;
+  width: fit-content;
 }
 
 /* Diferentes tamaños para textos */
@@ -217,130 +102,61 @@ body {
 .contenedor_cajas{
   display: flex;
   flex-wrap: wrap;
-  gap: 50px;
   justify-content: center;
+  gap: 100px;
   margin-top: 40px;
-  margin-bottom: 15px;
-  margin-left: 50px;
+  margin-bottom: 10px;
 }
 
 /* Estilo para las cajas de texto */
 .cajas_texto{
-  width: 400px;
+  width: 300px;
   height: auto;
   text-align: left;
   display: flex;
   flex-wrap: wrap;
-  max-width: 300px;
+  margin: 0;
 }
 
-/* Estilo para enlaces de redes sociales
-
-Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
-
-.contenedor_redes {
-  text-align: left;
-  margin-left: 140px;
-}
-
-.fa {
-  padding: 10px;
-  font-size: 15px;
-  width: 15px;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 50%;
-  margin-left: 5px;
-}
-
-.fa:hover {
-    opacity: 0.7;
-}
-
-.fa-facebook {
-  background: #3B5998;
-  color: white;
-}
-
-.fa-linkedin {
-  background: #007bb5;
-  color: white;
-}
-
-.fa-youtube {
-  background: #bb0000;
-  color: white;
-}
-
-.fa-instagram {
-  background: #125688;
-  color: white;
-}
-
-/* Contenedor para el footer */
-.footer {
+.contenedor_equipo{
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  margin: 40px auto;
   flex-wrap: wrap;
-  padding: 0px;
-  background-color: #F7E7DC;
-  color: #000000;
-  margin-top: 30px;
 }
 
-/* Estilo de texto para los enlaces del footer */
-.footer_text {
-  font-size: 25px;
-  color: #405D72;
-  text-align: left;
-  margin-left: 150px;
+.equipo {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  border: 1px solid #D9D9D9;
 }
 
-/* Estilo de texto para los enlaces del footer */
-.contenedor_enlaces a {
-  display: block;
-  color: #000000;
-  text-decoration: none;
+.imagen_redonda {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
   margin-bottom: 15px;
-  text-align: left;
-  max-width: 250px;
-  font-size: 15px;
 }
 
-/* Efecto al pasar el cursor */
-.contenedor_enlaces a:hover {
-  color: #2b3f4e;
+.nombre {
+  color: #555;
+  margin-bottom: 10px;
 }
 
-/* Estilo de texto para los subtitulos de enlaces del footer */
-.footer_subtitulo {
-  font-size: 15px;
-  color: #405D72;
-  text-align: left;
-  margin-top: 30px;
+.rol {
+  font-weight: bold;
+  color: #222;
+  margin: 5px 0 0 0;
 }
 
 /* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
 @media (max-width: 768px) {
-  .navbar-links-left,
-  .navbar-links-right {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 2vw;
-  }
-
-  .navbar-links-left,
-  .navbar-links-right {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .navbar-links a {
-    width: 100%;
-    text-align: center;
-  }
-
   .titulo_principal {
     font-size: 5vw;
   }
@@ -391,47 +207,5 @@ Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
 
   .cajas_texto.texto{
     margin-left: 0 !important;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-  }
-
-  .footer_text {
-    margin-left: 0;
-    text-align: center;
-    font-size: 20px;
-  }
-
-  .contenedor_redes {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  .footer_subtitulo {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .contenedor_enlaces a {
-    text-align: center;
-    margin: 8px 0;
-  }
-
-  .fa {
-    margin: 5px;
-  }
-}
-
-/* Acomodar los elementos de la barra de navegación para pantallas grandes */
-@media (min-width: 769px) {
-  .navbar-links-left,
-  .navbar-links-right {
-    justify-content: flex-start;
   }
 }

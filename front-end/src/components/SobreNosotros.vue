@@ -15,7 +15,7 @@
           </div>
           <!-- Contenedor de los botones de la derecha -->
           <div class="navbar-links-right">
-            <router-link to="/" class="botones_derecha">Sobre nosotros</router-link>
+            <router-link to="/" class="botones_derecha">Página principal</router-link>
             <a href="#" class="botones_derecha">¿Necesitás ayuda?</a>
           </div>
         </nav>
@@ -24,7 +24,7 @@
 
       <!-- Imagen de fondo -->
       <div class="contenedor_imagen">
-        <img src="../assets/images/pagina_principal.jpeg" alt="Fondo de la página" class="imagen_principal" />
+        <img src="../assets/images/SobreNosotros/imagen1.jpeg" alt="Imagen" class="imagen_principal" />
         <div class="filtro_oscuro"></div>
 
         <!-- Textos sobre imagen -->
@@ -63,20 +63,32 @@
     </div>
 
     <!-- Mas texto -->
-    <div>
-      <h1 class ="titulo">Nuestro equipo</h1>
-      <div class="contenedor_cajas">
-        <div class="cajas_texto texto" style="margin-left: 100px;">Daniel Gómez Solís
-            <br><span class="texto" style="margin-right: 150px; color: #758694;">Scrum Master</span>
-        </div>
-        <div class="cajas_texto texto">María Fernanda Herrera Gutiérrez</div>
+    <h1 class ="titulo">Nuestro equipo</h1>
+    <div class="contenedor_equipo">
+      <div class="equipo">
+        <img src="../assets/images/PantallaPrincipal/Reviews/kirby_review.png" 
+          alt="Persona 1" class="imagen_redonda" />
+        <p class="nombre">Daniel Gómez Solís</p>
       </div>
 
-      <div class="contenedor_cajas">
-        <div class="cajas_texto texto" style="margin-left: 100px;">Braunny Madrigal Barrantes</div>
-        <div class="cajas_texto texto">Fabián Mora Arias</div>
+      <div class="equipo">
+        <img src="../assets/images/SobreNosotros/EquipoDesarrollo/mafer.jpg"
+          alt="Persona 2" class="imagen_redonda" />
+        <p class="nombre">María Fernanda Herrera Gutiérrez</p>
       </div>
-    </div>
+
+      <div class="equipo">
+        <img src="../assets/images/PantallaPrincipal/Reviews/fallguys_review.jpg"
+          alt="Persona 3" class="imagen_redonda" />
+        <p class="nombre">Braunny Madrigal Barrantes</p>
+      </div>
+
+      <div class="equipo">
+        <img src="../assets/images/PantallaPrincipal/Reviews/fallguys_review.jpg"
+          alt="Persona 4" class="imagen_redonda" />
+        <p class="nombre">Fabián Mora Arias</p>
+      </div>
+  </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -95,7 +107,6 @@
         <p class="footer_subtitulo">Empresa y equipo</p>
         <div class="contenedor_enlaces">
           <a href="#">Sobre nosotros</a>
-          <a href="#">¿Necesitás ayuda?</a>
         </div>
       </div>
 
@@ -115,8 +126,6 @@
           <!-- Iconos obtenidos de https://www.w3schools.com/css/css_icons.asp -->
           
           <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
-             +506 8000-0000</a>
-          <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
              +506 2000-0000</a>
           <a href="#"> <i class="material-icons" style="color:#405D72;">home</i>
              San José, Montes de Oca, San Pedro</a>
@@ -128,4 +137,5 @@
 
 <style scoped>
 @import '../assets/css/SobreNosotros.css';
+@import '../assets/css/HeaderFooter.css';
 </style>

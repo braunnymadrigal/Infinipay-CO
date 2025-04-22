@@ -10,6 +10,8 @@ export default {
 }
 </script>
 
+<style src="./assets/css/HeaderFooter.css"></style>
+
 <style>
 #app {
   font-family: 'Inter', sans-serif;
