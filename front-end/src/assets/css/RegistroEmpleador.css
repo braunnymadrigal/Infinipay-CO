@@ -1,7 +1,12 @@
-/* RegistroEmpleador.css */
+/* RegisterEmployer.css */
 
-/* Estilo para los campos del formulario */
-.input {
+.RegisterCompanyForm {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.InputBox{
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
@@ -12,23 +17,26 @@
   width: 100%;
 }
 
-/* Estilo global para etiquetas dentro del formulario */
-.label {
+.Label {
   display: block;
   margin-bottom: 5px;
   text-align: left;
 }
 
-.textarea {
+.TextArea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
   background-color: #FFF8F3;
+  border: 1px solid #758694;
+  border-radius: 4px;
 }
 
-.caja_input {
+.InputSection {
   margin-bottom: 16px;
 }
 
-/* Estilo para los contenedores de primer, segundo nombre o apellido */
-.nombre {
+.InputSectionForNames {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
@@ -36,27 +44,23 @@
   justify-content: center;
 }
 
-/* Estilo para los campos de nombre dentro del contenedor */
-.nombre > div {
+.InputSectionForNames > div {
   flex: 1;
   max-width: 300px;
 }
 
-/* Contenedor para campos de dirección */
-.direccion {
+.AddressSection {
   display: flex;
   gap: 10px;
   justify-content: space-between;
   margin-bottom: 15px;
 }
 
-/* Estilo para los campos de dirección dentro del contenedor */
-.direccion > div {
+.AddressSection > div {
   width: 32%;
 }
 
-/* Estilo para los botones de navegación: siguiente */
-.boton_siguiente {
+.NextPageButton {
   padding: 10px 20px;
   background-color: #405D72;
   color: white;
@@ -65,14 +69,6 @@
   border-radius: 8px;
 }
 
-/* Efecto al pasar el cursor */
-.boton_siguiente:hover {
+.NextPageButton:hover {
   background-color: #758694;
-}
-
-/* Contenedor principal del formulario */
-.form {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
 }
