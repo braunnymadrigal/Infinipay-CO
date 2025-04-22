@@ -1,87 +1,12 @@
-/* SobreNosotros.css */
+/* AboutUs.css */
 
-/* Dimesiones de imagen */
-.imagen_principal {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Contenedor principal de la imagen */
-.contenedor_imagen {
-  position: relative;
-  width: 100%;
-  height: 60vh;
-  overflow: hidden;
-}
-
-/* Aplicar una capa sobre la imagen para que el texto sea legible */
-.filtro_oscuro {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1;
-}
-
-/* Contenedor de textos sobre imagen */
-.contenedor_textos_sobre_imagen {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  text-align: center;
-}
-
-/* Estilo para el texto que se encuentra sobre la imagen */
-.texto-sobre-imagen {
-  font-size: 1.5rem;
-}
-
-/* Diferentes tamaños para textos */
-.titulo_principal {
-  font-size: 3vw;
-  font-weight: bold;
-  margin-bottom: 1vw;
-}
-
-/* Diferentes tamaños para textos */
-.subtitulo_principal {
+.MainSubtitle {
   font-size: 1.2em;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* Diferentes tamaños para textos */
-.subtitulo {
-  font-size: 22px;
-  color: #758694;
-}
-
-/* Diferentes tamaños para textos */
-.titulo {
-  font-size: 35px;
-  text-align: center;
-  margin-top: 70px;
-  margin-left: auto;
-  margin-right: auto;
-  color: #405D72;
-  width: fit-content;
-}
-
-/* Diferentes tamaños para textos */
-.subtitulo {
-  font-size: 22px;
-}
-
-.texto_principal {
+.MainText {
   font-size: 20px;
   text-align: justify;
   margin-top: 30px;
@@ -90,16 +15,7 @@
   max-width: 700px;
 }
 
-/* Diferentes tamaños para textos */
-.texto {
-  font-size: 18px;
-  text-align: justify;
-  margin-top: 20px;
-  color: #000000;
-}
-
-/* Contenedor para cajas de textos */
-.contenedor_cajas{
+.TextContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -108,8 +24,7 @@
   margin-bottom: 10px;
 }
 
-/* Estilo para las cajas de texto */
-.cajas_texto{
+.TextBoxAboutUs{
   width: 300px;
   height: auto;
   text-align: left;
@@ -118,7 +33,7 @@
   margin: 0;
 }
 
-.contenedor_equipo{
+.TeamMembersContainer {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -127,7 +42,7 @@
   flex-wrap: wrap;
 }
 
-.equipo {
+.TeamMembers {
   background-color: white;
   border-radius: 20px;
   padding: 20px;
@@ -136,40 +51,20 @@
   border: 1px solid #D9D9D9;
 }
 
-.imagen_redonda {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 15px;
-}
-
-.nombre {
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.rol {
-  font-weight: bold;
-  color: #222;
-  margin: 5px 0 0 0;
-}
-
-/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
 @media (max-width: 768px) {
-  .titulo_principal {
+  .MainTitle {
     font-size: 5vw;
   }
 
-  .subtitulo_principal {
+  .MainSubtitle {
     font-size: 4vw;
   }
 
-  .contenedor_imagen {
+  .ImageContainer {
     height: 20vh;
   }
 
-  .texto_principal {
+  .MainText {
     font-size: 4vw;
     margin-top: 30px;
     margin-left: auto;
@@ -177,7 +72,7 @@
     max-width: 90%;
   }
 
-  .titulo {
+  .Title {
     font-size: 5vw;
     text-align: justify;
     margin-top: 50px;
@@ -185,11 +80,11 @@
     color: #405D72;
   }
 
-  .subtitulo {
+  .Subtitle {
     font-size: 4vw;
   }
 
-  .texto {
+  .Text {
     font-size: 4vw;
     text-align: justify;
     margin-top: 20px;
@@ -197,7 +92,7 @@
     max-width: 300px;
   }
 
-  .contenedor_cajas {
+  .TextContainer {
     flex-direction: column;
     align-items: center;
     gap: 20px;
@@ -205,7 +100,7 @@
     margin-left: 20px;
   }
 
-  .cajas_texto.texto{
+  .TextBoxAboutUs.Text{
     margin-left: 0 !important;
   }
 }
