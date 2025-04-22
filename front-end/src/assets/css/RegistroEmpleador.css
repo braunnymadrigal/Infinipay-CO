@@ -1,0 +1,225 @@
+/* RegistroEmpleador.css */
+
+/* Color de fondo de la página */
+body {
+  background-color: #FFF8F3;
+}
+
+/* Contenedor para el logo */
+.logo_empresa {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+/* Dimensiones de la imagen */
+.logo_img {
+  max-width: 100%;
+  height: auto;
+  width: 400px;
+}
+
+/* Contenedor principal del header */
+.header {
+  color: white;
+  padding: 20px 40px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 10;
+  margin: 0;
+  border-bottom: #758694 1px solid;
+}
+
+/* Contenedor general de la barra de navegación */
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Contenedor principal que agrupa enlaces y botones de navegación */
+.navbar-links {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1vw;
+}
+
+/* Contenedor para agrupar los enlaces que se encuentran a la izquierda de la barra de navegación */
+.navbar-links-left,
+.navbar-links-right {
+  display: flex;
+  gap: 1vw;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  flex-wrap: nowrap;
+}
+
+/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
+.navbar-links a {
+  text-decoration: none;
+  color: inherit;
+  margin-right: 15px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
+@media (max-width: 768px) {
+  .navbar-links-left,
+  .navbar-links-right {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 2vw;
+  }
+
+  .navbar-links-left,
+  .navbar-links-right {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .navbar-links a {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Acomodar los elementos de la barra de navegación para pantallas grandes */
+@media (min-width: 769px) {
+  .navbar-links-left,
+  .navbar-links-right {
+    justify-content: flex-start;
+  }
+}
+
+/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
+.navbar-links a {
+  text-decoration: none;
+  color: inherit;
+  margin-right: 15px;
+}
+
+/* Estilo para los botones ubicados a la derecha de la barra de navegación */
+.navbar-links .botones_derecha {
+  background-color: #F7E7DC;
+  color: #2b3f4e;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+  gap: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Efecto al pasar el cursor */
+.navbar-links .botones_derecha:hover {
+  background-color: #FFF8F3;
+  color: #2b3f4e;
+}
+
+/* Estilo para los botones ubicados a la izquierda de la barra de navegación */
+.navbar-links .botones_izquierda {
+  background-color: #405D72;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+  gap: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Efecto al pasar el cursor */
+.navbar-links .botones_izquierda:hover {
+  background-color: #758694;
+  color: #2b3f4e;
+}
+
+/* Estilo para los campos del formulario */
+.input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: #FFF8F3;
+  border: 1px solid #758694;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+/* Estilo global para etiquetas dentro del formulario */
+.label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.textarea {
+  background-color: #FFF8F3;
+}
+
+.caja_input {
+  margin-bottom: 16px;
+}
+
+/* Estilo para los contenedores de primer, segundo nombre o apellido */
+.nombre {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
+/* Estilo para los campos de nombre dentro del contenedor */
+.nombre > div {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Contenedor para campos de dirección */
+.direccion {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+/* Estilo para los campos de dirección dentro del contenedor */
+.direccion > div {
+  width: 32%;
+}
+
+/* Estilo para los botones de navegación: siguiente */
+.boton_siguiente {
+  padding: 10px 20px;
+  background-color: #405D72;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+/* Efecto al pasar el cursor */
+.boton_siguiente:hover {
+  background-color: #758694;
+}
+
+/* Contenedor principal del formulario */
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
