@@ -1,101 +1,102 @@
 <template>
   <div>
-    <!-- Logo de la empresa -->
-    <div class="logo_empresa">
-      <img src="../assets/images/logo.png" alt="Logo de la empresa" class="logo_img"/>
+    <div class="CompanyLogo">
+      <img
+        src="../assets/images/logo.png"
+        alt="Company logo"
+        class="LogoImg"
+      />
     </div>
-    <!-- Header -->
-    <header class="header">
-      <div class="navbar">
-        <nav class="navbar-links">
-          <!-- Contenedor de los botones de la izquierda -->
-          <div class="navbar-links-left">
-            <a href="#" class="botones_izquierda">Iniciar sesión</a>
-            <router-link to="/registrar_empleador" class="botones_izquierda">Registrá tu empresa</router-link>
+
+    <header class="MainHeader">
+      <div class="MainHeaderNavigation">
+        <nav class="MainHeaderNavigationLinks">
+          <div class="NavigationSectionLeft">
+            <router-link to="/" class="LeftButton">Iniciar sesión</router-link>
+            <router-link to="/RegisterEmployer" class="LeftButton">
+              Registrá tu empresa
+            </router-link>
           </div>
-          <!-- Contenedor de los botones de la derecha -->
-          <div class="navbar-links-right">
-            <router-link to="/sobre_nosotros" class="botones_derecha">Sobre nosotros</router-link>
-            <a href="#" class="botones_derecha">¿Necesitás ayuda?</a>
+
+          <div class="NavigationSectionRight">
+            <router-link to="/AboutUs" class="RightButton">
+              Sobre nosotros</router-link>
+            <router-link to="/" class="RightButton">
+              ¿Necesitás ayuda?</router-link>
           </div>
         </nav>
       </div>
     </header>
   </div>
 
-  <!-- Imagen de fondo -->
-  <div class="contenedor_imagen">
-    <img src="../assets/images/PantallaPrincipal/imagen1.jpg"
-      alt="Imagen" class="imagen_principal" />
-    <div class="filtro_oscuro"></div>
-      <!-- Textos sobre imagen -->
-      <div class="contenedor_textos_sobre_imagen">
-        <div class="titulo_principal">Simplificá la gestión de planillas de tus trabajadores</div>
+  <div class="ImageContainer">
+    <img src="../assets/images/HomePage/image1.jpg"
+      alt="Image" class="MainImage" />
+    <div class="DarkFilter"></div>
+      <div class="TextContainerOnImage">
+        <div class="MainTitle">Simplificá la gestión de planillas de tus trabajadores</div>
       </div>
   </div>
 
-  <!-- Texto -->
-  <h1 class ="titulo">¿Por qué elegirnos?</h1>
-  <div class="contenedor_texto">
-    <div class="contenedor_columnas_texto">
-      <div class="cajas_texto subtitulo">
+  <h1 class ="Title">¿Por qué elegirnos?</h1>
+  <div class="TextContainer">
+    <div class="TextContainerColumns">
+      <div class="TextBox Subtitle">
         Accesibilidad<br>
-        <span class="texto">Brindamos una alternativa accesible a pequeñas empresas que no pueden pagar servicios contables</span>
+        <span class="Text">Brindamos una alternativa accesible a pequeñas empresas que no pueden pagar servicios contables</span>
       </div>
-      <div class="cajas_texto subtitulo">
+      <div class="TextBox Subtitle">
         Automatización<br>
-        <span class="texto">Evitamos errores humanos en el cálculo de salarios y deducciones</span>
+        <span class="Text">Evitamos errores humanos en el cálculo de salarios y deducciones</span>
       </div>
-      <div class="cajas_texto subtitulo">
+      <div class="TextBox Subtitle">
         Cumplimiento legal<br>
-        <span class="texto">Nos aseguramos de que los empleadores cumplan con todas las normativas laborales y fiscales</span>
+        <span class="Text">Nos aseguramos de que los empleadores cumplan con todas las normativas laborales y fiscales</span>
       </div>
-      <div class="cajas_texto subtitulo">
+      <div class="TextBox Subtitle">
         Optimización<br>
-        <span class="texto">Reducimos la carga administrativa para que los emprendedores se enfoquen en hacer crecer su negocio</span>
+        <span class="Text">Reducimos la carga administrativa para que los emprendedores se enfoquen en hacer crecer su negocio</span>
       </div>
     </div>
 
-    <div class="contenedor_imagen_derecha">
-        <img src="../assets/images/PantallaPrincipal/imagen2.webp"
-          alt="Imagen" class="imagen_derecha" />
+    <div class="SecondImageContainer">
+        <img src="../assets/images/HomePage/image2.webp"
+          alt="Image" class="SecondRightImage" />
       </div>
   </div>
 
-  <!-- Reseñas -->
-  <h1 class ="titulo">Reseñas</h1>
-  <div class="contenedor_review">
-    <div class="review">
-      <img src="../assets/images/PantallaPrincipal/Reviews/kirby_review.png" 
-        alt="Persona 1" class="imagen_redonda" />
-      <p class="texto_review">“¡Infinipay CO hace que pagar a los Waddle Dees sea pan comido!”</p>
-      <p class="nombre_persona">Kirby</p>
-      <p class="empresa_persona">Dream Land CO.</p>
+  <h1 class ="Title">Reseñas</h1>
+  <div class="ReviewContainer">
+    <div class="Review">
+      <img src="../assets/images/HomePage/Reviews/kirby_review.png" 
+        alt="Persona 1" class="RoundImage" />
+      <p class="ReviewText">“¡Infinipay CO hace que pagar a los Waddle Dees sea pan comido!”</p>
+      <p class="ReviewPersonName">Kirby</p>
+      <p class="ReviewCompanyName">Dream Land CO.</p>
     </div>
 
-    <div class="review">
-      <img src="../assets/images/PantallaPrincipal/Reviews/sylveon_review.jpg"
-        alt="Persona 2" class="imagen_redonda" />
-      <p class="texto_review">“Gestionar pagos nunca fue tan encantador”</p>
-      <p class="nombre_persona">Sylveon</p>
-      <p class="empresa_persona">Encantos Sylveon</p>
+    <div class="Review">
+      <img src="../assets/images/HomePage/Reviews/sylveon_review.jpg"
+        alt="Persona 2" class="RoundImage" />
+      <p class="ReviewText">“Gestionar pagos nunca fue tan encantador”</p>
+      <p class="ReviewPersonName">Sylveon</p>
+      <p class="ReviewCompanyName">Encantos Sylveon</p>
     </div>
 
-    <div class="review">
-      <img src="../assets/images/PantallaPrincipal/Reviews/fallguys_review.jpg"
-        alt="Persona 3" class="imagen_redonda" />
-      <p class="texto_review">“¡Nada de tropezar con cálculos de planilla!”</p>
-      <p class="nombre_persona">Fall Guys</p>
-      <p class="empresa_persona">Fall Corp. Eventos Extremos</p>
+    <div class="Review">
+      <img src="../assets/images/HomePage/Reviews/fallguys_review.jpg"
+        alt="Persona 3" class="RoundImage" />
+      <p class="ReviewText">“¡Nada de tropezar con cálculos de planilla!”</p>
+      <p class="ReviewPersonName">Fall Guys</p>
+      <p class="ReviewCompanyName">Fall Corp. Eventos Extremos</p>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
+  <footer class="MainFooter">
     <div>
-      <p class="footer_text">Contacto</p>
-      <p class="footer_text">Infinipay CO.</p>
-      <div class="contenedor_redes">
+      <p class="MainFooterText">Contacto</p>
+      <p class="MainFooterText">Infinipay CO.</p>
+      <div class="SocialMediaContainer">
         <a href="#" class="fa fa-facebook"></a>
         <a href="#" class="fa fa-linkedin"></a>
         <a href="#" class="fa fa-youtube"></a>
@@ -104,15 +105,15 @@
     </div>
 
     <div>
-      <p class="footer_subtitulo">Empresa y equipo</p>
-      <div class="contenedor_enlaces">
+      <p class="MainFooterSubtitule">Empresa y equipo</p>
+      <div class="FooterNavLinks">
         <a href="#">Sobre nosotros</a>
       </div>
     </div>
 
     <div >
-      <p class="footer_subtitulo">Recursos</p>
-      <div class="contenedor_enlaces">
+      <p class="MainFooterSubtitule">Recursos</p>
+      <div class="FooterNavLinks">
         <a href="#">¿Cómo registro mi empresa?</a>
         <a href="#">¿Cómo registro empleados a mi empresa?</a>
         <a href="#">¿Cómo accedo a mi perfil?</a>
@@ -120,12 +121,11 @@
     </div>
 
     <div>
-      <p class="footer_subtitulo">Contacto</p>
-      <div class="contenedor_enlaces">
-        <!-- Iconos obtenidos de https://www.w3schools.com/css/css_icons.asp -->
-        <a href="#"> <i class="material-icons" style="color:#405D72;">phone</i>
+      <p class="MainFooterSubtitule">Contacto</p>
+      <div class="FooterNavLinks">
+        <a href="#"> <i class="pi pi-phone" style="color:#405D72;"></i>
             +506 2000-0000</a>
-        <a href="#"> <i class="material-icons" style="color:#405D72;">home</i>
+        <a href="#"> <i class="pi pi-home" style="color:#405D72;"></i>
             San José, Montes de Oca, San Pedro</a>
       </div>
     </div>
@@ -136,6 +136,6 @@
 </script>
 
 <style scoped>
-@import '../assets/css/PantallaPrincipal.css';
-@import '../assets/css/HeaderFooter.css';
+  @import '../assets/css/HomePage.css';
+  @import '../assets/css/HeaderFooter.css';
 </style>

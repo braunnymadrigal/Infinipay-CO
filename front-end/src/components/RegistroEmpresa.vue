@@ -1,41 +1,43 @@
 <template>
   <div>
-    <!-- Logo de la empresa -->
-    <div class="logo_empresa">
-      <img src="../assets/images/logo.png" alt="Logo de la empresa"
-        class="logo_img"/>
+    <div class="CompanyLogo">
+      <img
+        src="../assets/images/logo.png"
+        alt="Company logo"
+        class="LogoImg"
+      />
     </div>
-    <!-- Header -->
-    <header class="header">
-      <div class="navbar">
-        <nav class="navbar-links">
-          <!-- Contenedor de los botones de la izquierda -->
-          <div class="navbar-links-left">
-            <a href="#" class="botones_izquierda">Iniciar sesión</a>
-            <router-link to="/registrar_empleador" class="botones_izquierda">Registrá tu empresa</router-link>
+
+    <header class="MainHeader">
+      <div class="MainHeaderNavigation">
+        <nav class="MainHeaderNavigationLinks">
+          <div class="NavigationSectionLeft">
+            <a href="#" class="LeftButton">Iniciar sesión</a>
+            <router-link to="/RegisterEmployer" class="LeftButton">
+              Registrá tu empresa
+            </router-link>
           </div>
-          <!-- Contenedor de los botones de la derecha -->
-          <div class="navbar-links-right">
-            <router-link to="/" class="botones_derecha">Página principal</router-link>
+
+          <div class="NavigationSectionRight">
+            <router-link to="/" class="RightButton">
+              Página principal</router-link>
           </div>
         </nav>
       </div>
     </header>
   </div>
 
-  <!-- Formulario de Registro -->
-  <div class="form">
+  <div class="RegisterCompanyForm">
     <h1 style="color: #405D72;">Registrá tu empresa</h1>
     <h2 style="color: #758694;  margin-bottom: 50px;">Datos de la empresa</h2>
     <form @submit.prevent="submit_form">
 
-      <!-- Nombre -->
-      <div class="caja_input">
-        <label class="label" for="nombre">Nombre</label>
-        <input class="input"
+      <div class="InputSection">
+        <label class="Label" for="name">Nombre</label>
+        <input class="InputBox"
           type="text" 
-          v-model="nombre" 
-          id="nombre"
+          v-model="name" 
+          id="name"
           required 
           maxlength="30"
           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ&.\s]+$"
@@ -44,12 +46,11 @@
         />
       </div>
 
-      <!-- Descripción -->
-      <div class="caja_input">
-        <label class="label" for="descripcion">Descripción de la empresa</label>
-        <textarea class="textarea"
-          v-model="descripcion" 
-          id="descripcion"
+      <div class="InputSection">
+        <label class="Label" for="description">Descripción de la empresa</label>
+        <textarea class="TextArea"
+          v-model="description" 
+          id="description"
           maxlength="300"
           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
           placeholder="Sólo se permiten espacios, letras y acentos del abecedario español."
@@ -58,13 +59,12 @@
         ></textarea>
       </div>
 
-      <!-- Cédula -->
-      <div class="caja_input">
-        <label class="label" for="cedula">Cédula jurídica</label>
-        <input class="input"
+      <div class="InputSection">
+        <label class="Label" for="idNumber">Cédula jurídica</label>
+        <input class="InputBox"
           type="text" 
-          v-model="cedula" 
-          id="cedula"
+          v-model="idNumber" 
+          id="idNumber"
           required
           pattern="^\d{10}$"
           title="Formato: X-XXX-XXXXXX"
@@ -72,18 +72,17 @@
         />
       </div>
 
-      <!-- Teléfono -->
-      <div class="caja_input">
-        <label class="label" for="telefono">Teléfono</label>
+      <div class="InputSection">
+        <label class="Label" for="phoneNumbers">Teléfono</label>
         <div 
-          v-for="(tel, index) in telefonos" 
+          v-for="(phoneNumber, index) in phoneNumbers"
           :key="index"
           style="display: flex; align-items: center; margin-bottom: 8px;">
           <span style="padding: 0 8px;">+506</span>
-          <input class="input"
+          <input class="InputBox" style="margin-top: 15px;"
             type="text" 
-            v-model="telefonos[index]"
-            :id="'telefono-' + index"
+            v-model="phoneNumbers[index]"
+            :id="'phoneNumbers-' + index"
             required
             pattern="\d{8}"
             title="Formato: XXXX-XXXX"
@@ -91,21 +90,20 @@
           />
           <button
             type="button" 
-            class="boton_eliminar" style="margin-left: 8px;"
-            @click="borrar_telefono(index)">🗑️
+            class="DeleteButton" style="margin-left: 8px;"
+            @click="deletePhoneNumber(index)">🗑️
           </button>
         </div>
         <button 
-          type="button" class= "boton_añadir"
-          @click="agregar_telefono"
-          :disabled="telefonos.length >= 100">Añadir otro teléfono
+          type="button" class="AddButton"
+          @click="addPhoneNumber"
+          :disabled="phoneNumbers.length >= 100">Añadir otro teléfono
         </button>
       </div>
 
-      <!-- Correo Electrónico -->
-      <div class="caja_input">
-        <label class="label" for="email">Correo electrónico</label>
-        <input class="input"
+      <div class="InputSection">
+        <label class="Label" for="email">Correo electrónico</label>
+        <input class="InputBox"
           type="email" 
           v-model="email" 
           id="email"
@@ -116,17 +114,17 @@
         />
       </div>
 
-      <!-- Dirección -->
       <h3 style="text-align: left; font-weight: normal;
         margin-bottom: 20px;">Dirección </h3>
 
-      <div class="direccion" v-for="(dir, index) in direcciones" :key="index">
+      <div class="CompanyAddressSection" 
+        v-for="(addr, index) in addresses" :key="index">
         <div>
-          <label class="label" :for="'provincia-' + index">Provincia</label>
-          <input class="input"
+          <label class="Label" :for="'province-' + index">Provincia</label>
+          <input class="InputBox"
             type="text" 
-            v-model="dir.provincia" 
-            :id="'provincia-' + index" 
+            v-model="addr.province" 
+            :id="'province-' + index" 
             required 
             maxlength="10"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
@@ -135,10 +133,10 @@
         </div>
 
         <div>
-          <label class="label" :for="'canton-' + index">Cantón</label>
-          <input class="input"
+          <label class="Label" :for="'canton-' + index">Cantón</label>
+          <input class="InputBox"
             type="text" 
-            v-model="dir.canton" 
+            v-model="addr.canton" 
             :id="'canton-' + index" 
             required 
             maxlength="100"
@@ -148,11 +146,11 @@
         </div>
 
         <div>
-          <label class="label" :for="'distrito-' + index">Distrito</label>
-          <input class="input"
+          <label class="Label" :for="'district-' + index">Distrito</label>
+          <input class="InputBox"
             type="text" 
-            v-model="dir.distrito" 
-            :id="'distrito-' + index" 
+            v-model="addr.district" 
+            :id="'distric-' + index" 
             required 
             maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
@@ -161,39 +159,38 @@
         </div>
 
         <div>
-          <label class="label" :for="'otras_señas-' + index">Otras señas</label>
-          <textarea class="textarea"
-            v-model="dir.otras_señas" 
-            :id="'otras_señas-' + index" 
+          <label class="Label" :for="'otherSigns-' + index">Otras señas</label>
+          <textarea class="TextArea"
+            v-model="addr.otherSigns" 
+            :id="'otherSigns-' + index" 
             required 
             maxlength="300"
             pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
             placeholder="Sólo se permiten letras, números y espacios en blanco"
             rows="1"
-            style="resize: vertical; margin-top: 15px;"
+            style="resize: vertical;"
           ></textarea>
         </div>
 
         <button
           type="button"
-          class="boton_eliminar" style="margin-top: 8px;"
-          @click="borrar_direccion(index)">🗑️
+          class="DeleteButton" style="margin-top: 8px;"
+          @click="deleteAddress(index)">🗑️
         </button>
       </div>
 
       <button type="button"
-        class="boton_añadir"
-        @click="agregar_direccion" :disabled="direcciones.length >= 100">
+        class="AddButton"
+        @click="addAddress" :disabled="addresses.length >= 100">
         Añadir otra dirección
       </button>
       
-      <!-- Razón social -->
-      <div class="caja_input">
-        <label class="label" for="razonSocial">Razón social</label>
-        <textarea class="textarea"
+      <div class="InputSection">
+        <label class="Label" for="legalName">Razón social</label>
+        <textarea class="TextArea"
           type="text" 
-          id="razonSocial" 
-          v-model="razonSocial"
+          id="legalName" 
+          v-model="legalName"
           required 
           maxlength="100"
           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
@@ -203,30 +200,30 @@
         ></textarea>
       </div>
       
-      <!-- Beneficios -->
-      <div class="caja_input">
-        <label class="label" for="beneficios">Cantidad máxima de beneficios por
+      <div class="InputSection">
+        <label class="Label" for="benefits">Cantidad máxima de beneficios por
           empleado</label>
-        <select id="beneficios" class="select" v-model="beneficios" required>
+        <select id="benefits" class="SelectForm" v-model="benefits" required>
           <option disabled value="">Seleccione una cantidad</option>
           <option v-for="n in 100" :key="n" :value="n-1">{{ n-1 }}</option>
         </select>
       </div>
 
-      <!-- Tipo de Pago -->
-      <div class="caja_input">
-        <label class="label" for="tipo_pago">Tipo de pago</label>
-        <select id="tipo_pago" class="select" v-model="tipoPago" required>
+      <div class="InputSection">
+        <label class="Label" for="paymentType">Tipo de pago</label>
+        <select id="paymentType" class="SelectForm" v-model="paymentType"
+          required>
           <option disabled value="">Seleccione un tipo de pago</option>
-          <option value="semana">Semanal</option>
-          <option value="quincenal">Quincenal</option>
-          <option value="mensual">Mensual</option>
+          <option value="weekly">Semanal</option>
+          <option value="biweekly">Quincenal</option>
+          <option value="monthly">Mensual</option>
         </select>
     </div>
 
-    <div class="contenedor_botones">
-      <router-link to="/registrar_empleador" class="boton_volver" @click="back">Volver</router-link>
-      <button class="boton_siguiente" type="submit">Terminar registro</button>
+    <div class="ButtonContainer">
+      <router-link to="/RegisterEmployer" class="GoBackButton"
+        @click="goBack">Volver</router-link>
+      <button class="GoNextButton" type="submit">Terminar registro</button>
     </div>
     </form>
   </div>
@@ -234,49 +231,81 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 export default {
-  data() {
-    return {
-      nombre: '',
-      descripcion: '',
-      cedula: '',
-      telefonos: [''],
-      email: '',
-      direcciones: [{ provincia: '', canton: '', distrito: ''
-        , otras_señas: '' }],
-      beneficios: 0,
-      tipoPago: '',
-    };
-  },
-  methods: {
-    agregar_telefono() {
-      if (this.telefonos.length < 100) {
-        this.telefonos.push('');
+  setup() {
+    const router = useRouter();
+    const name = ref('');
+    const description = ref('');
+    const idNumber = ref('');
+    const phoneNumbers = ref(['']);
+    const email = ref('');
+    const addresses = ref([
+      {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
       }
-    },
-    borrar_telefono(index) {
-      if (this.telefonos.length > 1) {
-        this.telefonos.splice(index, 1);
+    ]);
+    const benefits = ref(0);
+    const paymentType = ref('');
+
+    function addPhoneNumber() {
+      if (phoneNumbers.value.length < 100) {
+        phoneNumbers.value.push('');
       }
-    },
-    agregar_direccion() {
-      if (this.direcciones.length < 100) {
-        this.direcciones.push({ provincia: '', canton: '', distrito: ''
-          , otras_señas: '' });
-      }
-    },
-    borrar_direccion(index) {
-      if (this.direcciones.length > 1) {
-        this.direcciones.splice(index, 1);
-      }
-    },
-    submitForm() {
-      this.$router.push('/'); // Redirigir a la página principal de momento, cuando se implemente el perfil se redirigirá a esa página
     }
+
+    function deletePhoneNumber(index) {
+      if (phoneNumbers.value.length > 1) {
+        phoneNumbers.value.splice(index, 1);
+      }
+    }
+
+    function addAddress() {
+      if (addresses.value.length < 100) {
+        addresses.value.push({
+          province: '',
+          canton: '',
+          district: '',
+          otherSigns: ''
+        });
+      }
+    }
+
+    function deleteAddress(index) {
+      if (addresses.value.length > 1) {
+        addresses.value.splice(index, 1);
+      }
+    }
+
+    function submitForm() {
+      router.push('/');
+    }
+
+    return {
+      name,
+      description,
+      idNumber,
+      phoneNumbers,
+      email,
+      addresses,
+      benefits,
+      paymentType,
+      addPhoneNumber,
+      deletePhoneNumber,
+      addAddress,
+      deleteAddress,
+      submitForm
+    };
   }
 };
 </script>
 
 <style scoped>
-@import '../assets/css/RegistroEmpresa.css';
+  @import '../assets/css/RegisterCompany.css';
+  @import '../assets/css/RegisterEmployer.css';
 </style>
