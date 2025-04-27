@@ -72,6 +72,11 @@
         user: { userId: "", userPassword: "" },
       };
     },
+    methods: {
+      startLogin() {
+        console.log("Saved:", this.user);
+      },
+    },
   };
 </script>
 
