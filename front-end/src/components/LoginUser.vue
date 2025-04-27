@@ -21,7 +21,49 @@
   </div>
 
   <!-- CONTENT -->
-  <div> Hola. </div>
+  <div>
+    <div>
+      <img src="">
+    </div>
+  </div>
+  <div>
+    <div>
+      <h1>Iniciar sesión</h1>
+      <h6>¿Aún no has registrado tu empresa? ¡Empezá ya!</h6>
+    </div>
+  </div>
+  <div>
+    <div>
+      <form @submit.prevent="startLogin">
+        <div>
+          <label for="userId">Correo electrónico o nombre de usuario</label>
+          <input
+            v-model="user.userId"
+            type="text"
+            required
+          />
+        </div>
+        <div>
+          <label for="userPassword">Contraseña</label>
+          <input
+            v-model="user.userPassword"
+            type="password"
+            required
+          />
+        </div>
+        <div>
+          <button type="submit">
+            Iniciar sesión
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div>
+      <a href="#">¿Has olvidado tu contraseña?</a> 
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer class="footer">
