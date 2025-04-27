@@ -23,7 +23,7 @@
   <!-- CONTENT -->
   <div>
     <div>
-      <img src="">
+      <span class="material-symbols-outlined" style="font-size:200px">person</span>
     </div>
   </div>
   <div>
