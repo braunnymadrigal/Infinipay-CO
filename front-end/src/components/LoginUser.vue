@@ -67,8 +67,12 @@
 
 <script>
   export default {
-    
-  }
+    data() {
+      return {
+        user: { userId: "", userPassword: "" },
+      };
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
