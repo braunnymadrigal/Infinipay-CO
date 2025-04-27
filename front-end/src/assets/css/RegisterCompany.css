@@ -1,0 +1,79 @@
+/* RegisterCompany.css */
+
+.CompanyAddressSection {
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.CompanyAddressSection > div {
+  flex: 1 1 45%;
+  min-width: 200px;
+}
+
+.ButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.GoNextButton, .GoBackButton {
+  padding: 10px 20px;
+  background-color: #405D72;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.GoNextButton:hover, .GoBackButton:hover {
+  background-color: #758694;
+}
+
+.DeleteButton {
+  padding: 8px 12px;
+  background-color: #f7e7dc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.DeleteButton:hover {
+  background-color: #e99b9b;
+  color: white;
+}
+
+.AddButton {
+  padding: 10px 16px;
+  background-color: #405D72;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.AddButton:hover {
+  background-color: #758694;
+}
+
+.AddButton:disabled {
+  background-color: #e99b9b;
+  cursor: not-allowed;
+}
+
+.SelectForm {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #758694;
+  background-color: #FFF8F3;
+}

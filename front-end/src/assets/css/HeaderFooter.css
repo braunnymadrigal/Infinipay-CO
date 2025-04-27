@@ -1,30 +1,28 @@
-/* Color de fondo de la página */
 body {
   background-color: #FFF8F3;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+  margin-top: 60px;
 }
 
-/* Fuente de la página */
 textarea {
   font-family: 'Inter', sans-serif;
 }
 
-/* Contenedor para el logo */
-.logo_empresa {
+.CompanyLogo {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 0;
 }
 
-/* Dimensiones de la imagen */
-.logo_img {
+.LogoImg {
   max-width: 100%;
   height: auto;
   width: 400px;
 }
 
-/* Contenedor principal del header */
-.header {
+.MainHeader {
   color: white;
   padding: 20px 40px;
   width: 100%;
@@ -34,8 +32,7 @@ textarea {
   border-bottom: #758694 1px solid;
 }
 
-/* Contenedor general de la barra de navegación */
-.navbar {
+.MainHeaderNavigation {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
@@ -45,8 +42,7 @@ textarea {
   flex-wrap: wrap;
 }
 
-/* Contenedor principal que agrupa enlaces y botones de navegación */
-.navbar-links {
+.MainHeaderNavigationLinks {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -55,9 +51,8 @@ textarea {
   gap: 1vw;
 }
 
-/* Contenedor para agrupar los enlaces que se encuentran a la izquierda de la barra de navegación */
-.navbar-links-left,
-.navbar-links-right {
+.NavigationSectionLeft,
+.NavigationSectionRight {
   display: flex;
   gap: 1vw;
   justify-content: flex-start;
@@ -66,24 +61,17 @@ textarea {
   flex-wrap: nowrap;
 }
 
-/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
-.navbar-links a {
+.MainHeaderNavigationLinks a {
   text-decoration: none;
   color: inherit;
   margin-right: 15px;
   display: inline-block;
-  white-space: nowrap;
-}
-
-/* Estilos que se aplican a todos los enlaces dentro de la barra de navegación */
-.navbar-links a {
   text-decoration: none;
   color: inherit;
   margin-right: 15px;
 }
 
-/* Estilo para los botones ubicados a la derecha de la barra de navegación */
-.navbar-links .botones_derecha {
+.MainHeaderNavigationLinks .RightButton {
   background-color: #F7E7DC;
   color: #2b3f4e;
   padding: 8px 16px;
@@ -95,14 +83,12 @@ textarea {
   vertical-align: middle;
 }
 
-/* Efecto al pasar el cursor */
-.navbar-links .botones_derecha:hover {
+.MainHeaderNavigationLinks .RightButton:hover {
   background-color: #f1d4bf;
   color: #405D72;
 }
 
-/* Estilo para los botones ubicados a la izquierda de la barra de navegación */
-.navbar-links .botones_izquierda {
+.MainHeaderNavigationLinks .LeftButton {
   background-color: #405D72;
   color: #FFFFFF;
   padding: 8px 16px;
@@ -114,14 +100,12 @@ textarea {
   vertical-align: middle;
 }
 
-/* Efecto al pasar el cursor */
-.navbar-links .botones_izquierda:hover {
+.MainHeaderNavigationLinks .LeftButton:hover {
   background-color: #758694;
   color: #2b3f4e;
 }
 
-/* Contenedor para el footer */
-.footer {
+.MainFooter {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
@@ -131,23 +115,21 @@ textarea {
   margin-top: 30px;
 }
 
-/* Estilo de texto para los enlaces del footer */
-.footer_text {
+.MainFooterText {
   font-size: 25px;
   color: #405D72;
   text-align: left;
   margin-left: 150px;
 }
 
-.footer_subtitulo {
+.MainFooterSubtitule {
   font-size: 15px;
   color: #405D72;
   text-align: left;
   margin-top: 30px;
 }
 
-/* Estilo de texto para los enlaces del footer */
-.contenedor_enlaces a {
+.FooterNavLinks a {
   display: block;
   color: #000000;
   text-decoration: none;
@@ -157,20 +139,18 @@ textarea {
   font-size: 15px;
 }
 
-/* Efecto al pasar el cursor */
-.contenedor_enlaces a:hover {
+.FooterNavLinks a:hover {
   color: #2b3f4e;
 }
 
+.SocialMediaContainer {
+  text-align: left;
+  margin-left: 140px;
+}
 
 /* Estilo para enlaces de redes sociales
 
 Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
-
-.contenedor_redes {
-  text-align: left;
-  margin-left: 140px;
-}
 
 .fa {
   padding: 10px;
@@ -206,53 +186,48 @@ Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
   color: white;
 }
 
-/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
 @media (max-width: 768px) {
-  .navbar-links-left,
-  .navbar-links-right {
+  .NavigationSectionLeft,
+  .NavigationSectionRight {
     width: 100%;
     justify-content: center;
     margin-bottom: 2vw;
-  }
-
-  .navbar-links-left,
-  .navbar-links-right {
     flex-direction: column;
     align-items: center;
     width: 100%;
   }
 
-  .navbar-links a {
+  .MainHeaderNavigationLinks a {
     width: 100%;
     text-align: center;
   }
 
-  .footer {
+  .MainFooter {
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding: 20px;
   }
 
-  .footer_text {
+  .MainFooterText {
     margin-left: 0;
     text-align: center;
     font-size: 20px;
   }
 
-  .contenedor_redes {
+  .SocialMediaContainer {
     margin-left: 0;
     text-align: center;
     margin-top: 10px;
   }
 
-  .footer_subtitulo {
+  .MainFooterSubtitule {
     margin-left: 0;
     text-align: center;
     margin-top: 20px;
   }
 
-  .contenedor_enlaces a {
+  .FooterNavLinks a {
     text-align: center;
     margin: 8px 0;
   }
@@ -262,10 +237,9 @@ Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
   }
 }
 
-/* Acomodar los elementos de la barra de navegación para pantallas grandes */
 @media (min-width: 769px) {
-  .navbar-links-left,
-  .navbar-links-right {
+  .NavigationSectionLeft,
+  .NavigationSectionRight {
     justify-content: flex-start;
   }
 }
