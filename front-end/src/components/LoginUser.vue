@@ -21,47 +21,49 @@
   </div>
 
   <!-- CONTENT -->
-  <div>
-    <div>
+  <div class="h-100 d-flex align-items-center justify-content-center bg-transparent">
+    <div class="card p-4 bg-transparent border-0" style="max-width: 600px; width: 100%">
       <span class="material-symbols-outlined" style="font-size:200px">person</span>
     </div>
   </div>
-  <div>
-    <div>
-      <h1>Iniciar sesión</h1>
-      <h6>¿Aún no has registrado tu empresa? ¡Empezá ya!</h6>
+  <div class="h-100 d-flex align-items-center justify-content-center bg-transparent">
+    <div class="card p-4 bg-transparent border-0" style="max-width: 600px; width: 100%">
+      <h1 class="font-weight-bold">Iniciar sesión</h1>
+      <h6 class="text-secondary">¿Aún no has registrado tu empresa? ¡Empezá ya!</h6>
     </div>
   </div>
   <div>
     <div>
-      <form @submit.prevent="startLogin">
-        <div>
+      <form @submit.prevent="startLogin" class="form">
+        <div class="form-group text-start">
           <label for="userId">Correo electrónico o nombre de usuario</label>
           <input
             v-model="user.userId"
             type="text"
+            class="form-control bg-transparent"
             required
           />
         </div>
-        <div>
+        <div class="form-group text-start mb-3">
           <label for="userPassword">Contraseña</label>
           <input
             v-model="user.userPassword"
             type="password"
+            class="form-control bg-transparent"
             required
           />
         </div>
         <div>
-          <button type="submit">
+          <button type="submit" class="btn btn-dark btn-round">
             Iniciar sesión
           </button>
         </div>
       </form>
     </div>
   </div>
-  <div>
-    <div>
-      <a href="#">¿Has olvidado tu contraseña?</a> 
+  <div class="h-100 d-flex align-items-center justify-content-center bg-transparent">
+    <div class="card p-4 bg-transparent border-0" style="max-width: 600px; width: 100%">
+      <a href="#" class="text-start">¿Has olvidado tu contraseña?</a> 
     </div>
   </div>
 
