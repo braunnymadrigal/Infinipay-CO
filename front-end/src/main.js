@@ -1,7 +1,17 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import "primeicons/primeicons.css";
+import { createApp } from "vue";
+import App from "./App.vue";
+import "primeicons/primeicons.css";
 
+import { createRouter, createWebHistory } from "vue-router";
+import HomePage from "./components/HomePage.vue";
+import AboutUs from "./components/AboutUs.vue";
+import RegisterEmployer from "./components/RegisterEmployer.vue";
+import RegisterCompany from "./components/RegisterCompany.vue";
+import RegistroBeneficio from "./components/RegistroBeneficio.vue";
+import ListaBeneficios from "./components/ListaBeneficios.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "./components/HomePage.vue";
 import AboutUs from "./components/AboutUs.vue";
