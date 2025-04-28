@@ -9,7 +9,7 @@
       <div class="navbar">
         <nav class="navbar-links">
           <div class="navbar-links-left">
-            <a href="/login_user" class="botones_izquierda">Iniciar sesión</a>
+            <router-link to="/login_user" class="botones_izquierda">Iniciar sesión</router-link>
             <router-link to="/registrar_empleador" class="botones_izquierda">Registrá tu empresa</router-link>
           </div>
           <div class="navbar-links-right">

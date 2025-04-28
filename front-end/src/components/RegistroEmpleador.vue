@@ -11,7 +11,7 @@
         <nav class="navbar-links">
           <!-- Contenedor de los botones de la izquierda -->
           <div class="navbar-links-left">
-            <a href="#" class="botones_izquierda">Iniciar sesión</a>
+            <router-link to="/login_user" class="botones_izquierda">Iniciar sesión</router-link>
             <router-link to="/registrar_empleador" class="botones_izquierda">Registrá tu empresa</router-link>
           </div>
           <!-- Contenedor de los botones de la derecha -->
