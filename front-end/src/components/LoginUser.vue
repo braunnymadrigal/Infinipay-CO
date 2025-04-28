@@ -40,6 +40,11 @@
           <input
             v-model="user.userId"
             type="text"
+            id="userId"
+            minlength="1"
+            maxlength="100"
+            title="Ingrese un correo electrónico o nombre de usuario valido (No se permiten espacios al inicio ni al final). El nombre de usuario sólo acepta letras y los caracteres especiales '.' o '_'. "
+            placeholder=""
             class="form-control bg-transparent"
             required
           />
@@ -49,6 +54,11 @@
           <input
             v-model="user.userPassword"
             type="password"
+            id="userPassword"
+            minlength="10"
+            maxlength="100"
+            title="La contraseña debe superar los 10 caracteres y no sobrepasar los 100. La contraseña debe contener al menos una mayúscula, una minúscula y un número. La contraseña debe contener al menos un carácter especial de la siguiente lista: '@', '#', '$', '%', '&', '*', '!', '?'."
+            placeholder=""
             class="form-control bg-transparent"
             required
           />
