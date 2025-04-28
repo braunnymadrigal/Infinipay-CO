@@ -56,6 +56,7 @@
             v-model="user.userPassword"
             type="password"
             id="userPassword"
+            pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%&*!?]).+$"
             minlength="10"
             maxlength="100"
             title="La contraseña debe superar los 10 caracteres y no sobrepasar los 100. La contraseña debe contener al menos una mayúscula, una minúscula y un número. La contraseña debe contener al menos un carácter especial de la siguiente lista: '@', '#', '$', '%', '&', '*', '!', '?'."
