@@ -38,11 +38,11 @@
         style="opacity: 0.4;"></div>
       <div class="position-absolute top-50 start-50 translate-middle
         text-center text-white">
-        <h1 class="display-2">Sobre Nosotros</h1>
-        <h1 class="display-5">
+        <h1>Sobre Nosotros</h1>
+        <h2>
           Simplificamos el proceso, vos solo tenés que enfocarte en hacer
           crecer tu empresa.
-        </h1>
+        </h2>
       </div>
     </div>
 
@@ -103,8 +103,8 @@
     <h1 class="text-center my-5" style="color: #405D72;">Nuestro equipo</h1>
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-4 mb-4">
-          <div class="card text-center" style="min-height: 50px;
+        <div class="col-md-3 mb-4">
+          <div class="card text-center" style="min-height: 182px;
             display: flex; flex-direction: column;
             justify-content: space-between;">
             <img src="../assets/images/HomePage/Reviews/kirby_review.png"
@@ -116,8 +116,8 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
-          <div class="card text-center" style="min-height: 50px; display: flex;
+        <div class="col-md-3 mb-4">
+          <div class="card text-center" style="min-height: 182px; display: flex;
              flex-direction: column; justify-content: space-between;">
             <img src="../assets/images/HomePage/Reviews/sylveon_review.jpg"
               alt="Persona 2" class="card-img-top rounded-circle mx-auto mt-3"
@@ -128,8 +128,8 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
-          <div class="card text-center" style="min-height: 50px; display: flex;
+        <div class="col-md-3 mb-4">
+          <div class="card text-center" style="min-height: 182px; display: flex;
             flex-direction: column; justify-content: space-between;">
             <img src="../assets/images/HomePage/Reviews/fallguys_review.jpg"
               alt="Persona 3" class="card-img-top rounded-circle mx-auto mt-3"
@@ -140,8 +140,8 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
-          <div class="card text-center" style="min-height: 50px; display: flex;
+        <div class="col-md-3 mb-4">
+          <div class="card text-center" style="min-height: 182px; display: flex;
             flex-direction: column; justify-content: space-between;">
             <img src="../assets/images/HomePage/Reviews/fallguys_review.jpg"
               alt="Persona 4" class="card-img-top rounded-circle mx-auto mt-3"

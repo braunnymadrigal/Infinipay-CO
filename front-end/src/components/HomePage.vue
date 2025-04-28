@@ -38,7 +38,7 @@
         style="opacity: 0.4;"></div>
       <div class="position-absolute top-50 start-50 translate-middle
         text-center text-white">
-        <h1 class="display-4">
+        <h1>
           Simplificá la gestión de planillas de tus trabajadores</h1>
       </div>
     </div>
