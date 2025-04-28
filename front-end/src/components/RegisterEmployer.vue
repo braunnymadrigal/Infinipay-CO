@@ -76,10 +76,30 @@
         </div>
 
         <div class="mb-3">
-          <label for="idNumber" class="form-label">Cédula jurídica</label>
+          <label for="username" class="form-label">Nombre de usuario</label>
+          <input type="text" class="form-control" v-model="username"
+            style="background-color: #FFF8F3;" id="username" required 
+            maxlength="30" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
+            placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label c class="form-label" for="password">Contraseña temporal</label>
+          <input class="form-control" type="password" v-model="password" 
+            id="password" required minlength="10" maxlength="100"
+            style="background-color: #FFF8F3;"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,100}$"
+            title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
+            placeholder="Al menos 10 caracteres"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="idNumber" class="form-label">Cédula</label>
           <input type="text" class="form-control"
           style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
-          required pattern="^\d{10}$" placeholder="10 dígitos, sin guiones">
+          required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
         </div>
 
         <div class="mb-3">
