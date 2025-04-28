@@ -41,6 +41,7 @@
             v-model="user.userId"
             type="text"
             id="userId"
+            pattern="([^\s@]+@[^\s@]+\.[^\s@]+)|(^[A-Za-z._]{1,30}$)"
             minlength="1"
             maxlength="100"
             title="Ingrese un correo electrónico o nombre de usuario valido (No se permiten espacios al inicio ni al final). El nombre de usuario sólo acepta letras y los caracteres especiales '.' o '_'. "
