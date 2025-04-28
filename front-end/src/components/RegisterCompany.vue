@@ -33,13 +33,15 @@
       <h2 class="text-center" style="color: #758694">Datos de la empresa</h2>
 
       <form @submit.prevent="submitForm">
+
         <div class="mb-3">
-          <label for="name" class="form-label">Nombre</label>
-          <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="name" id="name"
-            required maxlength="30"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ&.\s]+$"
-            title="Sólo se permiten letras y acentos del abecedario español, '&', '.' y espacios">
+          <label for="legalName" class="form-label">Razón social</label>
+          <textarea class="form-control" id="legalName" 
+            style="background-color: #FFF8F3;" v-model="legalName"
+            required maxlength="100"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
+            placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
+          </textarea>
         </div>
 
         <div class="mb-3">
@@ -149,16 +151,6 @@
         </div>
 
         <div class="mb-3">
-          <label for="legalName" class="form-label">Razón social</label>
-          <textarea class="form-control" id="legalName" 
-            style="background-color: #FFF8F3;" v-model="legalName"
-            required maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
-            placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
-          </textarea>
-        </div>
-
-        <div class="mb-3">
           <label for="benefits" class="form-label">
             Cantidad máxima de beneficios por empleado</label>
           <select id="benefits" class="form-select" 
@@ -179,6 +171,7 @@
             <option value="monthly">Mensual</option>
           </select>
         </div>
+        
         <div class="d-flex justify-content-center mt-4" style="gap: 10px;">
           <router-link to="/RegisterEmployer" class="btn btn-secondary"
             style="background-color: #405D72;"> Volver</router-link>
