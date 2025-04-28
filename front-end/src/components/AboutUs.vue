@@ -12,7 +12,8 @@
       <div class="MainHeaderNavigation">
         <nav class="MainHeaderNavigationLinks">
           <div class="NavigationSectionLeft">
-            <router-link to="/" class="LeftButton">Iniciar sesión</router-link>
+            <router-link to="/LoginUser" class="LeftButton">
+              Iniciar sesión</router-link>
             <router-link to="/RegisterEmployer" class="LeftButton">
               Registrá tu empresa
             </router-link>
