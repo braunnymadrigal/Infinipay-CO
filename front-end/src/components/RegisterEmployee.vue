@@ -49,7 +49,8 @@
 
         <div class="row mb-3 justify-content-center">
           <div class="col-md-6 col-lg-6">
-            <label for="firstLastName" class="form-label">Primer apellido</label>
+            <label for="firstLastName" class="form-label">Primer apellido
+            </label>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="firstLastName"
             id="firstLastName" required maxlength="100"
