@@ -238,7 +238,7 @@ export default {
     }
 
     function submitForm() {
-      router.push('/');
+      router.push('/EmployerProfile');
     }
 
     return {
