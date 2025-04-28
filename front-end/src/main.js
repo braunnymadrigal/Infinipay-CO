@@ -9,6 +9,7 @@ import RegisterEmployer from './components/RegisterEmployer.vue'
 import RegisterCompany from './components/RegisterCompany.vue'
 import EmployerProfile from './components/EmployerProfile.vue'
 import RegisterEmployee from './components/RegisterEmployee.vue'
+import EmployeesList from './components/EmployeesList.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,6 +24,8 @@ const router = createRouter({
       , component: EmployerProfile},
     {path: '/RegisterEmployee', name: "RegisterEmployee"
       , component: RegisterEmployee},
+    {path: '/EmployeesList', name: "EmployeesList"
+      , component: EmployeesList},
   ]
 });
 
