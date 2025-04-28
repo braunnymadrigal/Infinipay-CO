@@ -184,7 +184,7 @@ export default {
     const idNumber = ref('')
     const username = ref('')
     const password = ref('')
-    const phone = ref('')
+    const phoneNumber = ref('')
     const email = ref('')
 
     const address = ref({
@@ -205,7 +205,7 @@ export default {
       idNumber,
       username,
       password,
-      phone,
+      phoneNumber,
       email,
       address,
       submitForm

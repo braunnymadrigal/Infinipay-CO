@@ -192,7 +192,7 @@ import { useRouter } from 'vue-router';
 export default {
   setup() {
     const router = useRouter();
-    const name = ref('');
+    const legalName = ref('');
     const description = ref('');
     const idNumber = ref('');
     const phoneNumbers = ref(['']);
@@ -242,8 +242,8 @@ export default {
     }
 
     return {
-      name,
       description,
+      legalName,
       idNumber,
       phoneNumbers,
       email,
