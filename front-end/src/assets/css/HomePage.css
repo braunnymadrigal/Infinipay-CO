@@ -1,22 +1,19 @@
-/* PantallaPrincipal.css */
+/* HomePage.css */
 
-/* Dimesiones de imagen */
-.imagen_principal {
+.MainImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Contenedor principal de la imagen */
-.contenedor_imagen {
+.ImageContainer {
   position: relative;
   width: 100%;
   height: 60vh;
   overflow: hidden;
 }
 
-/* Aplicar una capa sobre la imagen para que el texto sea legible */
-.filtro_oscuro {
+.DarkFilter {
   position: absolute;
   top: 0;
   left: 0;
@@ -26,8 +23,7 @@
   z-index: 1;
 }
 
-/* Contenedor de textos sobre imagen */
-.contenedor_textos_sobre_imagen {
+.TextContainerOnImage {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -40,22 +36,37 @@
   text-align: center;
 }
 
-/* Diferentes tamaños para textos */
-.titulo_principal {
+.MainTitle {
   font-size: 3vw;
   font-weight: bold;
   margin-bottom: 1vw;
 }
 
-/* Diferentes tamaños para textos */
-.subtitulo {
+.Title {
+  font-size: 35px;
+  text-align: center;
+  margin-top: 70px;
+  margin-left: auto;
+  margin-right: auto;
+  color: #405D72;
+  width: fit-content;
+}
+
+.Text {
+  font-size: 18px;
+  text-align: justify;
+  margin-top: 20px;
+  color: #000000;
+}
+
+.Subtitle {
   font-size: 1.2em;
   max-width: 600px;
   margin: 0 auto;
+  color: #758694;
 }
 
-/* Contenedor para cajas de textos */
-.contenedor_texto{
+.TextContainer{
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
@@ -65,8 +76,7 @@
   margin-left: 50px;
 }
 
-/* Estilo para las cajas de texto */
-.cajas_texto{
+.TextBox{
   width: 400px;
   height: auto;
   text-align: left;
@@ -75,7 +85,7 @@
   max-width: 300px;
 }
 
-.contenedor_columnas_texto {
+.TextContainerColumns {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -83,19 +93,19 @@
   margin-left: 50px;
 }
 
-.contenedor_imagen_derecha {
+.SecondImageContainer {
   margin-top: 20px;
   height: auto;
   margin-left: 50px;
 }
 
-.imagen_derecha {
+.SecondRightImage {
   width: 350px;
   height: 550px;
   object-fit: cover;
 }
 
-.contenedor_review {
+.ReviewContainer {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -104,7 +114,7 @@
   flex-wrap: wrap;
 }
 
-.review {
+.Review {
   background-color: white;
   border-radius: 20px;
   padding: 20px;
@@ -113,7 +123,7 @@
   border: 1px solid #D9D9D9;
 }
 
-.imagen_redonda {
+.RoundImage {
   width: 80px;
   height: 80px;
   object-fit: cover;
@@ -121,39 +131,36 @@
   margin-bottom: 15px;
 }
 
-.texto_review {
+.ReviewText {
   font-style: italic;
   color: #555;
   margin-bottom: 10px;
 }
 
-.nombre_persona {
+.ReviewPersonName {
   font-weight: bold;
   color: #222;
   margin: 5px 0 0 0;
 }
 
-.empresa_persona {
+.ReviewCompanyName {
   color: #888;
   font-size: 0.9em;
   margin: 2px 0 0 0;
 }
 
-
-/* Acomodar los elementos de la barra de navegación para pantallas pequeñas */
 @media (max-width: 768px) {
-
-  .cajas_texto.subtitulo {
+  .TextBox.Subtitle {
     margin-right: 100px;
   }
 
-  .contenedor_imagen_derecha {
-    margin-right: 250px;
+  .SecondImageContainer {
+    margin-right: 150px;
     width: 50%;
     height: auto;
   }
 
-  .imagen_derecha {
+  .SecondRightImage {
     width: 300px;
     height: auto;
   }
