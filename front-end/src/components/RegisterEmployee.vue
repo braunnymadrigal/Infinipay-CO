@@ -199,10 +199,11 @@ export default {
       district: '',
       otherSigns: ''
     })
-
     function submitForm() {
-      router.push('/EmployerProfile')
+      alert('¡Empleado registrado exitosamente!');
+      router.push('/EmployerProfile');
     }
+
     return {
       firstName,
       secondName,
