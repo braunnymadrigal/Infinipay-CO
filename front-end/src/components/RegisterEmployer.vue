@@ -9,9 +9,9 @@
       <nav class="navbar navbar-expand-lg rounded custom-navbar">
         <div class="container-fluid">
           <div class="d-flex">
-            <a href="#" class="btn btn-outline-primary me-2"
+            <router-link to="/LoginUser" class="btn btn-outline-primary me-2"
               style="background-color: #405D72; color: #FFFFFF;
-                border: transparent;">Iniciar sesión</a>
+              border: transparent;">Iniciar sesión</router-link>
             <router-link to="/RegisterEmployer" class="btn btn-primary"
               style="background-color: #405D72; border: transparent;">
               Registrá tu empresa
