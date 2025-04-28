@@ -13,7 +13,8 @@
               style="color: #405D72;">Perfil</router-link>
             <a href="#" class="mx-2" style="color: #405D72;">Empresa</a>
             <a href="#" class="mx-2" style="color: #405D72;">Beneficios</a>
-            <a href="#" class="mx-2" style="color: #405D72;">Empleados</a>
+            <router-link to="/EmployeesList" class="mx-2"
+              style="color: #405D72;">Empleados</router-link>
           </div>
           <div class="ms-auto">
             <router-link to="/RegisterEmployee" class="btn btn-primary me-2"

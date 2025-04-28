@@ -13,7 +13,8 @@
               style="color: #405D72;">Perfil</router-link>
             <a href="#" class="mx-2" style="color: #405D72;">Empresa</a>
             <a href="#" class="mx-2" style="color: #405D72;">Beneficios</a>
-            <a href="#" class="mx-2" style="color: #405D72;">Empleados</a>
+            <router-link to="/EmployeesList" class="mx-2"
+              style="color: #405D72;">Empleados</router-link>
           </div>
         </div>
       </nav>
@@ -22,7 +23,7 @@
     <div class="card p-4 mx-auto" style="max-width: 1000px;
       background-color: #FFF8F3; border: none;">
       <h1 class="text-center" style="color: #405D72">¡Bienvenido!</h1>
-      <h2 class="text-center" style="color: #758694">
+      <h2 class="text-center" style="color: #">
         Creá un perfil para tu empleado</h2>
 
       <form @submit.prevent="submitForm">
