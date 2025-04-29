@@ -1,0 +1,7 @@
+﻿CREATE TABLE Usuario (
+	id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+	nickname VARCHAR(100) NOT NULL,
+	contraseña VARCHAR(128),
+	idPersonaFisica UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT FK_Usuario_PersonaFisica FOREIGN KEY (idPersonaFisica) REFERENCES PersonaFisica(id)
+);

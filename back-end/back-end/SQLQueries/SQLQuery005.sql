@@ -15,3 +15,6 @@ CREATE TABLE PersonaJuridica(
 	razonSocial VARCHAR(254) NOT NULL,
 	CONSTRAINT FK_PersonaJuridica_Persona FOREIGN KEY (Id) REFERENCES Persona(Id)
 );
+
+EXEC sp_rename 'PersonaFisica.Id', 'id', 'COLUMN';
+EXEC sp_rename 'PersonaJuridica.Id', 'id', 'COLUMN';
