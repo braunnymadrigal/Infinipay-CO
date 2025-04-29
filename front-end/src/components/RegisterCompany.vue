@@ -272,7 +272,7 @@ export default {
 
     function submitForm() {
       alert('¡Empresa registrada exitosamente!');
-      router.push('/');
+      router.push('/EmployerProfile');
     }
 
     return {

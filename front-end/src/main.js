@@ -8,6 +8,8 @@ import HomePage from './components/HomePage.vue'
 import AboutUs from './components/AboutUs.vue'
 import RegisterEmployer from './components/RegisterEmployer.vue'
 import RegisterCompany from './components/RegisterCompany.vue'
+import EmployerProfile from './components/EmployerProfile.vue'
+import RegisterEmployee from './components/RegisterEmployee.vue'
 import LoginUser from './components/LoginUser.vue'
 
 const router = createRouter({
@@ -19,6 +21,10 @@ const router = createRouter({
       , component: RegisterEmployer},
     {path: '/RegisterCompany', name: "RegisterCompany"
       , component: RegisterCompany},
+    {path: '/EmployerProfile', name: "EmployerProfile"
+      , component: EmployerProfile},
+    {path: '/RegisterEmployee', name: "RegisterEmployee"
+      , component: RegisterEmployee},
     {path: '/LoginUser', name: "LoginUser", component: LoginUser},
   ]
 });
