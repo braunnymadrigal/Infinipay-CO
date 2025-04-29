@@ -30,7 +30,8 @@
     <div class="card p-4 mx-auto" style="max-width: 1000px;
       background-color: #FFF8F3; border: none;">
       <h1 class="text-center" style="color: #405D72">Registrá tu empresa</h1>
-      <h2 class="text-center" style="color: #758694">Datos del dueño de la empresa</h2>
+      <h2 class="text-center" style="color: #758694">
+        Datos del dueño de la empresa</h2>
 
       <form @submit.prevent="submitForm">
 
@@ -56,7 +57,8 @@
 
         <div class="row mb-3 justify-content-center">
           <div class="col-md-6 col-lg-6">
-            <label for="firstLastName" class="form-label">Primer apellido</label>
+            <label for="firstLastName" class="form-label">
+              Primer apellido</label>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="firstLastName"
             id="firstLastName" required maxlength="100"
@@ -106,7 +108,7 @@
           <label for="phoneNumber" class="form-label">Teléfono</label>
           <div class="d-flex align-items-center mb-2">
             <span class="me-2">+506</span>
-            <input type="text" class="form-control me-2"
+            <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="phoneNumber"
             id="phoneNumber" required pattern="\d{8}"
             placeholder="8 dígitos, sin guiones">

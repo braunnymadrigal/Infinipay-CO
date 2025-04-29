@@ -111,7 +111,7 @@
           <label for="phoneNumber" class="form-label">Teléfono</label>
           <div class="d-flex align-items-center mb-2">
             <span class="me-2">+506</span>
-            <input type="text" class="form-control me-2"
+            <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="phoneNumber"
             id="phoneNumber" required pattern="\d{8}"
             placeholder="8 dígitos, sin guiones">
