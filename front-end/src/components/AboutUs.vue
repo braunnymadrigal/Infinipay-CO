@@ -4,18 +4,17 @@
       <img src="../assets/images/logo.png" alt="Company logo" class="img-fluid"
         style="max-width: 350px;">
     </div>
-    
     <header class="mb-5 custom-header">
       <nav class="navbar navbar-expand-lg rounded custom-navbar">
         <div class="container-fluid">
           <div class="d-flex">
-            <a href="#" class="btn btn-outline-primary me-2"
+            <router-link to="/LoginUser" class="btn btn-outline-primary me-2"
               style="background-color: #405D72; color: #FFFFFF;
-                border: transparent;"> Iniciar sesión</a>
+              border: transparent;"> Iniciar sesión</router-link>
             <router-link to="/RegisterEmployer" class="btn btn-primary"
               style="background-color: #405D72;
               border: transparent;">Registrá tu empresa
-            </router-link>
+          </router-link>
           </div>
           <div class="ms-auto">
             <router-link to="/" class="btn btn-primary me-2"
