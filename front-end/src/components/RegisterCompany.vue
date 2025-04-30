@@ -64,6 +64,17 @@
         </div>
 
         <div class="mb-3">
+          <label for="phoneNumber" class="form-label">Teléfono</label>
+          <div class="d-flex align-items-center mb-2">
+            <span class="me-2">+506</span>
+            <input type="text" class="form-control"
+            style="background-color: #FFF8F3;" v-model="phoneNumber"
+            id="phoneNumber" required pattern="\d{8}"
+            placeholder="8 dígitos, sin guiones">
+          </div>
+        </div>
+
+        <!-- <div class="mb-3">
           <label class="form-label">Teléfono</label>
           <div v-for="(phoneNumber, index) in phoneNumbers" :key="index"
             class="d-flex align-items-center mb-2">
@@ -83,8 +94,7 @@
               Añadir otro teléfono
             </button>
           </div>
-
-        </div>
+        </div> -->
 
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
@@ -96,7 +106,42 @@
         </div>
 
         <h3 class="fw-normal mb-3">Dirección</h3>
-        <div v-for="(addr, index) in addresses" :key="index"
+        <div class="border p-3 rounded mb-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="province" class="form-label">Provincia</label>
+              <input type="text" class="form-control"
+              style="background-color: #FFF8F3;" v-model="address.province"
+              id="province" required maxlength="10"
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label for="canton" class="form-label">Cantón</label>
+              <input type="text" class="form-control"
+              style="background-color: #FFF8F3;" v-model="address.canton"
+              id="canton" required maxlength="100"
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label for="district" class="form-label">Distrito</label>
+              <input type="text" class="form-control"
+              style="background-color: #FFF8F3;" v-model="address.district"
+              id="district" required maxlength="100"
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label for="otherSigns" class="form-label">Otras señas</label>
+              <textarea class="form-control" style="background-color: #FFF8F3;
+              height: 38px;" v-model="address.otherSigns" id="otherSigns"
+              required maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              rows="2" placeholder=
+              "Sólo se permiten letras, números y espacios en blanco">
+            </textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div v-for="(addr, index) in addresses" :key="index"
           class="border p-3 rounded mb-3">
           <div class="row g-3">
             <div class="col-md-6">
@@ -148,7 +193,7 @@
             @click="addAddress" :disabled="addresses.length >= 100">
             Añadir otra dirección
           </button>
-        </div>
+        </div> -->
 
         <div class="mb-3">
           <label for="benefits" class="form-label">
@@ -228,66 +273,64 @@ export default {
     const legalName = ref('');
     const description = ref('');
     const idNumber = ref('');
-    const phoneNumbers = ref(['']);
+    const phoneNumber = ref('');
     const email = ref('');
-    const addresses = ref([
-      {
-        province: '',
-        canton: '',
-        district: '',
-        otherSigns: ''
-      }
-    ]);
+    const address = ref({
+      province: '',
+      canton: '',
+      district: '',
+      otherSigns: ''
+    });
     const benefits = ref(0);
     const paymentType = ref('');
 
-    function addPhoneNumber() {
-      if (phoneNumbers.value.length < 100) {
-        phoneNumbers.value.push('');
-      }
-    }
+    // function addPhoneNumber() {
+    //   if (phoneNumbers.value.length < 100) {
+    //     phoneNumbers.value.push('');
+    //   }
+    // }
 
-    function deletePhoneNumber(index) {
-      if (phoneNumbers.value.length > 1) {
-        phoneNumbers.value.splice(index, 1);
-      }
-    }
+    // function deletePhoneNumber(index) {
+    //   if (phoneNumbers.value.length > 1) {
+    //     phoneNumbers.value.splice(index, 1);
+    //   }
+    // }
 
-    function addAddress() {
-      if (addresses.value.length < 100) {
-        addresses.value.push({
-          province: '',
-          canton: '',
-          district: '',
-          otherSigns: ''
-        });
-      }
-    }
+    // function addAddress() {
+    //   if (addresses.value.length < 100) {
+    //     addresses.value.push({
+    //       province: '',
+    //       canton: '',
+    //       district: '',
+    //       otherSigns: ''
+    //     });
+    //   }
+    // }
 
-    function deleteAddress(index) {
-      if (addresses.value.length > 1) {
-        addresses.value.splice(index, 1);
-      }
-    }
+    // function deleteAddress(index) {
+    //   if (addresses.value.length > 1) {
+    //     addresses.value.splice(index, 1);
+    //   }
+    // }
 
     function submitForm() {
       alert('¡Empresa registrada exitosamente!');
-      router.push('/');
+      router.push('/EmployerProfile');
     }
 
     return {
       description,
       legalName,
       idNumber,
-      phoneNumbers,
+      phoneNumber,
       email,
-      addresses,
+      address,
       benefits,
       paymentType,
-      addPhoneNumber,
-      deletePhoneNumber,
-      addAddress,
-      deleteAddress,
+      // addPhoneNumber,
+      // deletePhoneNumber,
+      // addAddress,
+      // deleteAddress,
       submitForm
     };
   }

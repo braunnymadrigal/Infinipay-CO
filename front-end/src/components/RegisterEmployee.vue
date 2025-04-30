@@ -9,19 +9,11 @@
       <nav class="navbar navbar-expand-lg rounded custom-navbar">
         <div class="container-fluid">
           <div class="d-flex">
-            <router-link to="/LoginUser" class="btn btn-outline-primary me-2"
-              style="background-color: #405D72; color: #FFFFFF;
-              border: transparent;">Iniciar sesión</router-link>
-            <router-link to="/RegisterEmployer" class="btn btn-primary"
-              style="background-color: #405D72; border: transparent;">
-              Registrá tu empresa
-            </router-link>
-          </div>
-          <div class="ms-auto">
-            <router-link to="/" class="btn btn-secondary"
-              style="background-color: #F7E7DC; color: #2b3f4e;
-                border: transparent;">Página principal
-            </router-link>
+            <router-link to="/EmployerProfile" class="mx-2"
+              style="color: #405D72;">Perfil</router-link>
+            <a href="#" class="mx-2" style="color: #405D72;">Empresa</a>
+            <a href="#" class="mx-2" style="color: #405D72;">Beneficios</a>
+            <a href="#" class="mx-2" style="color: #405D72;">Empleados</a>
           </div>
         </div>
       </nav>
@@ -29,9 +21,9 @@
 
     <div class="card p-4 mx-auto" style="max-width: 1000px;
       background-color: #FFF8F3; border: none;">
-      <h1 class="text-center" style="color: #405D72">Registrá tu empresa</h1>
+      <h1 class="text-center" style="color: #405D72">¡Bienvenido!</h1>
       <h2 class="text-center" style="color: #758694">
-        Datos del dueño de la empresa</h2>
+        Creá un perfil para tu empleado</h2>
 
       <form @submit.prevent="submitForm">
 
@@ -57,8 +49,8 @@
 
         <div class="row mb-3 justify-content-center">
           <div class="col-md-6 col-lg-6">
-            <label for="firstLastName" class="form-label">
-              Primer apellido</label>
+            <label for="firstLastName" class="form-label">Primer apellido
+            </label>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="firstLastName"
             id="firstLastName" required maxlength="100"
@@ -75,6 +67,24 @@
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="idNumber" class="form-label">Cédula</label>
+          <input type="text" class="form-control"
+          style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
+          required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label" for="role">Rol</label>
+          <select id="role" class="form-select" v-model="role"
+            required style="background-color: #FFF8F3;">
+            <option disabled value="">Seleccione el rol del empleado</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="employee">Empleado</option>
+            <option value="administrator">Administrador</option>
+          </select>
         </div>
 
         <div class="mb-3">
@@ -95,13 +105,6 @@
             title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
             placeholder="Al menos 10 caracteres"
           />
-        </div>
-
-        <div class="mb-3">
-          <label for="idNumber" class="form-label">Cédula</label>
-          <input type="text" class="form-control"
-          style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
-          required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
         </div>
 
         <div class="mb-3">
@@ -164,13 +167,12 @@
           <button type="submit" class="btn btn-success" 
             style="background-color: #758694; color: white;
             border: transparent;">
-            Continuar
+            Terminar
           </button>
         </div>
       </form>
     </div>
   </div>
-
   <footer class="py-5 custom-footer">
     <div class="container">
       <div class="row">
@@ -219,8 +221,9 @@ export default {
     const idNumber = ref('')
     const username = ref('')
     const password = ref('')
-    const phoneNumber = ref('')
+    const phone = ref('')
     const email = ref('')
+    const role = ref('')
 
     const address = ref({
       province: '',
@@ -228,10 +231,11 @@ export default {
       district: '',
       otherSigns: ''
     })
-
     function submitForm() {
-      router.push('/RegisterCompany')
+      alert('¡Empleado registrado exitosamente!');
+      router.push('/EmployerProfile');
     }
+
     return {
       firstName,
       secondName,
@@ -240,9 +244,10 @@ export default {
       idNumber,
       username,
       password,
-      phoneNumber,
+      phone,
       email,
       address,
+      role,
       submitForm
     }
   }
