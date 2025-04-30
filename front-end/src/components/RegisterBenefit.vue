@@ -14,34 +14,16 @@
         <div class="container-fluid">
           <div class="d-flex">
             <router-link
-              to="/LoginUser"
-              class="btn btn-outline-primary me-2"
-              style="
-                background-color: #405d72;
-                color: #ffffff;
-                border: transparent;
-              "
+              to="/EmployerProfile"
+              class="mx-2"
+              style="color: #405d72"
+              >Perfil</router-link
             >
-              Iniciar sesión</router-link
+            <a href="#" class="mx-2" style="color: #405d72">Empresa</a>
+            <router-link to="/BenefitList" class="mx-2" style="color: #405d72"
+              >Beneficios</router-link
             >
-            <router-link
-              to="/RegisterEmployer"
-              class="btn btn-primary"
-              style="background-color: #405d72; border: transparent"
-              >Registrá tu empresa
-            </router-link>
-          </div>
-          <div class="ms-auto">
-            <router-link
-              to="/"
-              class="btn btn-secondary"
-              style="
-                background-color: #f7e7dc;
-                color: #2b3f4e;
-                border: 2px solid transparent;
-              "
-              >Página principal
-            </router-link>
+            <a href="#" class="mx-2" style="color: #405d72">Empleados</a>
           </div>
         </div>
       </nav>
