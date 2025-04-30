@@ -1,234 +1,267 @@
 <template>
-  <div>
-    <div class="CompanyLogo">
-      <img
-        src="../assets/images/logo.png"
-        alt="Company logo"
-        class="LogoImg"
-      />
+  <div class="container my-5">
+    <div class="text-center mb-4">
+      <img src="../assets/images/logo.png" alt="Company logo" class="img-fluid"
+        style="max-width: 350px;">
     </div>
 
-    <header class="MainHeader">
-      <div class="MainHeaderNavigation">
-        <nav class="MainHeaderNavigationLinks">
-          <div class="NavigationSectionLeft">
-            <a href="#" class="LeftButton">Iniciar sesión</a>
-            <router-link to="/RegisterEmployer" class="LeftButton">
-              Registrá tu empresa
+    <header class="mb-5 custom-header">
+      <nav class="navbar navbar-expand-lg rounded custom-navbar">
+        <div class="container-fluid">
+          <div class="d-flex">
+            <router-link to="/LoginUser" class="btn btn-outline-primary me-2"
+              style="background-color: #405D72; color: #FFFFFF;
+              border: transparent;"> Iniciar sesión</router-link>
+            <router-link to="/RegisterEmployer" class="btn btn-primary"
+              style="background-color: #405D72;
+              border: transparent;">Registrá tu empresa
             </router-link>
           </div>
-
-          <div class="NavigationSectionRight">
-            <router-link to="/" class="RightButton">
-              Página principal</router-link>
+          <div class="ms-auto">
+            <router-link to="/" class="btn btn-secondary"
+              style="background-color: #F7E7DC; color: #2b3f4e;
+                border: 2px solid transparent;">Página principal
+            </router-link>
           </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
     </header>
-  </div>
 
-  <div class="RegisterCompanyForm">
-    <h1 style="color: #405D72;">Registrá tu empresa</h1>
-    <h2 style="color: #758694;  margin-bottom: 50px;">Datos de la empresa</h2>
-    <form @submit.prevent="submit_form">
+    <div class="card p-4 mx-auto" style="max-width: 1000px;
+      background-color: #FFF8F3; border: none;">
+      <h1 class="text-center" style="color: #405D72">Registrá tu empresa</h1>
+      <h2 class="text-center" style="color: #758694">Datos de la empresa</h2>
 
-      <div class="InputSection">
-        <label class="Label" for="name">Nombre</label>
-        <input class="InputBox"
-          type="text" 
-          v-model="name" 
-          id="name"
-          required 
-          maxlength="30"
-          pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ&.\s]+$"
-          title="Sólo se permiten letras y acentos del abecedario español
-            , '&', '.' y espacios" 
-        />
-      </div>
+      <form @submit.prevent="submitForm">
 
-      <div class="InputSection">
-        <label class="Label" for="description">Descripción de la empresa</label>
-        <textarea class="TextArea"
-          v-model="description" 
-          id="description"
-          maxlength="300"
-          pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
-          placeholder="Sólo se permiten espacios, letras y acentos del abecedario español."
-          rows="4"
-          style="resize: vertical; width: 100%;"
-        ></textarea>
-      </div>
+        <div class="mb-3">
+          <label for="legalName" class="form-label">Razón social</label>
+          <textarea class="form-control" id="legalName" 
+            style="background-color: #FFF8F3;" v-model="legalName"
+            required maxlength="100"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
+            placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
+          </textarea>
+        </div>
 
-      <div class="InputSection">
-        <label class="Label" for="idNumber">Cédula jurídica</label>
-        <input class="InputBox"
-          type="text" 
-          v-model="idNumber" 
-          id="idNumber"
-          required
-          pattern="^\d{10}$"
-          title="Formato: X-XXX-XXXXXX"
-          placeholder="10 dígitos, sin guiones"
-        />
-      </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">
+            Descripción de la empresa</label>
+          <textarea class="form-control" style="background-color: #FFF8F3;"
+            v-model="description" id="description" maxlength="300"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
+            placeholder=
+            "Sólo se permiten espacios, letras y acentos del abecedario español."
+            rows="4"></textarea>
+        </div>
 
-      <div class="InputSection">
-        <label class="Label" for="phoneNumbers">Teléfono</label>
-        <div 
-          v-for="(phoneNumber, index) in phoneNumbers"
-          :key="index"
-          style="display: flex; align-items: center; margin-bottom: 8px;">
-          <span style="padding: 0 8px;">+506</span>
-          <input class="InputBox" style="margin-top: 15px;"
-            type="text" 
-            v-model="phoneNumbers[index]"
-            :id="'phoneNumbers-' + index"
-            required
-            pattern="\d{8}"
-            title="Formato: XXXX-XXXX"
-            placeholder="8 dígitos, sin guiones"
-          />
-          <button
-            type="button" 
-            class="DeleteButton" style="margin-left: 8px;"
-            @click="deletePhoneNumber(index)">🗑️
+        <div class="mb-3">
+          <label for="idNumber" class="form-label">Cédula jurídica</label>
+          <input type="text" class="form-control"
+            style="background-color: #FFF8F3;" v-model="idNumber"
+            id="idNumber" required pattern="^\d{10}$"
+            placeholder="10 dígitos, sin guiones">
+        </div>
+
+        <div class="mb-3">
+          <label for="phoneNumber" class="form-label">Teléfono</label>
+          <div class="d-flex align-items-center mb-2">
+            <span class="me-2">+506</span>
+            <input type="text" class="form-control"
+            style="background-color: #FFF8F3;" v-model="phoneNumber"
+            id="phoneNumber" required pattern="\d{8}"
+            placeholder="8 dígitos, sin guiones">
+          </div>
+        </div>
+
+        <!-- <div class="mb-3">
+          <label class="form-label">Teléfono</label>
+          <div v-for="(phoneNumber, index) in phoneNumbers" :key="index"
+            class="d-flex align-items-center mb-2">
+            <span class="me-2">+506</span>
+            <input type="text" class="form-control me-2" 
+              style="background-color: #FFF8F3;" v-model="phoneNumbers[index]" 
+              :id="'phoneNumbers-' + index" required pattern="\d{8}"
+                placeholder="8 dígitos, sin guiones">
+            <button type="button" class="btn btn-danger btn-sm"
+              @click="deletePhoneNumber(index)">🗑️</button>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary mt-2"
+              style="background-color: #405D72; border: transparent;"
+              @click="addPhoneNumber" :disabled="phoneNumbers.length >= 100">
+              Añadir otro teléfono
+            </button>
+          </div>
+        </div> -->
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" class="form-control"
+            style="background-color: #FFF8F3;"
+            v-model="email" id="email" required maxlength="100"
+            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            placeholder="xxx@xxxx.xxx">
+        </div>
+
+        <h3 class="fw-normal mb-3">Dirección</h3>
+        <div class="border p-3 rounded mb-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="province" class="form-label">Provincia</label>
+              <input type="text" class="form-control"
+              style="background-color: #FFF8F3;" v-model="address.province"
+              id="province" required maxlength="10"
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label for="canton" class="form-label">Cantón</label>
+              <input type="text" class="form-control"
+              style="background-color: #FFF8F3;" v-model="address.canton"
+              id="canton" required maxlength="100"
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label for="district" class="form-label">Distrito</label>
+              <input type="text" class="form-control"
+              style="background-color: #FFF8F3;" v-model="address.district"
+              id="district" required maxlength="100"
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label for="otherSigns" class="form-label">Otras señas</label>
+              <textarea class="form-control" style="background-color: #FFF8F3;
+              height: 38px;" v-model="address.otherSigns" id="otherSigns"
+              required maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              rows="2" placeholder=
+              "Sólo se permiten letras, números y espacios en blanco">
+            </textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div v-for="(addr, index) in addresses" :key="index"
+          class="border p-3 rounded mb-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label :for="'province-' + index" class="form-label">
+                Provincia</label>
+              <input type="text" class="form-control"
+                style="background-color: #FFF8F3;" v-model="addr.province"
+                :id="'province-' + index" required maxlength="10"
+                pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label :for="'canton-' + index" class="form-label">Cantón</label>
+              <input type="text" class="form-control" 
+                style="background-color: #FFF8F3;" v-model="addr.canton"
+                :id="'canton-' + index" required maxlength="100"
+                pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label :for="'district-' + index" class="form-label">
+                Distrito
+              </label>
+              <input type="text" class="form-control"
+                style="background-color: #FFF8F3;" v-model="addr.district"
+                :id="'district-' + index" required maxlength="100"
+                pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+            </div>
+            <div class="col-md-6">
+              <label :for="'otherSigns-' + index" class="form-label">
+                Otras señas
+              </label>
+              <textarea class="form-control" style="background-color: #FFF8F3;
+                height: 38px;" v-model="addr.otherSigns"
+                :id="'otherSigns-' + index" required maxlength="300"
+                pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$" rows="2"
+                placeholder=
+                  "Sólo se permiten letras, números y espacios en blanco"
+              ></textarea>
+            </div>
+          </div>
+          <div class="text-end mt-2">
+            <button type="button" class="btn btn-danger btn-sm"
+              @click="deleteAddress(index)">🗑️</button>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <button type="button" class="btn btn-primary mb-3"
+            style="background-color: #405D72; border: transparent;"
+            @click="addAddress" :disabled="addresses.length >= 100">
+            Añadir otra dirección
+          </button>
+        </div> -->
+
+        <div class="mb-3">
+          <label for="benefits" class="form-label">
+            Cantidad máxima de beneficios por empleado</label>
+          <select id="benefits" class="form-select" 
+           style="background-color: #FFF8F3;" v-model="benefits" required>
+            <option disabled value="">Seleccione una cantidad</option>
+            <option v-for="n in 100" :key="n" :value="n-1">{{ n-1 }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="paymentType" class="form-label">Tipo de pago</label>
+          <select id="paymentType" class="form-select"
+            style="background-color: #FFF8F3;" v-model="paymentType"
+            required>
+            <option disabled value="">Seleccione un tipo de pago</option>
+            <option value="weekly">Semanal</option>
+            <option value="biweekly">Quincenal</option>
+            <option value="monthly">Mensual</option>
+          </select>
+        </div>
+        
+        <div class="d-flex justify-content-center mt-4" style="gap: 10px;">
+          <router-link to="/RegisterEmployer" class="btn btn-secondary"
+            style="background-color: #405D72;"> Volver</router-link>
+          <button type="submit" class="btn btn-success"
+            style="background-color: #405D72; border: transparent;">
+            Terminar registro
           </button>
         </div>
-        <button 
-          type="button" class="AddButton"
-          @click="addPhoneNumber"
-          :disabled="phoneNumbers.length >= 100">Añadir otro teléfono
-        </button>
-      </div>
-
-      <div class="InputSection">
-        <label class="Label" for="email">Correo electrónico</label>
-        <input class="InputBox"
-          type="email" 
-          v-model="email" 
-          id="email"
-          required
-          maxlength="100"
-          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-          placeholder="xxx@xxxx.xxx"
-        />
-      </div>
-
-      <h3 style="text-align: left; font-weight: normal;
-        margin-bottom: 20px;">Dirección </h3>
-
-      <div class="CompanyAddressSection" 
-        v-for="(addr, index) in addresses" :key="index">
-        <div>
-          <label class="Label" :for="'province-' + index">Provincia</label>
-          <input class="InputBox"
-            type="text" 
-            v-model="addr.province" 
-            :id="'province-' + index" 
-            required 
-            maxlength="10"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
-
-        <div>
-          <label class="Label" :for="'canton-' + index">Cantón</label>
-          <input class="InputBox"
-            type="text" 
-            v-model="addr.canton" 
-            :id="'canton-' + index" 
-            required 
-            maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
-
-        <div>
-          <label class="Label" :for="'district-' + index">Distrito</label>
-          <input class="InputBox"
-            type="text" 
-            v-model="addr.district" 
-            :id="'distric-' + index" 
-            required 
-            maxlength="100"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
-            title="Sólo se permiten letras y acentos del abecedario español"
-          />
-        </div>
-
-        <div>
-          <label class="Label" :for="'otherSigns-' + index">Otras señas</label>
-          <textarea class="TextArea"
-            v-model="addr.otherSigns" 
-            :id="'otherSigns-' + index" 
-            required 
-            maxlength="300"
-            pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
-            placeholder="Sólo se permiten letras, números y espacios en blanco"
-            rows="1"
-            style="resize: vertical;"
-          ></textarea>
-        </div>
-
-        <button
-          type="button"
-          class="DeleteButton" style="margin-top: 8px;"
-          @click="deleteAddress(index)">🗑️
-        </button>
-      </div>
-
-      <button type="button"
-        class="AddButton"
-        @click="addAddress" :disabled="addresses.length >= 100">
-        Añadir otra dirección
-      </button>
-      
-      <div class="InputSection">
-        <label class="Label" for="legalName">Razón social</label>
-        <textarea class="TextArea"
-          type="text" 
-          id="legalName" 
-          v-model="legalName"
-          required 
-          maxlength="100"
-          pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
-          placeholder="Sólo letras, acentos, espacios y '&'"
-          title="Sólo se permiten letras, acentos, espacios y el símbolo '&'"
-          rows="2"
-        ></textarea>
-      </div>
-      
-      <div class="InputSection">
-        <label class="Label" for="benefits">Cantidad máxima de beneficios por
-          empleado</label>
-        <select id="benefits" class="SelectForm" v-model="benefits" required>
-          <option disabled value="">Seleccione una cantidad</option>
-          <option v-for="n in 100" :key="n" :value="n-1">{{ n-1 }}</option>
-        </select>
-      </div>
-
-      <div class="InputSection">
-        <label class="Label" for="paymentType">Tipo de pago</label>
-        <select id="paymentType" class="SelectForm" v-model="paymentType"
-          required>
-          <option disabled value="">Seleccione un tipo de pago</option>
-          <option value="weekly">Semanal</option>
-          <option value="biweekly">Quincenal</option>
-          <option value="monthly">Mensual</option>
-        </select>
+      </form>
     </div>
-
-    <div class="ButtonContainer">
-      <router-link to="/RegisterEmployer" class="GoBackButton"
-        @click="goBack">Volver</router-link>
-      <button class="GoNextButton" type="submit">Terminar registro</button>
-    </div>
-    </form>
   </div>
 
-</template>
+  <footer class="py-5 custom-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <p class="h5">Infinipay CO.</p>
+          <div>
+            <a href="#" class="fa fa-facebook"></a>
+            <a href="#" class="fa fa-linkedin"></a>
+            <a href="#" class="fa fa-youtube"></a>
+            <a href="#" class="fa fa-instagram"></a>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <p class="h5">Empresa y equipo</p>
+          <a href="#">Sobre nosotros</a>
+        </div>
+        <div class="col-md-3 mb-3">
+          <p class="h5">Recursos</p>
+          <a href="#">¿Cómo registro mi empresa?</a><br />
+          <a href="#">¿Cómo registro empleados a mi empresa?</a><br />
+          <a href="#">¿Cómo accedo a mi perfil?</a>
+        </div>
+        <div class="col-md-3 mb-3">
+          <p class="h5">Contacto</p>
+          <p><i class="pi pi-phone" style="color:#405D72;"></i>
+            +506 2000-0000</p>
+          <p><i class="pi pi-home" style="color:#405D72;"></i>
+            San José, Montes de Oca, San Pedro</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</template> 
 
 <script>
 import { ref } from 'vue';
@@ -237,75 +270,78 @@ import { useRouter } from 'vue-router';
 export default {
   setup() {
     const router = useRouter();
-    const name = ref('');
+    const legalName = ref('');
     const description = ref('');
     const idNumber = ref('');
-    const phoneNumbers = ref(['']);
+    const phoneNumber = ref('');
     const email = ref('');
-    const addresses = ref([
-      {
-        province: '',
-        canton: '',
-        district: '',
-        otherSigns: ''
-      }
-    ]);
+    const address = ref({
+      province: '',
+      canton: '',
+      district: '',
+      otherSigns: ''
+    });
     const benefits = ref(0);
     const paymentType = ref('');
 
-    function addPhoneNumber() {
-      if (phoneNumbers.value.length < 100) {
-        phoneNumbers.value.push('');
-      }
-    }
+    // function addPhoneNumber() {
+    //   if (phoneNumbers.value.length < 100) {
+    //     phoneNumbers.value.push('');
+    //   }
+    // }
 
-    function deletePhoneNumber(index) {
-      if (phoneNumbers.value.length > 1) {
-        phoneNumbers.value.splice(index, 1);
-      }
-    }
+    // function deletePhoneNumber(index) {
+    //   if (phoneNumbers.value.length > 1) {
+    //     phoneNumbers.value.splice(index, 1);
+    //   }
+    // }
 
-    function addAddress() {
-      if (addresses.value.length < 100) {
-        addresses.value.push({
-          province: '',
-          canton: '',
-          district: '',
-          otherSigns: ''
-        });
-      }
-    }
+    // function addAddress() {
+    //   if (addresses.value.length < 100) {
+    //     addresses.value.push({
+    //       province: '',
+    //       canton: '',
+    //       district: '',
+    //       otherSigns: ''
+    //     });
+    //   }
+    // }
 
-    function deleteAddress(index) {
-      if (addresses.value.length > 1) {
-        addresses.value.splice(index, 1);
-      }
-    }
+    // function deleteAddress(index) {
+    //   if (addresses.value.length > 1) {
+    //     addresses.value.splice(index, 1);
+    //   }
+    // }
 
     function submitForm() {
-      router.push('/');
+      alert('¡Empresa registrada exitosamente!');
+      router.push('/EmployerProfile');
     }
 
     return {
-      name,
       description,
+      legalName,
       idNumber,
-      phoneNumbers,
+      phoneNumber,
       email,
-      addresses,
+      address,
       benefits,
       paymentType,
-      addPhoneNumber,
-      deletePhoneNumber,
-      addAddress,
-      deleteAddress,
+      // addPhoneNumber,
+      // deletePhoneNumber,
+      // addAddress,
+      // deleteAddress,
       submitForm
     };
   }
 };
 </script>
 
-<style scoped>
-  @import '../assets/css/RegisterCompany.css';
-  @import '../assets/css/RegisterEmployer.css';
+<style>
+  label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+  }
+  @import '../assets/css/HeaderFooter.css';
 </style>

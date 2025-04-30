@@ -1,169 +1,35 @@
 body {
   background-color: #FFF8F3;
-  font-family: 'Inter', sans-serif;
-  text-align: center;
-  margin-top: 60px;
 }
 
-textarea {
-  font-family: 'Inter', sans-serif;
+.custom-header {
+  background-color: #FFF8F3;
+  border-bottom: 1px solid #758694;
 }
 
-.CompanyLogo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 0;
+.custom-navbar {
+background-color: #FFF8F3;
 }
 
-.LogoImg {
-  max-width: 100%;
-  height: auto;
-  width: 400px;
-}
-
-.MainHeader {
-  color: white;
-  padding: 20px 40px;
-  width: 100%;
-  box-sizing: border-box;
-  z-index: 10;
-  margin: 0;
-  border-bottom: #758694 1px solid;
-}
-
-.MainHeaderNavigation {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.MainHeaderNavigationLinks {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1vw;
-}
-
-.NavigationSectionLeft,
-.NavigationSectionRight {
-  display: flex;
-  gap: 1vw;
-  justify-content: flex-start;
-  align-items: center;
-  width: auto;
-  flex-wrap: nowrap;
-}
-
-.MainHeaderNavigationLinks a {
-  text-decoration: none;
-  color: inherit;
-  margin-right: 15px;
-  display: inline-block;
-  text-decoration: none;
-  color: inherit;
-  margin-right: 15px;
-}
-
-.MainHeaderNavigationLinks .RightButton {
+.custom-footer {
   background-color: #F7E7DC;
-  color: #2b3f4e;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color 0.3s, color 0.3s;
-  gap: 10px;
-  display: inline-block;
-  vertical-align: middle;
 }
-
-.MainHeaderNavigationLinks .RightButton:hover {
-  background-color: #f1d4bf;
-  color: #405D72;
-}
-
-.MainHeaderNavigationLinks .LeftButton {
-  background-color: #405D72;
-  color: #FFFFFF;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color 0.3s, color 0.3s;
-  gap: 10px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.MainHeaderNavigationLinks .LeftButton:hover {
-  background-color: #758694;
-  color: #2b3f4e;
-}
-
-.MainFooter {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  padding: 0px;
-  background-color: #F7E7DC;
-  color: #000000;
-  margin-top: 30px;
-}
-
-.MainFooterText {
-  font-size: 25px;
-  color: #405D72;
-  text-align: left;
-  margin-left: 150px;
-}
-
-.MainFooterSubtitule {
-  font-size: 15px;
-  color: #405D72;
-  text-align: left;
-  margin-top: 30px;
-}
-
-.FooterNavLinks a {
-  display: block;
-  color: #000000;
-  text-decoration: none;
-  margin-bottom: 15px;
-  text-align: left;
-  max-width: 250px;
-  font-size: 15px;
-}
-
-.FooterNavLinks a:hover {
-  color: #2b3f4e;
-}
-
-.SocialMediaContainer {
-  text-align: left;
-  margin-left: 140px;
-}
-
-/* Estilo para enlaces de redes sociales
-
-Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
 
 .fa {
   padding: 10px;
   font-size: 15px;
-  width: 15px;
+  width: 40px;
+  height: 40px;
   text-align: center;
   text-decoration: none;
   border-radius: 50%;
   margin-left: 5px;
+  display: inline-block;
+  line-height: 20px;
 }
 
 .fa:hover {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .fa-facebook {
@@ -184,62 +50,4 @@ Tomado de: https://www.w3schools.com/howto/howto_css_social_media_buttons.asp */
 .fa-instagram {
   background: #125688;
   color: white;
-}
-
-@media (max-width: 768px) {
-  .NavigationSectionLeft,
-  .NavigationSectionRight {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 2vw;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .MainHeaderNavigationLinks a {
-    width: 100%;
-    text-align: center;
-  }
-
-  .MainFooter {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-  }
-
-  .MainFooterText {
-    margin-left: 0;
-    text-align: center;
-    font-size: 20px;
-  }
-
-  .SocialMediaContainer {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  .MainFooterSubtitule {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .FooterNavLinks a {
-    text-align: center;
-    margin: 8px 0;
-  }
-
-  .fa {
-    margin: 5px;
-  }
-}
-
-@media (min-width: 769px) {
-  .NavigationSectionLeft,
-  .NavigationSectionRight {
-    justify-content: flex-start;
-  }
 }
