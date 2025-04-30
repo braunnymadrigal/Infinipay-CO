@@ -43,6 +43,7 @@
               class="form-control"
               id="BenefitName"
               style="background-color: #fff8f3"
+              v-model="newBenefit.value.name"
               required
               maxlength="100"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
@@ -59,6 +60,7 @@
             <textarea
               class="form-control"
               style="background-color: #fff8f3"
+              v-model="newBenefit.value.description"
               id="BenefitDescription"
               maxlength="300"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
@@ -126,6 +128,19 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const newBenefit = ref({ name: "", description: "" });
+
+function submitForm() {
+  console.log("Formulario enviado:", newBenefit.value);
+
+  newBenefit.value.name = "";
+  newBenefit.value.description = "";
+
+  // axios.post
+}
+</script>
 
 <style lang="scss" scoped></style>
