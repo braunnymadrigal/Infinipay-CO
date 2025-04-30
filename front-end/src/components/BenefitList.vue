@@ -1,97 +1,36 @@
 <template>
-  <div class="container my-5">
-    <div class="text-center mb-4">
-      <img
-        src="../assets/images/logo.png"
-        alt="Company logo"
-        class="img-fluid"
-        style="max-width: 350px"
-      />
-    </div>
+  <HeaderCompany />
 
-    <header class="mb-5 custom-header">
-      <nav class="navbar navbar-expand-lg rounded custom-navbar">
-        <div class="container-fluid">
-          <div class="d-flex">
-            <router-link
-              to="/EmployerProfile"
-              class="mx-2"
-              style="color: #405d72"
-              >Perfil</router-link
-            >
-            <a href="#" class="mx-2" style="color: #405d72">Empresa</a>
-            <router-link to="/BenefitList" class="mx-2" style="color: #405d72"
-              >Beneficios</router-link
-            >
-            <a href="#" class="mx-2" style="color: #405d72">Empleados</a>
-          </div>
-        </div>
-      </nav>
-    </header>
+  <div class="container w-100">
+    <router-link
+      to="/RegisterBenefit"
+      class="btn btn-outline-primary me-2 mb-4"
+      style="background-color: #405d72; color: #ffffff; border: transparent"
+    >
+      Agregar
+    </router-link>
 
-    <div class="container w-100">
-      <router-link
-        to="/RegisterBenefit"
-        class="btn btn-outline-primary me-2 mb-4"
-        style="background-color: #405d72; color: #ffffff; border: transparent"
+    <div class="d-flex flex-column align-items-center">
+      <div
+        class="w-100 mb-4"
+        v-for="beneficio in beneficios"
+        :key="beneficio.id"
       >
-        Agregar
-      </router-link>
-
-      <div class="d-flex flex-column align-items-center">
-        <div
-          class="w-100 mb-4"
-          v-for="beneficio in beneficios"
-          :key="beneficio.id"
-        >
-          <BenefitCard
-            :nombre="beneficio.nombre"
-            :descripcion="beneficio.descripcion"
-          />
-        </div>
+        <BenefitCard
+          :nombre="beneficio.nombre"
+          :descripcion="beneficio.descripcion"
+        />
       </div>
     </div>
-
-    <footer class="py-5 custom-footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <p class="h5">Infinipay CO.</p>
-            <div>
-              <a href="#" class="fa fa-facebook"></a>
-              <a href="#" class="fa fa-linkedin"></a>
-              <a href="#" class="fa fa-youtube"></a>
-              <a href="#" class="fa fa-instagram"></a>
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <p class="h5">Empresa y equipo</p>
-            <a href="#">Sobre nosotros</a>
-          </div>
-          <div class="col-md-3 mb-3">
-            <p class="h5">Recursos</p>
-            <a href="#">¿Cómo registro mi empresa?</a><br />
-            <a href="#">¿Cómo registro empleados a mi empresa?</a><br />
-            <a href="#">¿Cómo accedo a mi perfil?</a>
-          </div>
-          <div class="col-md-3 mb-3">
-            <p class="h5">Contacto</p>
-            <p>
-              <i class="pi pi-phone" style="color: #405d72"></i> +506 2000-0000
-            </p>
-            <p>
-              <i class="pi pi-home" style="color: #405d72"></i> San José, Montes
-              de Oca, San Pedro
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
   </div>
+
+  <MainFooter />
 </template>
 
 <script setup>
 import BenefitCard from "./BenefitCard.vue";
+import HeaderCompany from "./HeaderCompany.vue";
+import MainFooter from "./MainFooter.vue";
 
 const beneficios = [
   {
