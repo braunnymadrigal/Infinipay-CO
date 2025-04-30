@@ -5,7 +5,8 @@ import {createRouter, createWebHistory} from 'vue-router'
 import PantallaPrincipal from './components/PantallaPrincipal.vue'
 import SobreNosotros from './components/SobreNosotros.vue'
 import RegistroEmpleador from './components/RegistroEmpleador.vue'
-import RegistroEmpresa from './components/RegistroEmpresa.vue'  
+import RegistroEmpresa from './components/RegistroEmpresa.vue'
+import EmpleadosSupervisados from './components/EmpleadosSupervisados.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -14,6 +15,7 @@ const router = createRouter({
     {path: '/sobre_nosotros', name: "SobreNosotros", component: SobreNosotros},
     {path: '/registrar_empleador', name: "RegistroEmpleador", component: RegistroEmpleador},
     {path: '/registrar_empresa', name: "RegistroEmpresa", component: RegistroEmpresa},
+    {path: '/empleados_supervisados', name: "EmpleadosSupervisados", component: EmpleadosSupervisados}
   ]
 });
 
