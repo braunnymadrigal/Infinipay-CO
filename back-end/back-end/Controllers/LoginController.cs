@@ -1,8 +1,12 @@
 ﻿using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using back_end.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 
 namespace back_end.Controllers
 {
@@ -20,6 +24,27 @@ namespace back_end.Controllers
             var builder = WebApplication.CreateBuilder();
             _pathConnection = builder.Configuration.GetConnectionString("InfinipayDBContext");
             _connection = new SqlConnection(_pathConnection);
+        }
+
+        private string Generate(UserModel userModel)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtConfig:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
+                new Claim(ClaimTypes.Email, userModel.Email),
+                new Claim(ClaimTypes.Role, userModel.Role),
+            };
+            var token = new JwtSecurityToken
+            (
+                _config["JwtConfig:Issuer"],
+                _config["JwtConfig:Audience"],
+                claims,
+                expires: DateTime.Now.AddMinutes(15),
+                signingCredentials: credentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private UserModel Authenticate(LoginUserModel loginUserModel)
