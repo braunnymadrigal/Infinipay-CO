@@ -1,8 +1,10 @@
-﻿using System.Data;
+﻿using back_end.Models;
+
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using back_end.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -24,6 +26,20 @@ namespace back_end.Controllers
             var builder = WebApplication.CreateBuilder();
             _pathConnection = builder.Configuration.GetConnectionString("InfinipayDBContext");
             _connection = new SqlConnection(_pathConnection);
+        }
+
+        [AllowAnonymous]
+        [Route("userLogin")]
+        [HttpPost]
+        public IActionResult Login([FromBody] LoginUserModel loginUserModel)
+        {
+            UserModel userModel = Authenticate(loginUserModel);
+            if (userModel.Nickname != "")
+            {
+                String token = Generate(userModel);
+                return Ok(token);
+            }
+            return NotFound("User not found");
         }
 
         private string Generate(UserModel userModel)
@@ -51,8 +67,8 @@ namespace back_end.Controllers
         {
             string consulta = $"SELECT * FROM Usuario WHERE nickname='{loginUserModel.NicknameOrEmail}'";
             UserModel userModel = ObtenerUsuarioModelo(consulta);
-            bool isUserOnDB = loginUserModel.NicknameOrEmail == userModel.Nickname && loginUserModel.Password == userModel.Password;
-            if (!isUserOnDB)
+            bool okCredentials = loginUserModel.NicknameOrEmail == userModel.Nickname && loginUserModel.Password == userModel.Password;
+            if (!okCredentials)
             {
                 userModel.Nickname = "";
                 userModel.Password = "";
@@ -73,7 +89,7 @@ namespace back_end.Controllers
 
         private UserModel ObtenerUsuarioModelo(string consulta)
         {
-            UserModel userModel = new UserModel { Nickname="" };    
+            UserModel userModel = new UserModel { Nickname="", Email="", Password="", Role="" };    
             DataTable tablaResultado = CrearTablaConsulta(consulta);
             if (tablaResultado.Rows.Count > 0)
             {
