@@ -22,6 +22,18 @@ namespace back_end.Controllers
             _connection = new SqlConnection(_pathConnection);
         }
 
+        private UserModel Authenticate(LoginUserModel loginUserModel)
+        {
+            string consulta = "";
+            UserModel userModel = ObtenerUsuarioModelo(consulta);
+            bool isUserOnDB = loginUserModel.NicknameOrEmail == userModel.Nickname && loginUserModel.Password == userModel.Password;
+            if (!isUserOnDB)
+            {
+                userModel.Nickname = "";
+            }
+            return userModel;
+        }
+
         private DataTable CrearTablaConsulta(string consulta)
         {
             SqlCommand comandoParaConsulta = new SqlCommand(consulta, _connection);
