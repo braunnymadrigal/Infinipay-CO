@@ -32,5 +32,18 @@ namespace back_end.Controllers
             _connection.Close();
             return consultaFormatoTabla;
         }
+
+        private UserModel ObtenerUsuarioModelo(string consulta)
+        {
+            UserModel userModel = new UserModel { Nickname="" };    
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                DataRow filaResultado = tablaResultado.Rows[0];
+                userModel.Nickname = Convert.ToString(filaResultado["nickname"]);
+                userModel.Password = Convert.ToString(filaResultado["contraseña"]);
+            }
+            return userModel;
+        }
     }
 }
