@@ -24,12 +24,13 @@ namespace back_end.Controllers
 
         private UserModel Authenticate(LoginUserModel loginUserModel)
         {
-            string consulta = "";
+            string consulta = $"SELECT * FROM Usuario WHERE nickname='{loginUserModel.NicknameOrEmail}'";
             UserModel userModel = ObtenerUsuarioModelo(consulta);
             bool isUserOnDB = loginUserModel.NicknameOrEmail == userModel.Nickname && loginUserModel.Password == userModel.Password;
             if (!isUserOnDB)
             {
                 userModel.Nickname = "";
+                userModel.Password = "";
             }
             return userModel;
         }
