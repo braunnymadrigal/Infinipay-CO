@@ -87,17 +87,6 @@
         </div>
 
         <div class="mb-3">
-          <label c class="form-label" for="password">Contraseña temporal</label>
-          <input class="form-control" type="password" v-model="password" 
-            id="password" required minlength="10" maxlength="100"
-            style="background-color: #FFF8F3;"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,100}$"
-            title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
-            placeholder="Al menos 10 caracteres"
-          />
-        </div>
-
-        <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula</label>
           <input type="text" class="form-control"
           style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
@@ -120,7 +109,6 @@
           <input type="email" class="form-control"
           style="background-color: #FFF8F3;" v-model="email" id="email"
           required maxlength="100"
-          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
           placeholder="xxx@xxxx.xxx">
         </div>
 
@@ -152,7 +140,7 @@
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              required maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
               rows="2" placeholder=
               "Sólo se permiten letras, números y espacios en blanco">
             </textarea>
@@ -206,47 +194,77 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import axios from "axios";
 
 export default {
-  setup() {
-    const router = useRouter()
-    const firstName = ref('')
-    const secondName = ref('')
-    const firstLastName = ref('')
-    const secondLastName = ref('')
-    const idNumber = ref('')
-    const username = ref('')
-    const password = ref('')
-    const phoneNumber = ref('')
-    const email = ref('')
-
-    const address = ref({
-      province: '',
-      canton: '',
-      district: '',
-      otherSigns: ''
-    })
-
-    function submitForm() {
-      router.push('/RegisterCompany')
-    }
+  data() {
     return {
-      firstName,
-      secondName,
-      firstLastName,
-      secondLastName,
-      idNumber,
-      username,
-      password,
-      phoneNumber,
-      email,
-      address,
-      submitForm
+      idNumber: '',
+      phoneNumber: '',
+      email: '',
+      firstName: '',
+      secondName: '',
+      firstLastName: '',
+      secondLastName: '',
+      username: '',
+      address: {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
+      },
+      idType: '',
+    };
+  },
+  methods: {
+    submitForm() {
+      console.log("Datos del formulario:", {
+        idNumber: this.idNumber,
+        phoneNumber: this.phoneNumber,
+        email: this.email,
+        firstName: this.firstName,
+        secondName: this.secondName,
+        firstLastName: this.firstLastName,
+        secondLastName: this.secondLastName,
+        province: this.address.province,
+        canton: this.address.canton,
+        district: this.address.district,
+        otherSigns: this.address.otherSigns,
+        idType: this.idType,
+      });
+
+      axios.post("https://localhost:7275/api/Employer", {
+        idNumber: this.idNumber,
+        phoneNumber: this.phoneNumber,
+        email: this.email,
+        firstName: this.firstName,
+        secondName: this.secondName,
+        firstLastName: this.firstLastName,
+        secondLastName: this.secondLastName,
+        province: this.address.province,
+        canton: this.address.canton,
+        district: this.address.district,
+        otherSigns: this.address.otherSigns,
+        idType: this.idType,
+      })
+      .then((response) => {
+        console.log("Respuesta del servidor:", response.data);
+        if (response.data === true) {
+          this.$router.push('/RegisterCompany');
+        } else {
+          alert("No se pudo registrar el empleador. Verifica los datos ingresados.");
+        }
+      })
+      .catch(error => {
+        console.error("Error al registrar el empleador:", error);
+        if (error.response && error.response.data && error.response.data.errors) {
+          console.error("Detalles de validación:", error.response.data.errors);
+        }
+        alert("Error al registrar el empleador. Por favor, revise los datos ingresados.");
+      });
     }
   }
-}
+};
 </script>
 
 <style>
