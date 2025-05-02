@@ -103,8 +103,8 @@ namespace back_end.Handlers
       return id;
     }
 
-    private Guid insertPerson(EmployerModel emp, Guid auditId,
-                              SqlTransaction tx)
+    private Guid insertPerson(EmployerModel employer, Guid auditId,
+                              SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Persona]
@@ -112,12 +112,12 @@ namespace back_end.Handlers
          [tipoIdentificacion], [idAuditoria])
         OUTPUT INSERTED.id
         VALUES (@identificacion, @numeroTelefono, @correoElectronico,
-         @tipoIdentificacion, @idAuditoria)", _connection, tx);
+         @tipoIdentificacion, @idAuditoria)", _connection, transaction);
 
-      cmd.Parameters.AddWithValue("@identificacion", emp.idNumber);
-      cmd.Parameters.AddWithValue("@numeroTelefono", emp.phoneNumber);
-      cmd.Parameters.AddWithValue("@correoElectronico", emp.email);
-      cmd.Parameters.AddWithValue("@tipoIdentificacion", emp.idType);
+      cmd.Parameters.AddWithValue("@identificacion", employer.idNumber);
+      cmd.Parameters.AddWithValue("@numeroTelefono", employer.phoneNumber);
+      cmd.Parameters.AddWithValue("@correoElectronico", employer.email);
+      cmd.Parameters.AddWithValue("@tipoIdentificacion", employer.idType);
       cmd.Parameters.AddWithValue("@idAuditoria", auditId);
 
       var id = (Guid)cmd.ExecuteScalar();
@@ -125,27 +125,28 @@ namespace back_end.Handlers
       return id;
     }
 
-    private void insertNaturalPerson(EmployerModel emp, Guid personId,
-                                     SqlTransaction tx)
+    private void insertNaturalPerson(EmployerModel employer, Guid personId,
+                                     SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[PersonaFisica]
         ([id], [primerNombre], [segundoNombre], [primerApellido],
          [segundoApellido], [genero], [fechaNacimiento])
         VALUES (@id, @primerNombre, @segundoNombre, @primerApellido,
-         @segundoApellido, @genero, @fechaNacimiento)", _connection, tx);
+         @segundoApellido, @genero, @fechaNacimiento)", _connection
+         , transaction);
 
       cmd.Parameters.AddWithValue("@id", personId);
-      cmd.Parameters.AddWithValue("@primerNombre", emp.firstName);
+      cmd.Parameters.AddWithValue("@primerNombre", employer.firstName);
       cmd.Parameters.AddWithValue("@segundoNombre",
-        emp.secondName ?? (object)DBNull.Value);
-      cmd.Parameters.AddWithValue("@primerApellido", emp.firstLastName);
+        employer.secondName ?? (object)DBNull.Value);
+      cmd.Parameters.AddWithValue("@primerApellido", employer.firstLastName);
       cmd.Parameters.AddWithValue("@segundoApellido",
-        emp.secondLastName);
-      cmd.Parameters.AddWithValue("@genero", emp.gender);
+        employer.secondLastName);
+      cmd.Parameters.AddWithValue("@genero", employer.gender);
 
-      var birthDate = new DateTime(emp.birthYear, emp.birthMonth,
-                                   emp.birthDay);
+      var birthDate = new DateTime(employer.birthYear, employer.birthMonth,
+                                   employer.birthDay);
       cmd.Parameters.Add("@fechaNacimiento", SqlDbType.Date).Value =
         birthDate;
 
@@ -153,45 +154,41 @@ namespace back_end.Handlers
         throw new Exception("Insert failed: PersonaFisica.");
     }
 
-    private void insertAddress(EmployerModel emp, Guid personId,
-                               SqlTransaction tx)
+    private void insertAddress(EmployerModel employer, Guid personId,
+                               SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Direccion]
         ([idPersona], [provincia], [canton], [distrito], [otrasSenas])
         VALUES (@idPersona, @provincia, @canton, @distrito, @otrasSenas)",
-        _connection, tx);
+        _connection, transaction);
 
       cmd.Parameters.AddWithValue("@idPersona", personId);
-      cmd.Parameters.AddWithValue("@provincia", emp.province);
-      cmd.Parameters.AddWithValue("@canton", emp.canton);
-      cmd.Parameters.AddWithValue("@distrito", emp.district);
+      cmd.Parameters.AddWithValue("@provincia", employer.province);
+      cmd.Parameters.AddWithValue("@canton", employer.canton);
+      cmd.Parameters.AddWithValue("@distrito", employer.district);
       cmd.Parameters.AddWithValue("@otrasSenas",
-        emp.otherSigns ?? (object)DBNull.Value);
+        employer.otherSigns ?? (object)DBNull.Value);
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: Direccion.");
     }
 
-    private void insertUser(EmployerModel emp, Guid personId,
-                            SqlTransaction tx)
+    private void insertUser(EmployerModel employer, Guid personId
+      , SqlTransaction transaction)
     {
-      var birthDate = new DateTime(emp.birthYear, emp.birthMonth,
-                                   emp.birthDay);
-      var rawPassword = emp.firstLastName + birthDate.ToString("ddMMyyyy");
-      var passwordBytes = Encoding.UTF8.GetBytes(rawPassword);
-      Array.Resize(ref passwordBytes, 64);
-
+      var birthDate = new DateTime(employer.birthYear, employer.birthMonth
+        , employer.birthDay);
+      var rawPassword = employer.firstLastName + birthDate.ToString("ddMMyyyy");
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])
-        VALUES (@idPersonaFisica, @nickname, @contrasena)",
-        _connection, tx);
-
+        VALUES (@idPersonaFisica, @nickname, HASHBYTES('SHA2_512'
+        , @contrasena))",
+      _connection, transaction);
       cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
-      cmd.Parameters.AddWithValue("@nickname", emp.username);
-      cmd.Parameters.AddWithValue("@contrasena", passwordBytes);
-
+      cmd.Parameters.AddWithValue("@nickname", employer.username);
+      cmd.Parameters.AddWithValue("@contrasena", rawPassword);
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: Usuario.");
     }
