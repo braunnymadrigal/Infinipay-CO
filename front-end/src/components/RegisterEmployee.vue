@@ -108,6 +108,17 @@
         </div>
 
         <div class="mb-3">
+          <label for="gender" class="form-label">
+            Género</label>
+          <select id="gender" class="form-select" 
+           style="background-color: #FFF8F3;" v-model="gender" required>
+            <option disabled value="">Seleccione una opción</option>
+            <option value="weekly">Masculino</option>
+            <option value="biweekly">Femenino</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula</label>
           <input
             type="text"
@@ -150,23 +161,6 @@
             pattern="^[a-z_\.]+$"
             title="ejemplo_usuario"
             placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label c class="form-label" for="password">Contraseña temporal</label>
-          <input
-            class="form-control"
-            type="password"
-            v-model="password"
-            id="password"
-            required
-            minlength="10"
-            maxlength="100"
-            style="background-color: #fff8f3"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,100}$"
-            title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
-            placeholder="Al menos 10 caracteres"
           />
         </div>
 
@@ -263,12 +257,10 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <button
-            type="submit"
-            class="btn btn-success"
-            style="background-color: #758694; color: white; border: transparent"
-          >
-            Terminar
+          <button type="submit" class="btn btn-success" 
+            style="background-color: #405D72; color: white;
+            border: transparent;">
+            Crear
           </button>
         </div>
       </form>
@@ -278,7 +270,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
@@ -317,17 +309,18 @@ import { useRouter } from "vue-router";
 
 export default {
   setup() {
-    const router = useRouter();
-    const firstName = ref("");
-    const secondName = ref("");
-    const firstLastName = ref("");
-    const secondLastName = ref("");
-    const idNumber = ref("");
-    const username = ref("");
-    const password = ref("");
-    const phone = ref("");
-    const email = ref("");
-    const role = ref("");
+    const router = useRouter()
+    const firstName = ref('')
+    const secondName = ref('')
+    const firstLastName = ref('')
+    const secondLastName = ref('')
+    const idNumber = ref('')
+    const username = ref('')
+    const password = ref('')
+    const phone = ref('')
+    const email = ref('')
+    const role = ref('')
+    const gender = ref('')
 
     const address = ref({
       province: "",
@@ -352,10 +345,11 @@ export default {
       email,
       address,
       role,
-      submitForm,
-    };
-  },
-};
+      gender,
+      submitForm
+    }
+  }
+}
 </script>
 
 <style>

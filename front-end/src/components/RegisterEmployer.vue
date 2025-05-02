@@ -78,6 +78,24 @@
         </div>
 
         <div class="mb-3">
+          <label for="gender" class="form-label">
+            Género</label>
+          <select id="gender" class="form-select" 
+           style="background-color: #FFF8F3;" v-model="gender" required>
+            <option disabled value="">Seleccione una opción</option>
+            <option value="weekly">Masculino</option>
+            <option value="biweekly">Femenino</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="idNumber" class="form-label">Cédula</label>
+          <input type="text" class="form-control"
+          style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
+          required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
+        </div>
+
+        <div class="mb-3">
           <label for="username" class="form-label">Nombre de usuario</label>
           <input type="text" class="form-control" v-model="username"
             style="background-color: #FFF8F3;" id="username" required 
@@ -87,7 +105,7 @@
         </div>
 
         <div class="mb-3">
-          <label c class="form-label" for="password">Contraseña temporal</label>
+          <label c class="form-label" for="password">Contraseña</label>
           <input class="form-control" type="password" v-model="password" 
             id="password" required minlength="10" maxlength="100"
             style="background-color: #FFF8F3;"
@@ -95,13 +113,6 @@
             title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
             placeholder="Al menos 10 caracteres"
           />
-        </div>
-
-        <div class="mb-3">
-          <label for="idNumber" class="form-label">Cédula</label>
-          <input type="text" class="form-control"
-          style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
-          required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
         </div>
 
         <div class="mb-3">
@@ -162,7 +173,7 @@
 
         <div class="d-flex justify-content-center">
           <button type="submit" class="btn btn-success" 
-            style="background-color: #758694; color: white;
+            style="background-color: #405D72; color: white;
             border: transparent;">
             Continuar
           </button>
@@ -175,7 +186,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
@@ -221,6 +232,7 @@ export default {
     const password = ref('')
     const phoneNumber = ref('')
     const email = ref('')
+    const gender = ref('')
 
     const address = ref({
       province: '',
@@ -243,6 +255,7 @@ export default {
       phoneNumber,
       email,
       address,
+      gender,
       submitForm
     }
   }

@@ -159,7 +159,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
