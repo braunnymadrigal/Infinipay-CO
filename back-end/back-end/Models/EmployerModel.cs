@@ -18,7 +18,6 @@ namespace back_end.Models
     [Required]
     public string firstName { get; set; }
 
-    [Required]
     public string secondName { get; set; }
 
     [Required]
@@ -40,5 +39,23 @@ namespace back_end.Models
 
     [Required]
     public string idType { get; set; }
+
+    [Required]
+    public string username { get; set; }
+
+    [Required]
+    public string gender { get; set; }
+
+    [Required]
+    public DateTime birthDate { get; set; }
+
+    [Required]
+    public int birthDay { get; set; }
+
+    [Required]
+    public int birthMonth { get; set; }
+
+    [Required]
+    public int birthYear { get; set; }
   }
 }
