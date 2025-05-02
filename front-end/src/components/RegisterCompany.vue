@@ -263,78 +263,36 @@
 </template> 
 
 <script>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
 export default {
-  setup() {
-    const router = useRouter();
-    const legalName = ref('');
-    const description = ref('');
-    const idNumber = ref('');
-    const phoneNumber = ref('');
-    const email = ref('');
-    const address = ref({
-      province: '',
-      canton: '',
-      district: '',
-      otherSigns: ''
-    });
-    const benefits = ref(0);
-    const paymentType = ref('');
-
-    // function addPhoneNumber() {
-    //   if (phoneNumbers.value.length < 100) {
-    //     phoneNumbers.value.push('');
-    //   }
-    // }
-
-    // function deletePhoneNumber(index) {
-    //   if (phoneNumbers.value.length > 1) {
-    //     phoneNumbers.value.splice(index, 1);
-    //   }
-    // }
-
-    // function addAddress() {
-    //   if (addresses.value.length < 100) {
-    //     addresses.value.push({
-    //       province: '',
-    //       canton: '',
-    //       district: '',
-    //       otherSigns: ''
-    //     });
-    //   }
-    // }
-
-    // function deleteAddress(index) {
-    //   if (addresses.value.length > 1) {
-    //     addresses.value.splice(index, 1);
-    //   }
-    // }
-
-    function submitForm() {
-      alert('¡Empresa registrada exitosamente!');
-      router.push('/EmployerProfile');
-    }
-
+  data() {
     return {
-      description,
-      legalName,
-      idNumber,
-      phoneNumber,
-      email,
-      address,
-      benefits,
-      paymentType,
-      // addPhoneNumber,
-      // deletePhoneNumber,
-      // addAddress,
-      // deleteAddress,
-      submitForm
+      legalName: '',
+      description: '',
+      idNumber: '',
+      phoneNumber: '',
+      email: '',
+      address: {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
+      },
+      benefits: 0,
+      paymentType: ''
     };
+  },
+  methods: {
+    submitForm() {
+      alert('¡Empresa registrada exitosamente!');
+      this.$router.push('/EmployerProfile');
+    }
+  },
+  mounted() {
   }
 };
 </script>
+
 
 <style>
   label {

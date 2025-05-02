@@ -304,52 +304,35 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 export default {
-  setup() {
-    const router = useRouter()
-    const firstName = ref('')
-    const secondName = ref('')
-    const firstLastName = ref('')
-    const secondLastName = ref('')
-    const idNumber = ref('')
-    const username = ref('')
-    const password = ref('')
-    const phone = ref('')
-    const email = ref('')
-    const role = ref('')
-    const gender = ref('')
-
-    const address = ref({
-      province: "",
-      canton: "",
-      district: "",
-      otherSigns: "",
-    });
-    function submitForm() {
-      alert("¡Empleado registrado exitosamente!");
-      router.push("/EmployerProfile");
-    }
-
+  data() {
     return {
-      firstName,
-      secondName,
-      firstLastName,
-      secondLastName,
-      idNumber,
-      username,
-      password,
-      phone,
-      email,
-      address,
-      role,
-      gender,
-      submitForm
+      firstName: '',
+      secondName: '',
+      firstLastName: '',
+      secondLastName: '',
+      idNumber: '',
+      username: '',
+      password: '',
+      phone: '',
+      email: '',
+      role: '',
+      gender: '',
+      address: {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
+      }
+    };
+  },
+  methods: {
+    submitForm() {
+      alert('¡Empleado registrado exitosamente!');
+      this.$router.push('/EmployerProfile');
     }
   }
-}
+};
 </script>
 
 <style>
