@@ -58,7 +58,6 @@
 </template>
 
 <script setup>
-// import BenefitCard from "./BenefitCard.vue";
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
 
