@@ -314,7 +314,9 @@ export default {
         if (response.data === true) {
           this.$router.push('/RegisterCompany');
         } else {
-          alert("No se pudo registrar el empleador. Verifica los datos ingresados.");
+          alert(
+            "No se pudo registrar el empleador. Verifica los datos ingresados."
+          );
         }
       }.bind(this))
       .catch(function(error) {
