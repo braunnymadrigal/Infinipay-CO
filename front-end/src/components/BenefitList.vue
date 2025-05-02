@@ -24,7 +24,7 @@
           <th style="white-space: nowrap">Nombre</th>
           <th style="white-space: nowrap">Descripción</th>
           <th style="white-space: nowrap">Tiempo minimo</th>
-          <th style="white-space: nowrap">Aplica a</th>
+          <th style="white-space: nowrap">Empleados elegibles</th>
           <th style="white-space: nowrap">Formula</th>
           <th style="white-space: nowrap">Acciones</th>
         </tr>
@@ -76,7 +76,7 @@ const benefits = [
     description:
       "Como empresa, valoramos profundamente el bienestar de nuestros colaboradores y reconocemos el papel fundamental que desempeñan en nuestro",
     minMonths: 6,
-    appliesTo: ["Supervisores", "Tiempo completo"],
+    appliesTo: ["Supervisores", "Mensual"],
     formula: "40%",
   },
   {
@@ -85,7 +85,7 @@ const benefits = [
     description:
       "En nuestra empresa, creemos firmemente en la importancia del equilibrio...",
     minMonths: 3,
-    appliesTo: ["Tiempo completo", "Medio tiempo"],
+    appliesTo: ["Mensual", "Quincenal"],
     formula: "25 000 CRC",
   },
   {
@@ -94,7 +94,7 @@ const benefits = [
     description:
       "En nuestra empresa, entendemos que una buena salud bucodental...",
     minMonths: 12,
-    appliesTo: ["Supervisores", "Tiempo completo", "Servicios profesionales"],
+    appliesTo: ["Quincenal", "Mensual", "Semanal"],
     formula: "60 000 CRC",
   },
 ];
