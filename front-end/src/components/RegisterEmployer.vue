@@ -50,7 +50,7 @@
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;"
             v-model="secondName" id="secondName"
-            required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
@@ -78,6 +78,17 @@
         </div>
 
         <div class="mb-3">
+          <label for="gender" class="form-label">Género</label>
+          <select id="gender" class="form-select"
+            style="background-color: #FFF8F3;" v-model="gender"
+            required>
+            <option disabled value="">Seleccione una opción</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label for="username" class="form-label">Nombre de usuario</label>
           <input type="text" class="form-control" v-model="username"
             style="background-color: #FFF8F3;" id="username" required 
@@ -87,10 +98,46 @@
         </div>
 
         <div class="mb-3">
+          <label for="idType" class="form-label">Tipo de cédula</label>
+          <select id="idType" class="form-select"
+            style="background-color: #FFF8F3;" v-model="idType"
+            required>
+            <option disabled value="">Seleccione una opción</option>
+            <option value="fisica">Física</option>
+            <option value="juridica">Jurídica</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula</label>
           <input type="text" class="form-control"
           style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
           required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de nacimiento</label>
+          <div class="d-flex gap-2">
+            <select id="birthDay" class="form-select" v-model="birthDay"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Día</option>
+              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              </option>
+            </select>
+            <select id="birthMonth" class="form-select" v-model="birthMonth"
+              style="background-color: #FFF8F3;"  required>
+              <option value="">Mes</option>
+              <option v-for="(month, index)
+                in months" :key="index" :value="index + 1"> {{ month }}
+              </option>
+            </select>
+            <select id="birthYear" class="form-select" v-model="birthYear"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Año</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}</option>
+            </select>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -195,7 +242,6 @@
 
 <script>
 import axios from "axios";
-
 export default {
   data() {
     return {
@@ -214,24 +260,34 @@ export default {
         otherSigns: ''
       },
       idType: '',
+      gender: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
+      months: [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ],
+      years: this.generateYears()
     };
   },
   methods: {
-    submitForm() {
-      console.log("Datos del formulario:", {
-        idNumber: this.idNumber,
-        phoneNumber: this.phoneNumber,
-        email: this.email,
-        firstName: this.firstName,
-        secondName: this.secondName,
-        firstLastName: this.firstLastName,
-        secondLastName: this.secondLastName,
-        province: this.address.province,
-        canton: this.address.canton,
-        district: this.address.district,
-        otherSigns: this.address.otherSigns,
-        idType: this.idType,
-      });
+    generateYears() {
+      const current = new Date().getFullYear();
+      const years = [];
+      for (let y = current; y >= 1900; y--) {
+        years.push(y);
+      }
+      return years;
+    },
+    getBirthDate() {
+      if (this.birthDay && this.birthMonth && this.birthYear) {
+        return`${this.birthYear}-${String(this.birthMonth).padStart(2, '0')}-${String(this.birthDay).padStart(2, '0')}`;
+      }
+      return null;
+    },
+    submitForm: function() {
+      const birthDate = this.getBirthDate();
 
       axios.post("https://localhost:7275/api/Employer", {
         idNumber: this.idNumber,
@@ -241,26 +297,32 @@ export default {
         secondName: this.secondName,
         firstLastName: this.firstLastName,
         secondLastName: this.secondLastName,
+        username: this.username,
         province: this.address.province,
         canton: this.address.canton,
         district: this.address.district,
         otherSigns: this.address.otherSigns,
         idType: this.idType,
+        gender: this.gender,
+        birthDay: this.birthDay,
+        birthMonth: this.birthMonth,
+        birthYear: this.birthYear,
+        birthDate: birthDate
       })
-      .then((response) => {
+      .then(function(response) {
         console.log("Respuesta del servidor:", response.data);
         if (response.data === true) {
           this.$router.push('/RegisterCompany');
         } else {
           alert("No se pudo registrar el empleador. Verifica los datos ingresados.");
         }
-      })
-      .catch(error => {
-        console.error("Error al registrar el empleador:", error);
-        if (error.response && error.response.data && error.response.data.errors) {
-          console.error("Detalles de validación:", error.response.data.errors);
+      }.bind(this))
+      .catch(function(error) {
+        console.error("Error:", error);
+        if (error.response) {
+          const message = error.response.data?.message || "Error desconocido";
+          alert(message);
         }
-        alert("Error al registrar el empleador. Por favor, revise los datos ingresados.");
       });
     }
   }
