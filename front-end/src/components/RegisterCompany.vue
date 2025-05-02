@@ -36,12 +36,11 @@
 
         <div class="mb-3">
           <label for="legalName" class="form-label">Razón social</label>
-          <textarea class="form-control" id="legalName" 
+          <input type="text" class="form-control" id="legalName" 
             style="background-color: #FFF8F3;" v-model="legalName"
             required maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
             placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
-          </textarea>
         </div>
 
         <div class="mb-3">
@@ -220,9 +219,9 @@
         <div class="d-flex justify-content-center mt-4" style="gap: 10px;">
           <router-link to="/RegisterEmployer" class="btn btn-secondary"
             style="background-color: #405D72;"> Volver</router-link>
-          <button type="submit" class="btn btn-success"
+          <button type="submit" class="btn btn-secondary"
             style="background-color: #405D72; border: transparent;">
-            Terminar registro
+            Registrar
           </button>
         </div>
       </form>
@@ -233,7 +232,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
