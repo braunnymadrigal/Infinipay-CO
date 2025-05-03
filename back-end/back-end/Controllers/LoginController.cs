@@ -54,7 +54,7 @@ namespace back_end.Controllers
                 {
                 new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
                 new Claim(ClaimTypes.Sid, userModel.PersonaId),
-                //new Claim(ClaimTypes.Role, userModel.Role),
+                new Claim(ClaimTypes.Role, userModel.Role),
             };
                 var token = new JwtSecurityToken
                 (
@@ -102,7 +102,8 @@ namespace back_end.Controllers
                 userModel.Nickname = "";
             } else
             {
-                userModel.Nickname = nickname;
+                consulta = $"SELECT [rol] FROM [Empleado] WHERE [idPersonaFisica]='{userModel.PersonaId}';";
+                userModel = ObtenerRol(userModel, consulta);
             }
             return userModel;
         }
@@ -116,6 +117,23 @@ namespace back_end.Controllers
             adaptadorParaTabla.Fill(consultaFormatoTabla);
             _connection.Close();
             return consultaFormatoTabla;
+        }
+
+        private UserModel ObtenerRol(UserModel userModel, string consulta)
+        {
+            userModel.Role = "empleador";
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                userModel.Role = "empleado";
+                DataRow filaResultado = tablaResultado.Rows[0];
+                var tableRole = Convert.ToString(filaResultado["rol"]);
+                if (tableRole != null && tableRole != "")
+                {
+                    userModel.Role = tableRole;
+                }
+            }
+            return userModel;
         }
 
         private UserModel ObtenerTablaUsuario(UserModel userModel, string consulta)
@@ -137,7 +155,9 @@ namespace back_end.Controllers
             return userModel;
         }
 
-        private UserModel GetCurrentUser()
+        [Route("GetUser")]
+        [HttpPost]
+        public UserModel GetCurrentUser()
         {
             UserModel userModel = new UserModel();
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -149,12 +169,12 @@ namespace back_end.Controllers
                 var PersonaId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
                 var Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value;
 
-                if (Nickname != null && PersonaId != null)
+                if (Nickname != null && PersonaId != null && Role != null)
                 {
                     userModel.Nickname = Nickname;
                     userModel.PersonaId = PersonaId;
+                    userModel.Role = Role;
                 }
-                userModel.Role = Role;
             }
             return userModel;
         }

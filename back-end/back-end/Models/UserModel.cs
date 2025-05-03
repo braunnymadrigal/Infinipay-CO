@@ -6,12 +6,12 @@
         {
             this.Nickname = "";
             this.Password = null;
-            this.Role = null;
+            this.Role = "";
             this.PersonaId = "";
         }
         public string Nickname { get; set; }
         public byte[]? Password { get; set; }
-        public string? Role { get; set; }
+        public string Role { get; set; }
         public string PersonaId { get; set; }
     }
 }
