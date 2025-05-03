@@ -4,7 +4,6 @@ import "primeicons/primeicons.css";
 
 import { createRouter, createWebHistory } from "vue-router";
 import VueCookies from "vue-cookies";
-import VueCookies from "vue-cookies";
 
 import HomePage from "./components/HomePage.vue";
 import AboutUs from "./components/AboutUs.vue";
