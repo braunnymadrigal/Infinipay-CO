@@ -6,7 +6,7 @@
       Mi perfil
     </h1>
 
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="editExample">
       <div class="row mb-3 justify-content-center" style="margin-top: 30px;">
         <div class="col-md-6 col-lg-6">
           <label 
@@ -18,7 +18,7 @@
             class="form-control bg-transparent"
             type="text"
             id="firstName" 
-            v-model="user.userId"
+            v-model="profile.firstName"
             readonly
           >
         </div>
@@ -32,7 +32,7 @@
             class="form-control bg-transparent"
             type="text"
             id="secondName"
-            v-model="user.userId" 
+            v-model="profile.secondName" 
             readonly
           >
         </div>
@@ -49,7 +49,7 @@
             class="form-control bg-transparent"
             type="text"
             id="fistLastName"
-            v-model="user.userId" 
+            v-model="profile.firstLastName" 
             readonly
           >
         </div>
@@ -63,7 +63,7 @@
             class="form-control bg-transparent"
             type="text"
             id="secondLastName"
-            v-model="user.userId" 
+            v-model="profile.secondLastName" 
             readonly
           >
         </div>
@@ -79,7 +79,7 @@
           class="form-control bg-transparent"
           type="text"
           id="username"
-          v-model="user.userId" 
+          v-model="profile.username" 
           readonly
         >
       </div>
@@ -94,7 +94,7 @@
           class="form-control bg-transparent"
           type="text"
           id="identityDocument"
-          v-model="user.userId" 
+          v-model="profile.identityDocument" 
           readonly
         >
       </div>
@@ -109,7 +109,7 @@
           class="form-control bg-transparent"
           type="text"
           id="email"
-          v-model="user.userId" 
+          v-model="profile.email" 
           readonly
         >
       </div>
@@ -126,7 +126,7 @@
             class="form-control bg-transparent"
             type="text"
             id="phoneNumber"
-            v-model="user.userId" 
+            v-model="profile.email" 
             readonly
           >
         </div>
@@ -143,7 +143,7 @@
             class="form-control bg-transparent"
             type="text"
             id="province" 
-            v-model="user.userId"
+            v-model="profile.province"
             readonly
           >
         </div>
@@ -157,7 +157,7 @@
             class="form-control bg-transparent"
             type="text"
             id="canton"
-            v-model="user.userId" 
+            v-model="profile.canton" 
             readonly
           >
         </div>
@@ -171,7 +171,7 @@
             class="form-control bg-transparent"
             type="text"
             id="district"
-            v-model="user.userId" 
+            v-model="profile.district" 
             readonly
           >
         </div>
@@ -187,7 +187,7 @@
           class="form-control bg-transparent"
           type="text"
           id="exactAddress"
-          v-model="user.userId" 
+          v-model="profile.exactAddress" 
           readonly
         >
       </div>
@@ -202,7 +202,7 @@
           class="form-control bg-transparent"
           type="text"
           id="gender"
-          v-model="user.userId" 
+          v-model="profile.gender" 
           readonly
         >
       </div>
@@ -217,7 +217,7 @@
           class="form-control bg-transparent"
           type="text"
           id="birthDate"
-          v-model="user.userId" 
+          v-model="profile.birthDate" 
           readonly
         >
       </div>
@@ -232,7 +232,7 @@
           class="form-control bg-transparent"
           type="text"
           id="companyName"
-          v-model="user.userId" 
+          v-model="profile.companyName" 
           readonly
         >
       </div>
@@ -247,7 +247,7 @@
           class="form-control bg-transparent"
           type="text"
           id="companyRole"
-          v-model="user.userId" 
+          v-model="profile.companyRole" 
           readonly
         >
       </div>
@@ -272,12 +272,29 @@ export default {
   },
   data() {
     return {
-      user: { userId: "Pepe", userPassword: "" },
+      profile: {
+        firstName: "José",
+        secondName: "María",
+        firstLastName: "Figueres",
+        secondLastName: "Olsen",
+        username: "jose_figueres",
+        identityDocument: "104790979",
+        email: "jose_olsen@gov.cr",
+        phoneNumber: "61606467",
+        province: "San José",
+        canton: "Desamparados",
+        district: "San Cristóbal",
+        exactAddress: "200 metros al sur del Parque John F. Kennedy, al costado este de la Plaza",
+        gender: "masculino",
+        birthDate: "24/12/1954",
+        companyName: "Cooperativa de Productores de Leche Dos Pinos R.L",
+        companyRole: "empleador", 
+      },
     };
   },
   methods: {
-    startLogin() {
-      console.log("Saved:", this.user);
+    editExample() {
+      console.log("Saved:", this.profile);
     },
   },
 };
