@@ -185,7 +185,7 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-success" 
+          <button type="submit" class="btn btn-secondary" 
             style="background-color: #405D72; color: white;
             border: transparent;">
             Continuar
