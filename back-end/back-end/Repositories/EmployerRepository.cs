@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace back_end.Handlers
+namespace back_end.Repositories
 {
   public class EmployerRepository
   {
