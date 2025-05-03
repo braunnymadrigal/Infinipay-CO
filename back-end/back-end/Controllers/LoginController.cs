@@ -3,6 +3,7 @@
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -44,34 +45,64 @@ namespace back_end.Controllers
 
         private string Generate(UserModel userModel)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtConfig:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
-            var claims = new[]
+            var jwtConfigKey = _config["JwtConfig:Key"];
+            if (jwtConfigKey != null)
             {
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigKey));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
+                var claims = new[]
+                {
                 new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
-                new Claim(ClaimTypes.Email, userModel.Email),
-                new Claim(ClaimTypes.Role, userModel.Role),
+                new Claim(ClaimTypes.Sid, userModel.PersonaId),
+                //new Claim(ClaimTypes.Role, userModel.Role),
             };
-            var token = new JwtSecurityToken
-            (
-                _config["JwtConfig:Issuer"],
-                _config["JwtConfig:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials
-            );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                var token = new JwtSecurityToken
+                (
+                    _config["JwtConfig:Issuer"],
+                    _config["JwtConfig:Audience"],
+                    claims,
+                    expires: DateTime.Now.AddMinutes(15),
+                    signingCredentials: credentials
+                );
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            else
+            {
+                return "error";
+            }
         }
 
         private UserModel Authenticate(LoginUserModel loginUserModel)
         {
-            string consulta = $"SELECT * FROM Usuario WHERE nickname='{loginUserModel.NicknameOrEmail}'";
-            UserModel userModel = ObtenerUsuarioModelo(consulta);
-            bool okCredentials = loginUserModel.NicknameOrEmail == userModel.Nickname && loginUserModel.Password == userModel.Password;
-            if (!okCredentials)
+            UserModel userModel = new UserModel();
+            var nicknameOrEmail = (loginUserModel.NicknameOrEmail).ToLower();
+            var nickname = "";
+            var email = "";
+            var inputBytes = Encoding.UTF8.GetBytes(loginUserModel.Password);
+            var password = SHA512.HashData(inputBytes);
+            string consulta = "";
+            bool okPassword = false;
+            if (nicknameOrEmail.Contains("@"))
+            {
+                email = nicknameOrEmail;
+                consulta = $"SELECT [id], [correoElectronico] FROM [Persona] WHERE [correoElectronico] = '{email}';";
+            }
+            else
+            {
+                nickname = nicknameOrEmail;
+                consulta = $"SELECT [nickname], [contrasena], [idPersonaFisica] FROM [Usuario] WHERE [nickname]='{nickname}';";
+                userModel = ObtenerTablaUsuario(userModel, consulta);
+                if (userModel.Nickname != "" && userModel.Password != null)
+                {
+                    okPassword = password.SequenceEqual(userModel.Password);
+                }
+            }
+            if (!okPassword)
             {
                 userModel.Nickname = "";
-                userModel.Password = "";
+            } else
+            {
+                userModel.Nickname = nickname;
             }
             return userModel;
         }
@@ -87,15 +118,43 @@ namespace back_end.Controllers
             return consultaFormatoTabla;
         }
 
-        private UserModel ObtenerUsuarioModelo(string consulta)
+        private UserModel ObtenerTablaUsuario(UserModel userModel, string consulta)
         {
-            UserModel userModel = new UserModel { Nickname="", Email="", Password="", Role="" };    
             DataTable tablaResultado = CrearTablaConsulta(consulta);
             if (tablaResultado.Rows.Count > 0)
             {
                 DataRow filaResultado = tablaResultado.Rows[0];
-                userModel.Nickname = Convert.ToString(filaResultado["nickname"]);
-                userModel.Password = Convert.ToString(filaResultado["contraseña"]);
+                var nickname = Convert.ToString(filaResultado["nickname"]);
+                var password = (byte[])(filaResultado["contrasena"]);
+                var personaId = Convert.ToString(filaResultado["idPersonaFisica"]);
+                if (nickname != null && password != null && personaId != null)
+                {
+                    userModel.Nickname = nickname;
+                    userModel.Password = password;
+                    userModel.PersonaId = personaId;
+                }
+            }
+            return userModel;
+        }
+
+        private UserModel GetCurrentUser()
+        {
+            UserModel userModel = new UserModel();
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                var Nickname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+                var PersonaId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+                var Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value;
+
+                if (Nickname != null && PersonaId != null)
+                {
+                    userModel.Nickname = Nickname;
+                    userModel.PersonaId = PersonaId;
+                }
+                userModel.Role = Role;
             }
             return userModel;
         }
