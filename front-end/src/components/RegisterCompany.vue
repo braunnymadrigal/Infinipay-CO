@@ -36,12 +36,11 @@
 
         <div class="mb-3">
           <label for="legalName" class="form-label">Razón social</label>
-          <textarea class="form-control" id="legalName" 
+          <input type="text" class="form-control" id="legalName" 
             style="background-color: #FFF8F3;" v-model="legalName"
             required maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
             placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
-          </textarea>
         </div>
 
         <div class="mb-3">
@@ -220,9 +219,9 @@
         <div class="d-flex justify-content-center mt-4" style="gap: 10px;">
           <router-link to="/RegisterEmployer" class="btn btn-secondary"
             style="background-color: #405D72;"> Volver</router-link>
-          <button type="submit" class="btn btn-success"
+          <button type="submit" class="btn btn-secondary"
             style="background-color: #405D72; border: transparent;">
-            Terminar registro
+            Registrar
           </button>
         </div>
       </form>
@@ -233,7 +232,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
@@ -264,78 +263,36 @@
 </template> 
 
 <script>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
 export default {
-  setup() {
-    const router = useRouter();
-    const legalName = ref('');
-    const description = ref('');
-    const idNumber = ref('');
-    const phoneNumber = ref('');
-    const email = ref('');
-    const address = ref({
-      province: '',
-      canton: '',
-      district: '',
-      otherSigns: ''
-    });
-    const benefits = ref(0);
-    const paymentType = ref('');
-
-    // function addPhoneNumber() {
-    //   if (phoneNumbers.value.length < 100) {
-    //     phoneNumbers.value.push('');
-    //   }
-    // }
-
-    // function deletePhoneNumber(index) {
-    //   if (phoneNumbers.value.length > 1) {
-    //     phoneNumbers.value.splice(index, 1);
-    //   }
-    // }
-
-    // function addAddress() {
-    //   if (addresses.value.length < 100) {
-    //     addresses.value.push({
-    //       province: '',
-    //       canton: '',
-    //       district: '',
-    //       otherSigns: ''
-    //     });
-    //   }
-    // }
-
-    // function deleteAddress(index) {
-    //   if (addresses.value.length > 1) {
-    //     addresses.value.splice(index, 1);
-    //   }
-    // }
-
-    function submitForm() {
-      alert('¡Empresa registrada exitosamente!');
-      router.push('/EmployerProfile');
-    }
-
+  data() {
     return {
-      description,
-      legalName,
-      idNumber,
-      phoneNumber,
-      email,
-      address,
-      benefits,
-      paymentType,
-      // addPhoneNumber,
-      // deletePhoneNumber,
-      // addAddress,
-      // deleteAddress,
-      submitForm
+      legalName: '',
+      description: '',
+      idNumber: '',
+      phoneNumber: '',
+      email: '',
+      address: {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
+      },
+      benefits: 0,
+      paymentType: ''
     };
+  },
+  methods: {
+    submitForm() {
+      alert('¡Empresa registrada exitosamente!');
+      this.$router.push('/EmployerProfile');
+    }
+  },
+  mounted() {
   }
 };
 </script>
+
 
 <style>
   label {

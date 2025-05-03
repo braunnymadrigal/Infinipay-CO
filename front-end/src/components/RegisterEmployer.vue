@@ -50,7 +50,7 @@
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;"
             v-model="secondName" id="secondName"
-            required maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
@@ -78,6 +78,17 @@
         </div>
 
         <div class="mb-3">
+          <label for="gender" class="form-label">Género</label>
+          <select id="gender" class="form-select"
+            style="background-color: #FFF8F3;" v-model="gender"
+            required>
+            <option disabled value="">Seleccione una opción</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label for="username" class="form-label">Nombre de usuario</label>
           <input type="text" class="form-control" v-model="username"
             style="background-color: #FFF8F3;" id="username" required 
@@ -87,21 +98,35 @@
         </div>
 
         <div class="mb-3">
-          <label c class="form-label" for="password">Contraseña temporal</label>
-          <input class="form-control" type="password" v-model="password" 
-            id="password" required minlength="10" maxlength="100"
-            style="background-color: #FFF8F3;"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,100}$"
-            title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
-            placeholder="Al menos 10 caracteres"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="idNumber" class="form-label">Cédula</label>
+          <label for="idNumber" class="form-label">Cédula física</label>
           <input type="text" class="form-control"
           style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
           required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de nacimiento</label>
+          <div class="d-flex gap-2">
+            <select id="birthDay" class="form-select" v-model="birthDay"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Día</option>
+              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              </option>
+            </select>
+            <select id="birthMonth" class="form-select" v-model="birthMonth"
+              style="background-color: #FFF8F3;"  required>
+              <option value="">Mes</option>
+              <option v-for="(month, index)
+                in months" :key="index" :value="index + 1"> {{ month }}
+              </option>
+            </select>
+            <select id="birthYear" class="form-select" v-model="birthYear"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Año</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}</option>
+            </select>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -120,7 +145,6 @@
           <input type="email" class="form-control"
           style="background-color: #FFF8F3;" v-model="email" id="email"
           required maxlength="100"
-          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
           placeholder="xxx@xxxx.xxx">
         </div>
 
@@ -152,7 +176,7 @@
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              required maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
               rows="2" placeholder=
               "Sólo se permiten letras, números y espacios en blanco">
             </textarea>
@@ -161,8 +185,8 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-success" 
-            style="background-color: #758694; color: white;
+          <button type="submit" class="btn btn-secondary" 
+            style="background-color: #405D72; color: white;
             border: transparent;">
             Continuar
           </button>
@@ -170,83 +194,100 @@
       </form>
     </div>
   </div>
-
-  <footer class="py-5 custom-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
-          <div>
-            <a href="#" class="fa fa-facebook"></a>
-            <a href="#" class="fa fa-linkedin"></a>
-            <a href="#" class="fa fa-youtube"></a>
-            <a href="#" class="fa fa-instagram"></a>
-          </div>
-        </div>
-        <div class="col-md-3 mb-3">
-          <p class="h5">Empresa y equipo</p>
-          <a href="#">Sobre nosotros</a>
-        </div>
-        <div class="col-md-3 mb-3">
-          <p class="h5">Recursos</p>
-          <a href="#">¿Cómo registro mi empresa?</a><br />
-          <a href="#">¿Cómo registro empleados a mi empresa?</a><br />
-          <a href="#">¿Cómo accedo a mi perfil?</a>
-        </div>
-        <div class="col-md-3 mb-3">
-          <p class="h5">Contacto</p>
-          <p><i class="pi pi-phone" style="color:#405D72;"></i>
-            +506 2000-0000</p>
-          <p><i class="pi pi-home" style="color:#405D72;"></i>
-            San José, Montes de Oca, San Pedro</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <MainFooter/>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
+import MainFooter from "./MainFooter.vue";
+import axios from "axios";
 export default {
-  setup() {
-    const router = useRouter()
-    const firstName = ref('')
-    const secondName = ref('')
-    const firstLastName = ref('')
-    const secondLastName = ref('')
-    const idNumber = ref('')
-    const username = ref('')
-    const password = ref('')
-    const phoneNumber = ref('')
-    const email = ref('')
-
-    const address = ref({
-      province: '',
-      canton: '',
-      district: '',
-      otherSigns: ''
-    })
-
-    function submitForm() {
-      router.push('/RegisterCompany')
-    }
+  components: {
+    MainFooter
+  },
+  data() {
     return {
-      firstName,
-      secondName,
-      firstLastName,
-      secondLastName,
-      idNumber,
-      username,
-      password,
-      phoneNumber,
-      email,
-      address,
-      submitForm
+      idNumber: '',
+      phoneNumber: '',
+      email: '',
+      firstName: '',
+      secondName: '',
+      firstLastName: '',
+      secondLastName: '',
+      username: '',
+      address: {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
+      },
+      gender: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
+      months: [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ],
+      years: this.generateYears()
+    };
+  },
+  methods: {
+    generateYears() {
+      const current = new Date().getFullYear();
+      const years = [];
+      for (let y = current; y >= 1900; y--) {
+        years.push(y);
+      }
+      return years;
+    },
+    getBirthDate() {
+      if (this.birthDay && this.birthMonth && this.birthYear) {
+        return`${this.birthYear}-${String(this.birthMonth).padStart(2, '0')}-${String(this.birthDay).padStart(2, '0')}`;
+      }
+      return null;
+    },
+    submitForm: function() {
+      const birthDate = this.getBirthDate();
+
+      axios.post("https://localhost:7275/api/Employer", {
+        idNumber: this.idNumber,
+        phoneNumber: this.phoneNumber,
+        email: this.email,
+        firstName: this.firstName,
+        secondName: this.secondName,
+        firstLastName: this.firstLastName,
+        secondLastName: this.secondLastName,
+        username: this.username,
+        province: this.address.province,
+        canton: this.address.canton,
+        district: this.address.district,
+        otherSigns: this.address.otherSigns,
+        gender: this.gender,
+        birthDay: this.birthDay,
+        birthMonth: this.birthMonth,
+        birthYear: this.birthYear,
+        birthDate: birthDate
+      })
+      .then(function(response) {
+        console.log("Respuesta del servidor:", response.data);
+        if (response.data === true) {
+          this.$router.push('/RegisterCompany');
+        } else {
+          alert(
+            "No se pudo registrar el empleador. Verifica los datos ingresados."
+          );
+        }
+      }.bind(this))
+      .catch(function(error) {
+        console.error("Error:", error);
+        if (error.response) {
+          const message = error.response.data?.message || "Error desconocido";
+          alert(message);
+        }
+      });
     }
   }
-}
+};
 </script>
 
 <style>
