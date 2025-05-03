@@ -25,25 +25,23 @@
         </div>
       </nav>
     </header>
+  </div>
 
     <div v-if="!canSeeEmployeesInfo" class="text-center">
       <h4>No tiene permisos para ver esta información.</h4>
     </div>
 
-    <div v-else>
-      <h1 class="text-center mb-4" style="color: #405D72">
-        Nombre de Empresa</h1>
-      <h2 class="text-center mb-4" style="color: #758694">
-        Lista de Empleados</h2>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Cédula</th>
-            <th>Correo</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-          </tr>
+      <div class="container mt-5 mb-5">
+        <table class="table is-bordered table-striped
+            is-narrow is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">Nombre</th>
+              <th style="white-space: nowrap">Cédula</th>
+              <th style="white-space: nowrap">Correo</th>
+              <th style="white-space: nowrap">Teléfono</th>
+              <th style="white-space: nowrap">Acciones</th>
+            </tr>
         </thead>
         <tbody>
           <tr v-for="employee in employees" :key="employee.id">
@@ -59,6 +57,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
       <div v-if="showEmployeeDetailsModal" class="modal fade show d-block"
         tabindex="-1"
@@ -134,8 +133,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
   
   <footer class="py-5 custom-footer">
     <div class="container">
