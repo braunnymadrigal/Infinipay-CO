@@ -2,7 +2,7 @@
   <HeaderCompany />
 
   <div class="container mt-5 mb-5">
-    <h1 class="text-center" style="color: #405d72">Agregar beneficio</h1>
+    <h1 class="text-center" style="color: #405d72">Lista beneficios</h1>
     <div class="row justify-content-start">
       <div class="col-2">
         <router-link to="/RegisterBenefit">
