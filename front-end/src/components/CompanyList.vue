@@ -1,0 +1,167 @@
+<template>
+  <div>
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <img
+        src="../assets/images/logo.png"
+        alt="Company logo"
+        class="img-fluid"
+        style="max-width: 350px"
+      />
+    </div>
+
+    <header class="mb-5 custom-header">
+      <nav class="navbar navbar-expand-lg rounded custom-navbar">
+        <div class="container-fluid">
+          <div class="d-flex">
+            <router-link
+              to="/LoginUser"
+              class="btn btn-outline-primary me-2"
+              style="
+                background-color: #405d72;
+                color: #ffffff;
+                border: transparent;
+              "
+            >
+              Iniciar sesión</router-link
+            >
+            <router-link
+              to="/RegisterEmployer"
+              class="btn btn-primary"
+              style="background-color: #405d72; border: transparent"
+              >Registrá tu empresa
+            </router-link>
+          </div>
+          <div class="ms-auto">
+            <router-link
+              to="/"
+              class="btn btn-secondary"
+              style="
+                background-color: #f7e7dc;
+                color: #2b3f4e;
+                border: 2px solid transparent;
+              "
+              >Página principal
+            </router-link>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container mt-5 mb-5">
+      <h1 class="text-center mb-5" style="color: #405d72">Lista de empresas</h1>
+      <table
+        class="table is-bordered table-striped is-narrow is-hoverable is-fullwidth"
+      >
+        <thead>
+          <tr>
+            <th style="white-space: nowrap">Nombre</th>
+            <th style="white-space: nowrap">Descripción</th>
+            <th style="white-space: nowrap">Cédula jurídica</th>
+            <th style="white-space: nowrap">Dirección</th>
+            <th style="white-space: nowrap">Número de contacto</th>
+            <th style="white-space: nowrap">Fecha de creación</th>
+            <th style="white-space: nowrap">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(company, index) of companies" :key="index">
+            <td>{{ company.name }}</td>
+            <td>{{ truncateString(company.description, 150) }}</td>
+            <td>{{ company.legalId + " meses" }}</td>
+            <td>{{ company.address }}</td>
+            <td>{{ company.contactNumber }}</td>
+            <td>{{ company.creationDate }}</td>
+            <td>
+              <div class="d-flex justify-content-center gap-2">
+                <button v-on:click="eliminar" class="btn btn-danger btn-sm">
+                  Eliminar
+                </button>
+                <button
+                  class="btn btn-secondary btn-sm"
+                  style="background-color: #405d72; border: transparent"
+                >
+                  Ver
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <MainFooter />
+  </div>
+</template>
+
+<script>
+import MainFooter from "./MainFooter.vue";
+export default {
+  components: {
+    MainFooter,
+  },
+  setup() {
+    return {};
+  },
+  data() {
+    return {
+      companies: [
+        {
+          name: "Cooperativa de Productores de Leche Dos Pinos R.L.",
+          description:
+            "Principal cooperativa láctea de Costa Rica, reconocida por su compromiso con la calidad, innovación y responsabilidad social.",
+          legalId: "3-002-045428",
+          address: "San José, Costa Rica",
+          contactNumber: "+506 2247 2000",
+          creationDate: "1947-01-01",
+        },
+        {
+          name: "BAC Credomatic",
+          description:
+            "Institución financiera líder en servicios bancarios y tecnológicos en Centroamérica, destacada por su innovación y enfoque en el cliente.",
+          legalId: "3-101-011262",
+          address: "San José, Costa Rica",
+          contactNumber: "+506 2295 9797",
+          creationDate: "1952-01-01",
+        },
+        {
+          name: "Florida Ice and Farm Company (FIFCO)",
+          description:
+            "Empresa costarricense de alimentos y bebidas con un fuerte enfoque en sostenibilidad y responsabilidad social empresarial.",
+          legalId: "3-101-007265",
+          address: "Heredia, Costa Rica",
+          contactNumber: "+506 2209 9000",
+          creationDate: "1908-01-01",
+        },
+        {
+          name: "Intel Costa Rica",
+          description:
+            "Subsidiaria de la multinacional tecnológica Intel, especializada en investigación, desarrollo y servicios globales de ingeniería.",
+          legalId: "3-101-234567",
+          address: "Belén, Heredia, Costa Rica",
+          contactNumber: "+506 2209 2000",
+          creationDate: "1997-01-01",
+        },
+        {
+          name: "Grupo Purdy",
+          description:
+            "Empresa líder en el sector automotriz costarricense, representante oficial de marcas como Toyota y Lexus, reconocida por su servicio al cliente.",
+          legalId: "3-101-123456",
+          address: "San José, Costa Rica",
+          contactNumber: "+506 2523 3000",
+          creationDate: "1957-01-01",
+        },
+      ],
+    };
+  },
+  methods: {
+    truncateString(str, maxLength) {
+      if (str.length > maxLength) {
+        return str.substring(0, maxLength) + "...";
+      }
+      return str;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped></style>
