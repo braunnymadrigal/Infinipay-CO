@@ -1,9 +1,9 @@
 ﻿using back_end.Repositories;
 using back_end.Models;
 
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace back_end.Controllers
 {
@@ -12,24 +12,24 @@ namespace back_end.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private readonly LoginRepository loginRepository;
+        private readonly LoginRepository _loginRepository;
 
         public LoginController(IConfiguration config)
         {
             _config = config;
-            loginRepository = new LoginRepository(_config);
+            _loginRepository = new LoginRepository(_config);
         }
 
         [AllowAnonymous]
-        [Route("userLogin")]
+        [Route("Login")]
         [HttpPost]
         public IActionResult Login([FromBody] LoginUserModel loginUserModel)
         {
             IActionResult returnActionResult = NotFound("CUSTOM ERROR:user not found");
-            UserModel userModel = loginRepository.Authenticate(loginUserModel);
+            UserModel userModel = _loginRepository.Authenticate(loginUserModel);
             if (userModel.Nickname != "")
             {
-                String token = loginRepository.Generate(userModel);
+                String token = _loginRepository.Generate(userModel);
                 if (token != "")
                 {
                     returnActionResult = Ok(token);
@@ -38,20 +38,19 @@ namespace back_end.Controllers
             return returnActionResult;
         }
 
-        [Route("GetUser")]
-        [HttpPost]
-        public UserModel GetCurrentUser()
+        [AllowAnonymous]
+        [Route("GetLoggedUser")]
+        [HttpGet]
+        public UserModel GetLoggedUser()
         {
             UserModel userModel = new UserModel();
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
             {
                 var userClaims = identity.Claims;
-
                 var Nickname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
                 var PersonaId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
                 var Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value;
-
                 if (Nickname != null && PersonaId != null && Role != null)
                 {
                     userModel.Nickname = Nickname;
