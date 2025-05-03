@@ -40,7 +40,7 @@
             <label for="firstName" class="form-label">Primer nombre</label>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="firstName"
-            id="firstName" required maxlength="100"
+            id="firstName" required maxlength="50"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
@@ -50,7 +50,7 @@
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;"
             v-model="secondName" id="secondName"
-            maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
@@ -61,7 +61,7 @@
               Primer apellido</label>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="firstLastName"
-            id="firstLastName" required maxlength="100"
+            id="firstLastName" required maxlength="50"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
@@ -71,7 +71,7 @@
               Segundo apellido</label>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="secondLastName"
-            id="secondLastName" required maxlength="100"
+            id="secondLastName" required maxlength="50"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
@@ -92,7 +92,7 @@
           <label for="username" class="form-label">Nombre de usuario</label>
           <input type="text" class="form-control" v-model="username"
             style="background-color: #FFF8F3;" id="username" required 
-            maxlength="30" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
+            maxlength="100" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
             placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
           />
         </div>
@@ -143,9 +143,9 @@
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
           <input type="email" class="form-control"
-          style="background-color: #FFF8F3;" v-model="email" id="email"
-          required maxlength="100"
-          placeholder="xxx@xxxx.xxx">
+            style="background-color: #FFF8F3;" v-model="email" id="email"
+            required maxlength="100" placeholder="xxx@xxxx.xxx"
+          @input="email = $event.target.value.toLowerCase()">
         </div>
 
         <h5 class="fw-normal mb-3 text-start">Dirección</h5>
@@ -155,28 +155,28 @@
               <label for="province" class="form-label">Provincia</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.province"
-              id="province" required maxlength="10"
+              id="province" required maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="canton" class="form-label">Cantón</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.canton"
-              id="canton" required maxlength="100"
+              id="canton" required maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="district" class="form-label">Distrito</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.district"
-              id="district" required maxlength="100"
+              id="district" required maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
               rows="2" placeholder=
               "Sólo se permiten letras, números y espacios en blanco">
             </textarea>

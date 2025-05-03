@@ -48,7 +48,7 @@
           <label for="legalName" class="form-label">Razón social</label>
           <input type="text" class="form-control" id="legalName" 
             style="background-color: #FFF8F3;" v-model="legalName"
-            required maxlength="100"
+            required maxlength="256"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
             placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
         </div>
@@ -57,7 +57,7 @@
           <label for="description" class="form-label">
             Descripción de la empresa</label>
           <textarea class="form-control" style="background-color: #FFF8F3;"
-            v-model="description" id="description" maxlength="300"
+            v-model="description" id="description" maxlength="256"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
             placeholder=
             "Sólo se permiten espacios, letras y acentos del abecedario español."
@@ -112,9 +112,9 @@
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
           <input type="email" class="form-control"
-            style="background-color: #FFF8F3;"
-            v-model="email" id="email" required maxlength="100"
-            placeholder="xxx@xxxx.xxx">
+            style="background-color: #FFF8F3;" v-model="email" id="email"
+            required maxlength="100" placeholder="xxx@xxxx.xxx"
+          @input="email = $event.target.value.toLowerCase()">
         </div>
 
         <h3 class="fw-normal mb-3">Dirección</h3>
@@ -124,28 +124,28 @@
               <label for="province" class="form-label">Provincia</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.province"
-              id="province" required maxlength="10"
+              id="province" required maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="canton" class="form-label">Cantón</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.canton"
-              id="canton" required maxlength="100"
+              id="canton" required maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="district" class="form-label">Distrito</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.district"
-              id="district" required maxlength="100"
+              id="district" required maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              maxlength="300" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
               rows="2" placeholder=
               "Sólo se permiten letras, números y espacios en blanco">
             </textarea>

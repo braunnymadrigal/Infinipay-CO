@@ -21,7 +21,7 @@
               v-model="firstName"
               id="firstName"
               required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
@@ -35,8 +35,7 @@
               style="background-color: #fff8f3"
               v-model="secondName"
               id="secondName"
-              required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
@@ -55,7 +54,7 @@
               v-model="firstLastName"
               id="firstLastName"
               required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
@@ -72,7 +71,7 @@
               v-model="secondLastName"
               id="secondLastName"
               required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
@@ -129,7 +128,7 @@
             style="background-color: #fff8f3"
             id="username"
             required
-            maxlength="30"
+            maxlength="100"
             pattern="^[a-z_\.]+$"
             title="ejemplo_usuario"
             placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
@@ -155,17 +154,10 @@
 
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
-          <input
-            type="email"
-            class="form-control"
-            style="background-color: #fff8f3"
-            v-model="email"
-            id="email"
-            required
-            maxlength="100"
-            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-            placeholder="xxx@xxxx.xxx"
-          />
+          <input type="email" class="form-control"
+            style="background-color: #FFF8F3;" v-model="email" id="email"
+            required maxlength="100" placeholder="xxx@xxxx.xxx"
+          @input="email = $event.target.value.toLowerCase()">
         </div>
 
         <h5 class="fw-normal mb-3 text-start">Dirección</h5>
@@ -180,7 +172,7 @@
                 v-model="address.province"
                 id="province"
                 required
-                maxlength="10"
+                maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
               />
             </div>
@@ -193,7 +185,7 @@
                 v-model="address.canton"
                 id="canton"
                 required
-                maxlength="100"
+                maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
               />
             </div>
@@ -206,7 +198,7 @@
                 v-model="address.district"
                 id="district"
                 required
-                maxlength="100"
+                maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
               />
             </div>
@@ -218,7 +210,7 @@
                 v-model="address.otherSigns"
                 id="otherSigns"
                 required
-                maxlength="300"
+                maxlength="256"
                 pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
                 rows="2"
                 placeholder="Sólo se permiten letras, números y espacios en blanco"
