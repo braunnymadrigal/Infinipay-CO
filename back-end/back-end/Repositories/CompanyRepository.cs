@@ -75,7 +75,7 @@ namespace back_end.Repositories
           try
           {
             if (dataAlreadyExists("Persona", "identificacion"
-              , company.idNumber.ToString(), transaction))
+              , company.idNumber, transaction))
               throw new Exception("CEDULA_DUPLICADA");
 
             if (dataAlreadyExists("Persona", "numeroTelefono"

@@ -52,7 +52,7 @@ namespace back_end.Repositories
       {
 
         if (dataAlreadyExists("Persona", "identificacion"
-          , employer.idNumber.ToString(), transaction))
+          , employer.idNumber, transaction))
           throw new Exception("CEDULA_DUPLICADA");
 
         if (dataAlreadyExists("Persona", "numeroTelefono", employer.phoneNumber

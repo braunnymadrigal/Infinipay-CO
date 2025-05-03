@@ -7,7 +7,7 @@ namespace back_end.Models
   public class EmployerModel
   {
     [Required]
-    public int idNumber { get; set; }
+    public string idNumber { get; set; }
     
     [Required]
     public string phoneNumber { get; set; }
