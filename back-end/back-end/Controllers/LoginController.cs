@@ -35,7 +35,7 @@ namespace back_end.Controllers
         public IActionResult Login([FromBody] LoginUserModel loginUserModel)
         {
             UserModel userModel = Authenticate(loginUserModel);
-            if (userModel.Nickname != "")
+            if (userModel.NicknameOrEmail != "")
             {
                 String token = Generate(userModel);
                 return Ok(token);
@@ -52,7 +52,7 @@ namespace back_end.Controllers
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
                 var claims = new[]
                 {
-                new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
+                new Claim(ClaimTypes.NameIdentifier, userModel.NicknameOrEmail),
                 new Claim(ClaimTypes.Sid, userModel.PersonaId),
                 new Claim(ClaimTypes.Role, userModel.Role),
             };
@@ -92,14 +92,14 @@ namespace back_end.Controllers
                 nickname = nicknameOrEmail;
                 consulta = $"SELECT [nickname], [contrasena], [idPersonaFisica] FROM [Usuario] WHERE [nickname]='{nickname}';";
                 userModel = ObtenerTablaUsuario(userModel, consulta);
-                if (userModel.Nickname != "" && userModel.Password != null)
+                if (userModel.NicknameOrEmail != "" && userModel.Password != null)
                 {
                     okPassword = password.SequenceEqual(userModel.Password);
                 }
             }
             if (!okPassword)
             {
-                userModel.Nickname = "";
+                userModel.NicknameOrEmail = "";
             } else
             {
                 consulta = $"SELECT [rol] FROM [Empleado] WHERE [idPersonaFisica]='{userModel.PersonaId}';";
@@ -147,7 +147,7 @@ namespace back_end.Controllers
                 var personaId = Convert.ToString(filaResultado["idPersonaFisica"]);
                 if (nickname != null && password != null && personaId != null)
                 {
-                    userModel.Nickname = nickname;
+                    userModel.NicknameOrEmail = nickname;
                     userModel.Password = password;
                     userModel.PersonaId = personaId;
                 }
@@ -171,7 +171,7 @@ namespace back_end.Controllers
 
                 if (Nickname != null && PersonaId != null && Role != null)
                 {
-                    userModel.Nickname = Nickname;
+                    userModel.NicknameOrEmail = Nickname;
                     userModel.PersonaId = PersonaId;
                     userModel.Role = Role;
                 }

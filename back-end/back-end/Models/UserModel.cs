@@ -4,12 +4,12 @@
     {
         public UserModel()
         {
-            this.Nickname = "";
+            this.NicknameOrEmail = "";
             this.Password = null;
             this.Role = "";
             this.PersonaId = "";
         }
-        public string Nickname { get; set; }
+        public string NicknameOrEmail { get; set; }
         public byte[]? Password { get; set; }
         public string Role { get; set; }
         public string PersonaId { get; set; }
