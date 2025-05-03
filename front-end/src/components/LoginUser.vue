@@ -116,17 +116,17 @@ export default {
   components: {
     MainFooter
   },
-    data() {
-      return {
-        user: { userId: "", userPassword: "" },
-      };
+  data() {
+    return {
+      user: { userId: "", userPassword: "" },
+    };
+  },
+  methods: {
+    startLogin() {
+      console.log("Saved:", this.user);
     },
-    methods: {
-      startLogin() {
-        console.log("Saved:", this.user);
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style>
