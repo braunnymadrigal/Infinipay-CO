@@ -36,17 +36,16 @@
   <div class="h-100 d-flex align-items-center justify-content-center 
   bg-transparent">
     <div class="card p-4 bg-transparent border-0" 
-    style="max-width: 600px; width: 100%">
-      <i class="pi pi-user" style="font-size: 8.5rem"></i>
+    style="max-width: 600px; width: 100%; text-align: center">
+      <i class="pi pi-user" style="font-size: 8.5rem; color: #405D72"></i>
     </div>
   </div>
   <div class="h-100 d-flex align-items-center justify-content-center 
   bg-transparent">
     <div class="card p-4 bg-transparent border-0" 
     style="max-width: 600px; width: 100%">
-      <h1 class="font-weight-bold">Iniciar sesión</h1>
-      <h6 class="text-secondary">¿Aún no has registrado tu empresa? 
-        ¡Empezá ya!</h6>
+      <h1 class="font-weight-bold" style="text-align: center; color: #405D72">
+        Iniciar sesión</h1>
     </div>
   </div>
   <div class="h-100 d-flex align-items-center justify-content-center 
@@ -90,8 +89,9 @@
             required
           />
         </div>
-        <div>
-          <button type="submit" class="btn btn-dark btn-round">
+        <div style="text-align: center">
+          <button type="submit" class="btn btn-dark btn-round" 
+          style="background-color: #405D72; border-color: #2b3f4e;">
             Iniciar sesión
           </button>
         </div>
@@ -129,6 +129,6 @@ export default {
   };
 </script>
 
-<style lang="scss" scoped>
-
+<style>
+  @import '../assets/css/HeaderFooter.css';
 </style>
