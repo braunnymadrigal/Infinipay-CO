@@ -38,9 +38,6 @@ namespace back_end.Models
     public string otherSigns { get; set; }
 
     [Required]
-    public string idType { get; set; }
-
-    [Required]
     public string username { get; set; }
 
     [Required]

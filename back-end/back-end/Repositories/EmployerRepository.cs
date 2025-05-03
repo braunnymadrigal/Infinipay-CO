@@ -106,19 +106,27 @@ namespace back_end.Handlers
     private Guid insertPerson(EmployerModel employer, Guid auditId,
                               SqlTransaction transaction)
     {
+      string idType = "fisica";
+
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Persona]
         ([identificacion], [numeroTelefono], [correoElectronico],
-         [tipoIdentificacion], [idAuditoria])
+         [tipoIdentificacion], [idAuditoria], [fechaNacimiento])
         OUTPUT INSERTED.id
         VALUES (@identificacion, @numeroTelefono, @correoElectronico,
-         @tipoIdentificacion, @idAuditoria)", _connection, transaction);
+         @tipoIdentificacion, @idAuditoria, @fechaNacimiento)"
+        , _connection, transaction);
 
       cmd.Parameters.AddWithValue("@identificacion", employer.idNumber);
       cmd.Parameters.AddWithValue("@numeroTelefono", employer.phoneNumber);
       cmd.Parameters.AddWithValue("@correoElectronico", employer.email);
-      cmd.Parameters.AddWithValue("@tipoIdentificacion", employer.idType);
+      cmd.Parameters.AddWithValue("@tipoIdentificacion", idType);
       cmd.Parameters.AddWithValue("@idAuditoria", auditId);
+
+      var birthDate = new DateTime(employer.birthYear, employer.birthMonth,
+                             employer.birthDay);
+      cmd.Parameters.Add("@fechaNacimiento", SqlDbType.Date).Value =
+        birthDate;
 
       var id = (Guid)cmd.ExecuteScalar();
       Debug.WriteLine("Inserted person with ID: " + id);
@@ -131,9 +139,9 @@ namespace back_end.Handlers
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[PersonaFisica]
         ([id], [primerNombre], [segundoNombre], [primerApellido],
-         [segundoApellido], [genero], [fechaNacimiento])
+         [segundoApellido], [genero])
         VALUES (@id, @primerNombre, @segundoNombre, @primerApellido,
-         @segundoApellido, @genero, @fechaNacimiento)", _connection
+         @segundoApellido, @genero)", _connection
          , transaction);
 
       cmd.Parameters.AddWithValue("@id", personId);
@@ -144,11 +152,6 @@ namespace back_end.Handlers
       cmd.Parameters.AddWithValue("@segundoApellido",
         employer.secondLastName);
       cmd.Parameters.AddWithValue("@genero", employer.gender);
-
-      var birthDate = new DateTime(employer.birthYear, employer.birthMonth,
-                                   employer.birthDay);
-      cmd.Parameters.Add("@fechaNacimiento", SqlDbType.Date).Value =
-        birthDate;
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: PersonaFisica.");
