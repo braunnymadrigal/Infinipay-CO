@@ -98,18 +98,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="idType" class="form-label">Tipo de cédula</label>
-          <select id="idType" class="form-select"
-            style="background-color: #FFF8F3;" v-model="idType"
-            required>
-            <option disabled value="">Seleccione una opción</option>
-            <option value="fisica">Física</option>
-            <option value="juridica">Jurídica</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="idNumber" class="form-label">Cédula</label>
+          <label for="idNumber" class="form-label">Cédula física</label>
           <input type="text" class="form-control"
           style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
           required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
@@ -197,7 +186,7 @@
 
         <div class="d-flex justify-content-center">
           <button type="submit" class="btn btn-success" 
-            style="background-color: #758694; color: white;
+            style="background-color: #405D72; color: white;
             border: transparent;">
             Continuar
           </button>
@@ -210,7 +199,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
@@ -259,7 +248,6 @@ export default {
         district: '',
         otherSigns: ''
       },
-      idType: '',
       gender: '',
       birthDay: '',
       birthMonth: '',
@@ -302,7 +290,6 @@ export default {
         canton: this.address.canton,
         district: this.address.district,
         otherSigns: this.address.otherSigns,
-        idType: this.idType,
         gender: this.gender,
         birthDay: this.birthDay,
         birthMonth: this.birthMonth,
