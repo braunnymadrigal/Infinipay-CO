@@ -152,6 +152,7 @@ export default {
         },
       ],
 <<<<<<< HEAD
+<<<<<<< HEAD
       methods: {
         // getCompanyList() {
         //   axios
@@ -167,6 +168,8 @@ export default {
       // onmounted() {
       //   // this.getCompanyList();
       // },
+=======
+>>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
 =======
 >>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
     };
