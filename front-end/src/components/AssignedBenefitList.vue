@@ -14,7 +14,9 @@
       <div class="col-2">
         <button type="button"
                 class="btn btn-success"
-                style="background-color: #405d72; border: transparent">
+                style="background-color: #405d72;
+                border: transparent"
+                @click="openAddAssignedBenefitListModal()">
           Agregar
         </button>
       </div>
@@ -41,14 +43,18 @@
           <td>{{ benefit.formula.join(', ') }}</td>
           <td>
             <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-danger btn-sm" style="width: 70px">
+              <button class="btn btn-danger btn-sm"
+                      style="width: 70px;
+                      border: transparent;
+                      width: 70px"
+              >
                 Eliminar
               </button>
               <button class="btn btn-success btn-sm"
                       style="background-color: #405d72;
                       border: transparent;
                       width: 70px"
-                      @click="openModal(benefit)">
+                      @click="openAssignedBenefitListModal(benefit)">
                 Ver
               </button>
             </div>
@@ -62,6 +68,11 @@
   <AssignedBenefitListModal v-if="showAssignedBenefitListModal"
                             :benefit="selectedBenefit"
                             @close="showAssignedBenefitListModal = false" />
+
+  <AddAssignedBenefitListModal v-if="showAddAssignedBenefitListModal"
+                            :benefit="selectedBenefit"
+                            @close="showAddAssignedBenefitListModal = false" />
+
   <MainFooter />
 
 </template>
@@ -69,18 +80,21 @@
 <script>
   import HeaderCompany from "./HeaderCompany.vue";
   import MainFooter from "./MainFooter.vue";
-  import AssignedBenefitListModal from"./AssignedBenefitListModal";
+  import AssignedBenefitListModal from "./AssignedBenefitListModal";
+  import AddAssignedBenefitListModal from "./AddAssignedBenefitListModal";
 
   export default {
     components: {
       HeaderCompany,
       MainFooter,
-      AssignedBenefitListModal
+      AssignedBenefitListModal,
+      AddAssignedBenefitListModal,
     },
     data() {
       return {
         showAssignedBenefitListModal: false,
         selectedBenefit: null,
+        showAddAssignedBenefitListModal: false,
         benefits: [
           {
             name: "Plan Dental",
@@ -91,7 +105,7 @@
             minTime: 5,
             elegible: ['Semanal', 'Quincenal'],
             formula: ['32 0000 CRC'],
-            creationDate: '2/05/2025',
+            creationDate: '02/05/2025',
             creatorUser: 'fodp3323',
             modificationDate: null,
             modificationUser: null,
@@ -105,9 +119,9 @@
             minTime: 1,
             elegible: ['Mensual', 'Semanal', 'Quincenal'],
             formula: ['32 0000 CRC'],
-            creationDate: '2/03/2025',
+            creationDate: '02/03/2025',
             creatorUser: 'pep123',
-            modificationDate: '4/04/2025',
+            modificationDate: '04/04/2025',
             modificationUser: 'pop123'
           }
         ]
@@ -120,9 +134,12 @@
         }
         return str;
       },
-      openModal(benefit) {
+      openAssignedBenefitListModal(benefit) {
         this.selectedBenefit = benefit;
         this.showAssignedBenefitListModal = true;
+      },
+      openAddAssignedBenefitListModal() {
+        this.showAddAssignedBenefitListModal = true;
       }
     }
   };
