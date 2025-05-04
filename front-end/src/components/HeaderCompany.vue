@@ -18,7 +18,12 @@
                 style="color: #405d72"
                 >Perfil</router-link
               >
-              <a href="#" class="mx-2" style="color: #405d72">Empresa</a>
+              <router-link
+                to="/MyCompany"
+                class="mx-2"
+                style="color: #405d72"
+                >Empresa</router-link
+              >
               <router-link to="/BenefitList" class="mx-2" style="color: #405d72"
                 >Beneficios</router-link
               >
