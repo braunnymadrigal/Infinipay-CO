@@ -30,10 +30,32 @@ namespace back_end.Repositories
             string empresaId = GetStringCol1Fila1(consulta);
             consulta = $"SELECT * FROM [PersonaJuridica] WHERE [id] = '{empresaId}';";
             profileModel = LlenarEmpresa(profileModel, consulta);
-
+            consulta = $"SELECT * FROM [Direccion] WHERE [idPersona] = '{tablaPersonaId}';";
+            profileModel = LlenarDireccion(profileModel, consulta);
             return profileModel;
         }
 
+
+        private ProfileModel LlenarDireccion(ProfileModel profileModel, string consulta)
+        {
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                DataRow filaResultado = tablaResultado.Rows[0];
+                var provincia = Convert.ToString(filaResultado["provincia"]);
+                var canton = Convert.ToString(filaResultado["canton"]);
+                var distrito = Convert.ToString(filaResultado["distrito"]);
+                var otrasSenas = Convert.ToString(filaResultado["otrasSenas"]);
+                if (provincia != null && canton != null && distrito != null && otrasSenas != null)
+                {
+                    profileModel.Provincia = provincia;
+                    profileModel.Canton = canton;
+                    profileModel.Distrito = distrito;
+                    profileModel.DireccionExacta = otrasSenas;
+                }
+            }
+            return profileModel;
+        }
 
         private ProfileModel LlenarEmpresa(ProfileModel profileModel, string consulta)
         {
