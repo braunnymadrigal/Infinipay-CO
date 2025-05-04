@@ -32,9 +32,35 @@ namespace back_end.Repositories
             profileModel = LlenarEmpresa(profileModel, consulta);
             consulta = $"SELECT * FROM [Direccion] WHERE [idPersona] = '{tablaPersonaId}';";
             profileModel = LlenarDireccion(profileModel, consulta);
+            consulta = $"SELECT * FROM [PersonaFisica] WHERE [id] = '{tablaPersonaId}';";
+            profileModel = LlenarPersonaFisica(profileModel, consulta);
             return profileModel;
         }
 
+
+        private ProfileModel LlenarPersonaFisica(ProfileModel profileModel, string consulta)
+        {
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                DataRow filaResultado = tablaResultado.Rows[0];
+                var primerNombre = Convert.ToString(filaResultado["primerNombre"]);
+                var segundoNombre = Convert.ToString(filaResultado["segundoNombre"]);
+                var primerApellido = Convert.ToString(filaResultado["primerApellido"]);
+                var segundoApellido = Convert.ToString(filaResultado["segundoApellido"]);
+                var genero = Convert.ToString(filaResultado["genero"]);
+                if (primerNombre != null && segundoNombre != null && primerApellido != null 
+                    && segundoApellido != null && genero != null)
+                {
+                    profileModel.PrimerNombre = primerNombre;
+                    profileModel.SegundoNombre= segundoNombre;
+                    profileModel.PrimerApellido= primerApellido;
+                    profileModel.SegundoApellido= segundoApellido;
+                    profileModel.Genero = genero;
+                }
+            }
+            return profileModel;
+        }
 
         private ProfileModel LlenarDireccion(ProfileModel profileModel, string consulta)
         {
