@@ -40,43 +40,45 @@
           ></textarea>
         </div>
         <div class="mb-3">
-          <label for="BenefitAppliesTo" class="form-label">Aplica a</label>
+          <label for="BenefitAppliesTo" class="form-label"
+            >Empleados elegibles</label
+          >
           <div>
             <label class="d-block">
               <input
                 type="checkbox"
-                value="Supervisores"
-                v-model="newBenefit.appliesTo"
                 class="me-2"
+                :checked="isAllSelected"
+                @change="toggleAll"
               />
-              Supervisores
+              Todos
             </label>
             <label class="d-block">
               <input
                 type="checkbox"
-                value="Tiempo completo"
+                value="Semanal"
                 v-model="newBenefit.appliesTo"
                 class="me-2"
               />
-              Tiempo completo
+              Semanal
             </label>
             <label class="d-block">
               <input
                 type="checkbox"
-                value="Medio tiempo"
+                value="Quincenal"
                 v-model="newBenefit.appliesTo"
                 class="me-2"
               />
-              Medio tiempo
+              Quincenal
             </label>
             <label class="d-block">
               <input
                 type="checkbox"
-                value="Servicios profesionales"
+                value="Mensual"
                 v-model="newBenefit.appliesTo"
                 class="me-2"
               />
-              Servicios profesionales
+              Mensual
             </label>
           </div>
         </div>
@@ -155,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
 
@@ -169,6 +171,18 @@ const newBenefit = ref({
 });
 
 function submitForm() {
+  if (
+    newBenefit.value.name === "" ||
+    newBenefit.value.description === "" ||
+    newBenefit.value.appliesTo.length === 0 ||
+    newBenefit.value.minMonths <= 0 ||
+    newBenefit.value.formula <= 0 ||
+    newBenefit.value.typeFormula === ""
+  ) {
+    alert("Por favor, completa todos los campos requeridos.");
+    return;
+  }
+
   console.table(
     "Formulario enviado:",
     JSON.parse(JSON.stringify(newBenefit.value))
@@ -181,6 +195,20 @@ function submitForm() {
   newBenefit.value.formula = 0;
   newBenefit.value.typeFormula = "";
   // axios.post
+}
+
+const allOptions = ["Semanal", "Quincenal", "Mensual"];
+
+const isAllSelected = computed(() =>
+  allOptions.every((opt) => newBenefit.value.appliesTo.includes(opt))
+);
+
+function toggleAll(event) {
+  if (event.target.checked) {
+    newBenefit.value.appliesTo = [...allOptions];
+  } else {
+    newBenefit.value.appliesTo = [];
+  }
 }
 </script>
 
