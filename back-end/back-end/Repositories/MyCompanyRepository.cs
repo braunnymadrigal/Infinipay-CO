@@ -28,6 +28,29 @@ namespace back_end.Repositories
                 myCompanyModel = FillPhysicalPerson(myCompanyModel, query);
                 query = $"SELECT * FROM [Direccion] WHERE [idPersona] = '{companyId}';";
                 myCompanyModel = FillFullAddress(myCompanyModel, query);
+                query = $"SELECT * FROM [PersonaJuridica] WHERE [id] = '{companyId}';";
+                myCompanyModel = FillLegalPerson(myCompanyModel, query);
+            }
+            return myCompanyModel;
+        }
+
+        private MyCompanyModel FillLegalPerson(MyCompanyModel myCompanyModel, string query)
+        {
+            DataTable table = CreateTable(query);
+            if (table.Rows.Count > 0)
+            {
+                DataRow rowResult = table.Rows[0];
+                var name = Convert.ToString(rowResult["razonSocial"]);
+                var description = Convert.ToString(rowResult["descripcion"]);
+                var paymentType = Convert.ToString(rowResult["tipoPago"]);
+                var benefits = Convert.ToString(rowResult["beneficiosPorEmpleado"]);
+                if (name != null && description != null && paymentType != null && benefits != null)
+                {
+                    myCompanyModel.Name = name;
+                    myCompanyModel.Description = description;
+                    myCompanyModel.PaymentType = paymentType;
+                    myCompanyModel.Benefits = benefits;
+                }
             }
             return myCompanyModel;
         }
