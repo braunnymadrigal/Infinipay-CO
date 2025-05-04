@@ -14,6 +14,8 @@ import LoginUser from "./components/LoginUser.vue";
 import RegisterBenefit from "./components/RegisterBenefit.vue";
 import BenefitList from "./components/BenefitList.vue";
 import MyCompany from "./components/MyCompany.vue";
+import MyProfile from "./components/MyProfile.vue";
+import AssignedBenefitList from "./components/AssignedBenefitList.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -48,6 +50,12 @@ const router = createRouter({
     },
     { path: "/BenefitList", name: "BenefitList", component: BenefitList },
     { path: "/MyCompany", name: "MyCompany", component: MyCompany },
+    { path: "/MyProfile", name: "MyProfile", component: MyProfile },
+    {
+      path: "/AssignedBenefitList",
+      name: "AssignedBenefitList",
+      component: AssignedBenefitList
+    },
   ],
 });
 
