@@ -3,6 +3,7 @@ import App from "./App.vue";
 import "primeicons/primeicons.css";
 
 import { createRouter, createWebHistory } from "vue-router";
+import VueCookies from 'vue-cookies';
 
 import HomePage from "./components/HomePage.vue";
 import AboutUs from "./components/AboutUs.vue";
@@ -57,4 +58,4 @@ const router = createRouter({
   ],
 });
 
-createApp(App).use(router).mount("#app");
+createApp(App).use(router).use(VueCookies, { expires: '7d'}).mount("#app");
