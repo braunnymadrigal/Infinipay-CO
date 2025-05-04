@@ -24,7 +24,36 @@ namespace back_end.Repositories
             companyId = GetFirstColumnFirstRow(query);
             if (companyId != "")
             {
-                myCompanyModel.Benefits = "manin";
+                query = $"SELECT * FROM [PersonaFisica] WHERE [id] = '{ownerId}';";
+                myCompanyModel = FillPhysicalPerson(myCompanyModel, query);
+            }
+            return myCompanyModel;
+        }
+
+        private MyCompanyModel FillPhysicalPerson(MyCompanyModel myCompanyModel, string query)
+        {
+            string fullName = "";
+            DataTable table = CreateTable(query);
+            if (table.Rows.Count > 0)
+            {
+                DataRow rowResult = table.Rows[0];
+                var firstGivenName = Convert.ToString(rowResult["primerNombre"]);
+                var secondGivenName = Convert.ToString(rowResult["segundoNombre"]);
+                var firstFamilyName = Convert.ToString(rowResult["primerApellido"]);
+                var secondFamilyName = Convert.ToString(rowResult["segundoApellido"]);
+                if (firstGivenName != null && secondGivenName != null 
+                    && firstFamilyName != null && secondFamilyName != null)
+                {
+                    if (secondGivenName != "")
+                    {
+                        fullName = firstGivenName + " " + secondGivenName + firstFamilyName + " " + secondFamilyName;
+                    }
+                    else
+                    {
+                        fullName = firstGivenName + " " + firstFamilyName + " " + secondFamilyName;
+                    }
+                    myCompanyModel.Owner = fullName;
+                }
             }
             return myCompanyModel;
         }
