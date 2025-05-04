@@ -4,22 +4,22 @@
     {
         public ProfileModel()
         {
-            this.PrimerNombre = "";
-            this.SegundoNombre = "";
-            this.PrimerApellido = "";
-            this.SegundoApellido = "";
-            this.NombreUsuario = "";
-            this.Cedula = "";
-            this.Correo = "";
-            this.Telefono = "";
-            this.Provincia = "";
-            this.Canton = "";
-            this.Distrito = "";
-            this.DireccionExacta = "";
-            this.Genero = "";
-            this.FechaNacimiento = "";
-            this.Empresa = "";
-            this.Rol = "";
+            this.PrimerNombre = "No especificado";
+            this.SegundoNombre = "No especificado";
+            this.PrimerApellido = "No especificado";
+            this.SegundoApellido = "No especificado";
+            this.NombreUsuario = "No especificado";
+            this.Cedula = "No especificado";
+            this.Correo = "No especificado";
+            this.Telefono = "No especificado";
+            this.Provincia = "No especificado";
+            this.Canton = "No especificado";
+            this.Distrito = "No especificado";
+            this.DireccionExacta = "No especificado";
+            this.Genero = "No especificado";
+            this.FechaNacimiento = "No especificado";
+            this.Empresa = "No especificado";
+            this.Rol = "No especificado";
         }
 
         public string PrimerNombre { get; set; }
