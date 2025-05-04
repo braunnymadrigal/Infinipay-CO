@@ -38,6 +38,7 @@ namespace back_end.Controllers
                     profileModel.Rol = role;
                 }
             }
+            profileModel = _profileRepository.GetProfileModel(profileModel, tablaPersonaId);
             return profileModel;
         }
     }

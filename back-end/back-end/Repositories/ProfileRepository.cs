@@ -19,23 +19,52 @@ namespace back_end.Repositories
 
         public ProfileModel GetProfileModel(ProfileModel profileModel, string tablaPersonaId)
         {
-            string empresaId = "";
-            if (profileModel.Rol == "empleador")
+            string consulta = "";
+            string empleadorId = tablaPersonaId;
+            if (profileModel.Rol != "empleador")
             {
-
+                consulta = $"SELECT [idEmpleadorContratador] FROM [Empleado] WHERE [idPersonaFisica] = '{tablaPersonaId}';";
+                empleadorId = GetStringCol1Fila1(consulta);
             }
-            else
-            {
-
-            }
+            consulta = $"SELECT [idPersonaJuridica] FROM [Empleador] WHERE [idPersonaFisica] = '{empleadorId}';";
+            string empresaId = GetStringCol1Fila1(consulta);
+            consulta = $"SELECT * FROM [PersonaJuridica] WHERE [id] = '{empresaId}';";
+            profileModel = LlenarEmpresa(profileModel, consulta);
 
             return profileModel;
         }
 
 
+        private ProfileModel LlenarEmpresa(ProfileModel profileModel, string consulta)
+        {
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                DataRow filaResultado = tablaResultado.Rows[0];
+                var razonSocial = Convert.ToString(filaResultado["razonSocial"]);
+                if (razonSocial != null)
+                {
+                    profileModel.Empresa = razonSocial;
+                }
+            }
+            return profileModel;
+        }
 
-
-
+        private string GetStringCol1Fila1(string consulta)
+        {
+            string returnString = "";
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                DataRow filaResultado = tablaResultado.Rows[0];
+                var valorCol1Fil1 = Convert.ToString(filaResultado[0]);
+                if (valorCol1Fil1 != null)
+                {
+                    returnString = valorCol1Fil1;
+                }
+            }
+            return returnString;
+        }
 
         private DataTable CrearTablaConsulta(string consulta)
         {
