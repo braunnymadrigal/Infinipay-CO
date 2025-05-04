@@ -98,6 +98,16 @@
       </form>
     </div>
   </div>
+  <div v-if="showPopup" @click.stop 
+  class="h-100 d-flex align-items-center justify-content-center 
+  bg-transparent">
+    <div class="card bg-transparent border-0" 
+    style="max-width: 600px; width: 100%">
+      <div class="text-danger">
+        Correo electrónico/nombre de usuario o contraseña incorrectos
+      </div>
+    </div>
+  </div>
   <div class="h-100 d-flex align-items-center justify-content-center 
   bg-transparent">
     <div class="card p-4 bg-transparent border-0" 
@@ -111,6 +121,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import MainFooter from "./MainFooter.vue";
 export default {
   components: {
@@ -119,11 +130,27 @@ export default {
   data() {
     return {
       user: { userId: "", userPassword: "" },
+      showPopup: false,
     };
   },
   methods: {
     startLogin() {
-      console.log("Saved:", this.user);
+      axios
+        .post("https://localhost:7275/api/Login/Login", {NicknameOrEmail: this.user.userId, Password: this.user.userPassword})
+        .then(
+          response => {
+            this.showPopup = false;
+            this.$cookies.set('jwt', response.data);
+            this.$router.push('MyProfile');
+          }
+        )
+        .catch(
+          error => {
+            this.showPopup = true;
+            console.log(error);
+          }
+        )
+      ;
     },
   },
 };

@@ -1,7 +1,8 @@
 <template>
   <CompanyHeader/>
 
-  <div class="card p-4 mx-auto bg-transparent border-0 w-50" >
+  <div v-if="!showPopup" @click.stop 
+  class="card p-4 mx-auto bg-transparent border-0 w-50" >
     <h1
       class="text-center font-weight-bold"
       style="color: #405D72">
@@ -20,7 +21,7 @@
             class="form-control bg-transparent"
             type="text"
             id="firstName" 
-            v-model="profile.firstName"
+            v-model="profile.PrimerNombre"
             readonly
           >
         </div>
@@ -34,7 +35,7 @@
             class="form-control bg-transparent"
             type="text"
             id="secondName"
-            v-model="profile.secondName" 
+            v-model="profile.SegundoNombre" 
             readonly
           >
         </div>
@@ -51,7 +52,7 @@
             class="form-control bg-transparent"
             type="text"
             id="fistLastName"
-            v-model="profile.firstLastName" 
+            v-model="profile.PrimerApellido" 
             readonly
           >
         </div>
@@ -65,7 +66,7 @@
             class="form-control bg-transparent"
             type="text"
             id="secondLastName"
-            v-model="profile.secondLastName" 
+            v-model="profile.SegundoApellido" 
             readonly
           >
         </div>
@@ -81,7 +82,7 @@
           class="form-control bg-transparent"
           type="text"
           id="username"
-          v-model="profile.username" 
+          v-model="profile.NombreUsuario" 
           readonly
         >
       </div>
@@ -96,7 +97,7 @@
           class="form-control bg-transparent"
           type="text"
           id="identityDocument"
-          v-model="profile.identityDocument" 
+          v-model="profile.Cedula" 
           readonly
         >
       </div>
@@ -111,7 +112,7 @@
           class="form-control bg-transparent"
           type="text"
           id="email"
-          v-model="profile.email" 
+          v-model="profile.Correo" 
           readonly
         >
       </div>
@@ -128,7 +129,7 @@
             class="form-control bg-transparent"
             type="text"
             id="phoneNumber"
-            v-model="profile.email" 
+            v-model="profile.Telefono" 
             readonly
           >
         </div>
@@ -145,7 +146,7 @@
             class="form-control bg-transparent"
             type="text"
             id="province" 
-            v-model="profile.province"
+            v-model="profile.Provincia"
             readonly
           >
         </div>
@@ -159,7 +160,7 @@
             class="form-control bg-transparent"
             type="text"
             id="canton"
-            v-model="profile.canton" 
+            v-model="profile.Canton" 
             readonly
           >
         </div>
@@ -173,7 +174,7 @@
             class="form-control bg-transparent"
             type="text"
             id="district"
-            v-model="profile.district" 
+            v-model="profile.Distrito" 
             readonly
           >
         </div>
@@ -189,7 +190,7 @@
           class="form-control bg-transparent"
           type="text"
           id="exactAddress"
-          v-model="profile.exactAddress" 
+          v-model="profile.DireccionExacta" 
           readonly
         >
       </div>
@@ -204,7 +205,7 @@
           class="form-control bg-transparent"
           type="text"
           id="gender"
-          v-model="profile.gender" 
+          v-model="profile.Genero" 
           readonly
         >
       </div>
@@ -219,7 +220,7 @@
           class="form-control bg-transparent"
           type="text"
           id="birthDate"
-          v-model="profile.birthDate" 
+          v-model="profile.FechaNacimiento" 
           readonly
         >
       </div>
@@ -234,7 +235,7 @@
           class="form-control bg-transparent"
           type="text"
           id="companyName"
-          v-model="profile.companyName" 
+          v-model="profile.Empresa" 
           readonly
         >
       </div>
@@ -249,7 +250,7 @@
           class="form-control bg-transparent"
           type="text"
           id="companyRole"
-          v-model="profile.companyRole" 
+          v-model="profile.Rol" 
           readonly
         >
       </div>
@@ -263,12 +264,17 @@
     </form>
   </div>
 
+  <div v-if="showPopup" @click.stop class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger">Debe iniciar sesión para ver su perfil.</div>
+  </div> 
+
   <MainFooter/>
 </template>
 
 <script>
 import MainFooter from "./MainFooter.vue";
 import CompanyHeader from "./HeaderCompany.vue";
+import axios from "axios";
 export default {
   components: {
     MainFooter,
@@ -276,30 +282,57 @@ export default {
   },
   data() {
     return {
+      showPopup: false,
       profile: {
-        firstName: "José",
-        secondName: "María",
-        firstLastName: "Figueres",
-        secondLastName: "Olsen",
-        username: "jose_figueres",
-        identityDocument: "104790979",
-        email: "jose_olsen@gov.cr",
-        phoneNumber: "61606467",
-        province: "San José",
-        canton: "Desamparados",
-        district: "San Cristóbal",
-        exactAddress: "200 metros al sur del Parque John F. Kennedy, al costado este de la Plaza",
-        gender: "masculino",
-        birthDate: "24/12/1954",
-        companyName: "Cooperativa de Productores de Leche Dos Pinos R.L",
-        companyRole: "empleador", 
+        PrimerNombre: "",
+        SegundoNombre: "",
+        PrimerApellido: "",
+        SegundoApellido: "",
+        NombreUsuario: "",
+        Cedula: "",
+        Correo: "",
+        Telefono: "",
+        Provincia: "",
+        Canton: "",
+        Distrito: "",
+        DireccionExacta: "",
+        Genero: "",
+        FechaNacimiento: "",
+        Empresa: "",
+        Rol: "", 
       },
     };
   },
   methods: {
     editExample() {
-      console.log("Saved:", this.profile);
+      console.log("Próximamente llegará la opción 'Editar'.");
     },
+
+    getProfile() {
+      let jwtCookie = this.$cookies.get('jwt');
+      axios.get("https://localhost:7275/api/Profile", 
+      { headers: {"Authorization" : `Bearer ${jwtCookie}`} })
+        .then(
+          response => {
+            this.showPopup = false;
+            this.profile = response.data;
+          }
+        )
+        .catch(
+          error => {
+            this.showPopup = true;
+            console.log(error);
+            setTimeout(() => {
+              this.$router.push('LoginUser');
+            }, 4000);
+          }
+        )
+      ;
+    },
+  },
+
+  mounted() {
+    this.getProfile();
   },
 };
 </script>
