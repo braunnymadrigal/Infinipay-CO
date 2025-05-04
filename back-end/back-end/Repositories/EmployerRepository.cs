@@ -184,11 +184,12 @@ namespace back_end.Repositories
         , employer.birthDay);
       var rawPassword = employer.firstLastName + birthDate.ToString("ddMMyyyy")
         + "!";
+      Debug.WriteLine(rawPassword);
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])
-        VALUES (@idPersonaFisica, @nickname, HASHBYTES('SHA2_512'
-        , @contrasena))",
+        VALUES (@idPersonaFisica, @nickname,
+        HASHBYTES('SHA2_512', CONVERT(varchar(100), @contrasena)))",
       _connection, transaction);
       cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
       cmd.Parameters.AddWithValue("@nickname", employer.username);

@@ -213,13 +213,13 @@ namespace back_end.Repositories
         , employee.birthDay);
       var rawPassword = employee.firstLastName + birthDate.ToString("ddMMyyyy")
         + "!";
-      Debug.WriteLine("Raw password: " + rawPassword);
-
+      Debug.WriteLine(rawPassword);
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])
-        VALUES (@idPersonaFisica, @nickname, HASHBYTES('SHA2_512'
-        , @contrasena))", transaction.Connection, transaction);
+        VALUES (@idPersonaFisica, @nickname,
+        HASHBYTES('SHA2_512', CONVERT(varchar(100), @contrasena)))",
+      transaction.Connection, transaction);
 
       cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
       cmd.Parameters.AddWithValue("@nickname", employee.username);
