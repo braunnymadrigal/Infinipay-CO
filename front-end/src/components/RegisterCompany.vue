@@ -259,14 +259,7 @@ export default {
       }
       return years;
     },
-    getCreationDate() {
-      if (this.creationDay && this.creationMonth && this.creationYear) {
-        return `${this.creationYear}-${String(this.creationMonth).padStart(2, '0')}-${String(this.creationDay).padStart(2, '0')}`;
-      }
-      return null;
-    },
     submitForm() {
-      const creationDate = this.getCreationDate();
       axios.post("https://localhost:7275/api/Company", {
         legalName: this.legalName,
         description: this.description,
@@ -283,7 +276,6 @@ export default {
         creationDay: this.creationDay,
         creationMonth: this.creationMonth,
         creationYear: this.creationYear,
-        creationDate: creationDate
       })
       .then(function(response) {
         console.log("Respuesta del servidor:", response.data);

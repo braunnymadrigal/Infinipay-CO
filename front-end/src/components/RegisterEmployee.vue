@@ -11,6 +11,18 @@
       </h2>
 
       <form @submit.prevent="submitForm">
+
+        <!-- CAMPO TEMPORAL HASTA SABER COMO OBTENER EL USUARIO LOGUEADO -->
+        <div class="mb-3" style="margin-top: 30px">
+          <label for="employerUsername" class="form-label">
+            Usuario del empleador</label>
+          <input type="text" class="form-control" v-model="employerUsername"
+            style="background-color: #FFF8F3;" id="employerUsername" required 
+            maxlength="30" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
+            placeholder="Escriba el nombre de usuario del empleador de la empresa."
+          />
+        </div>
+
         <div class="row mb-3 justify-content-center" style="margin-top: 30px">
           <div class="col-md-6 col-lg-6">
             <label for="firstName" class="form-label">Primer nombre</label>
@@ -81,11 +93,11 @@
         <div class="mb-3">
           <label for="gender" class="form-label">
             Género</label>
-          <select id="gender" class="form-select" 
+          <select id="gender" class="form-select"
            style="background-color: #FFF8F3;" v-model="gender" required>
             <option disabled value="">Seleccione una opción</option>
-            <option value="weekly">Masculino</option>
-            <option value="biweekly">Femenino</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
           </select>
         </div>
 
@@ -104,6 +116,56 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label">Fecha de nacimiento</label>
+          <div class="d-flex gap-2">
+            <select id="birthDay" class="form-select" v-model="birthDay"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Día</option>
+              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              </option>
+            </select>
+            <select id="birthMonth" class="form-select" v-model="birthMonth"
+              style="background-color: #FFF8F3;"  required>
+              <option value="">Mes</option>
+              <option v-for="(month, index)
+                in months" :key="index" :value="index + 1"> {{ month }}
+              </option>
+            </select>
+            <select id="birthYear" class="form-select" v-model="birthYear"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Año</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de contratación</label>
+          <div class="d-flex gap-2">
+            <select id="hireDay" class="form-select" v-model="hireDay"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Día</option>
+              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              </option>
+            </select>
+            <select id="hireMonth" class="form-select" v-model="hireMonth"
+              style="background-color: #FFF8F3;"  required>
+              <option value="">Mes</option>
+              <option v-for="(month, index)
+                in months" :key="index" :value="index + 1"> {{ month }}
+              </option>
+            </select>
+            <select id="hireYear" class="form-select" v-model="hireYear"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Año</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="role">Rol</label>
           <select
             id="role"
@@ -113,9 +175,9 @@
             style="background-color: #fff8f3"
           >
             <option disabled value="">Seleccione el rol del empleado</option>
+            <option value="empleado">Empleado</option>
             <option value="supervisor">Supervisor</option>
-            <option value="employee">Empleado</option>
-            <option value="administrator">Administrador</option>
+            <option value="administrador">Administrator</option>
           </select>
         </div>
 
@@ -158,6 +220,82 @@
             style="background-color: #FFF8F3;" v-model="email" id="email"
             required maxlength="100" placeholder="xxx@xxxx.xxx"
           @input="email = $event.target.value.toLowerCase()">
+        </div>
+
+        <h5 class="fw-normal mb-3 text-start">Información de contrato</h5>
+        <div class="border p-3 rounded mb-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="reportsHours" class="form-label">
+                ¿Reporta horas?</label>
+              <select
+                id="reportsHours"
+                class="form-select"
+                v-model="reportsHours"
+                required
+                style="background-color: #fff8f3"
+              >
+                <option disabled value="">Seleccione una opción</option>
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="salary" class="form-label">Salario bruto</label>
+              <input type="text" id="salary" class="form-control"
+              style="background-color: #fff8f3" v-model="salary"
+              pattern="^\d{1,8}(\.\d{1,2})?$" required
+              placeholder="Ej: 45000.00" 
+              title =
+              "Formato: Máximo 8 dígitos antes del punto y 2 después"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="typeContract" class="form-label">
+                Tipo de contrato</label>
+              <select
+                id="typeContract"
+                class="form-select"
+                v-model="typeContract"
+                required
+                style="background-color: #fff8f3"
+              >
+                <option disabled value="">Seleccione una opción</option>
+                <option value="semanal">Semanal</option>
+                <option value="quincenal">Quincenal</option>
+                <option value="mensual">Mensual</option>
+                <option value="servicios">Servicios</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">
+                Fecha de creación</label>
+                <div class="d-flex gap-2">
+                  <select id="creationDay" class="form-select"
+                    v-model="creationDay"
+                    style="background-color: #FFF8F3;" required>
+                    <option value="">Día</option>
+                    <option v-for="day in 31" :key="day" :value="day">{{ day }}
+                    </option>
+                  </select>
+                  <select id="creationMonth" class="form-select"
+                    v-model="creationMonth"
+                    style="background-color: #FFF8F3;"  required>
+                    <option value="">Mes</option>
+                    <option v-for="(month, index)
+                      in months" :key="index" :value="index + 1"> {{ month }}
+                    </option>
+                  </select>
+                  <select id="creationYear" class="form-select"
+                    v-model="creationYear"
+                    style="background-color: #FFF8F3;" required>
+                    <option value="">Año</option>
+                    <option v-for="year in years" :key="year" :value="year">
+                      {{ year }}</option>
+                  </select>
+                </div>
+            </div>
+          </div>
         </div>
 
         <h5 class="fw-normal mb-3 text-start">Dirección</h5>
@@ -209,7 +347,6 @@
                 style="background-color: #fff8f3; height: 38px"
                 v-model="address.otherSigns"
                 id="otherSigns"
-                required
                 maxlength="256"
                 pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
                 rows="2"
@@ -221,7 +358,7 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-success" 
+          <button type="submit" class="btn btn-secondary" 
             style="background-color: #405D72; color: white;
             border: transparent;">
             Crear
@@ -236,6 +373,7 @@
 <script>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
+import axios from "axios";
 export default {
   components: {
     HeaderCompany,
@@ -243,29 +381,100 @@ export default {
   },
   data() {
     return {
+      employerUsername : '',
       firstName: '',
       secondName: '',
       firstLastName: '',
       secondLastName: '',
       idNumber: '',
       username: '',
-      password: '',
-      phone: '',
+      phoneNumber: '',
       email: '',
       role: '',
       gender: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
+      hireDay: '',
+      hireMonth: '',
+      hireYear: '',
+      reportsHours: '',
+      salary: '',
+      typeContract: '',
+      creationDay: '',
+      creationMonth: '',
+      creationYear: '',
+
       address: {
         province: '',
         canton: '',
         district: '',
         otherSigns: ''
-      }
+      },
+      months: [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ],
+      years: this.generateYears()
     };
   },
   methods: {
-    submitForm() {
-      alert('¡Empleado registrado exitosamente!');
-      this.$router.push('/EmployerProfile');
+    generateYears() {
+      const current = new Date().getFullYear();
+      const years = [];
+      for (let y = current; y >= 1900; y--) {
+        years.push(y);
+      }
+      return years;
+    },
+    submitForm: function() {
+    axios.post("https://localhost:7275/api/Employee", {
+      employerUsername: this.employerUsername,
+      firstName: this.firstName,
+      secondName: this.secondName,
+      firstLastName: this.firstLastName,
+      secondLastName: this.secondLastName,
+      idNumber: this.idNumber,
+      username: this.username,
+      phoneNumber: this.phoneNumber,
+      email: this.email,
+      role: this.role,
+      province: this.address.province,
+      canton: this.address.canton,
+      district: this.address.district,
+      otherSigns: this.address.otherSigns,
+      gender: this.gender,
+      birthDay: Number(this.birthDay),
+      birthMonth: Number(this.birthMonth),
+      birthYear: Number(this.birthYear),
+      hireDay: Number(this.hireDay),
+      hireMonth: Number(this.hireMonth),
+      hireYear: Number(this.hireYear),
+      reportsHours: Number(this.reportsHours),
+      salary: Number(this.salary),
+      typeContract: this.typeContract,
+      creationDay: Number(this.creationDay),
+      creationMonth: Number(this.creationMonth),
+      creationYear: Number(this.creationYear),
+    })
+      .then(function(response) {
+        console.log("Respuesta del servidor:", response.data);
+        if (response.data === true) {
+          alert("¡Empleado registrado exitosamente!");
+          this.$router.push('/'); // Redirigir a la página de inicio de momento
+        } else {
+          alert(
+            "No se pudo registrar el empleado. Verifica los datos ingresados."
+          );
+        }
+      }.bind(this))
+      .catch(function(error) {
+        console.error("Error:", error);
+        if (error.response) {
+          const message = error.response.data?.message || "Error desconocido";
+          alert(message);
+        }
+      });
     }
   }
 };

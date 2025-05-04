@@ -1,14 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace back_end.Models
 {
-
-  public class EmployerModel
+  public class EmployeeModel
   {
     [Required]
     public string idNumber { get; set; }
-    
+
     [Required]
     public string phoneNumber { get; set; }
 
@@ -51,5 +49,38 @@ namespace back_end.Models
 
     [Required]
     public int birthYear { get; set; }
+
+    [Required]
+    public int hireDay { get; set; }
+
+    [Required]
+    public int hireMonth { get; set; }
+
+    [Required]
+    public int hireYear { get; set; }
+
+    [Required]
+    public string employerUsername { get; set; }
+
+    [Required]
+    public string role { get; set; }
+
+    [Required]
+    public int creationDay { get; set; }
+
+    [Required]
+    public int creationMonth { get; set; }
+
+    [Required]
+    public int creationYear { get; set; }
+
+    [Required]
+    public int salary { get; set; }
+
+    [Required]
+    public int reportsHours { get; set; }
+
+    [Required]
+    public string typeContract { get; set; }
   }
 }

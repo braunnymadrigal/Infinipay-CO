@@ -240,15 +240,7 @@ export default {
       }
       return years;
     },
-    getBirthDate() {
-      if (this.birthDay && this.birthMonth && this.birthYear) {
-        return`${this.birthYear}-${String(this.birthMonth).padStart(2, '0')}-${String(this.birthDay).padStart(2, '0')}`;
-      }
-      return null;
-    },
     submitForm: function() {
-      const birthDate = this.getBirthDate();
-
       axios.post("https://localhost:7275/api/Employer", {
         idNumber: this.idNumber,
         phoneNumber: this.phoneNumber,
@@ -266,7 +258,6 @@ export default {
         birthDay: this.birthDay,
         birthMonth: this.birthMonth,
         birthYear: this.birthYear,
-        birthDate: birthDate
       })
       .then(function(response) {
         console.log("Respuesta del servidor:", response.data);

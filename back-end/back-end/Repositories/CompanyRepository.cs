@@ -13,7 +13,7 @@ namespace back_end.Repositories
     {
       var builder = WebApplication.CreateBuilder();
       _connectionRoute =
-        builder.Configuration.GetConnectionString("InfinipayDB");
+        builder.Configuration.GetConnectionString("InfinipayDBContext");
     }
 
     private SqlConnection GetConnection() =>
@@ -85,10 +85,6 @@ namespace back_end.Repositories
             if (dataAlreadyExists("Persona", "correoElectronico"
               , company.email, transaction))
               throw new Exception("EMAIL_DUPLICADO");
-
-            if (dataAlreadyExists("Usuario", "nickname"
-              , company.employerUsername, transaction))
-              throw new Exception("USERNAME_DUPLICADO");
 
             Guid naturalPersonId =
               GetPersonIdByUsername(company.employerUsername);
