@@ -1,6 +1,8 @@
-﻿using System.Data;
-using back_end.Models;
+﻿using back_end.Models;
+
+using System.Data;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace back_end.Repositories
 {
@@ -30,6 +32,29 @@ namespace back_end.Repositories
                 myCompanyModel = FillFullAddress(myCompanyModel, query);
                 query = $"SELECT * FROM [PersonaJuridica] WHERE [id] = '{companyId}';";
                 myCompanyModel = FillLegalPerson(myCompanyModel, query);
+                query = $"SELECT * FROM [Persona] WHERE [id] = '{companyId}';";
+                myCompanyModel = FillPerson(myCompanyModel, query);
+            }
+            return myCompanyModel;
+        }
+
+        private MyCompanyModel FillPerson(MyCompanyModel myCompanyModel, string query)
+        {
+            DataTable table = CreateTable(query);
+            if (table.Rows.Count > 0)
+            {
+                DataRow rowResult = table.Rows[0];
+                var email = Convert.ToString(rowResult["correoElectronico"]);
+                var phone = Convert.ToString(rowResult["numeroTelefono"]);
+                var document = Convert.ToString(rowResult["identificacion"]);
+                var birth = Convert.ToDateTime(rowResult["fechaNacimiento"]);
+                if (email != null && phone != null && document != null && birth != DateTime.MinValue)
+                {
+                    myCompanyModel.Email = email;
+                    myCompanyModel.Phone = phone;
+                    myCompanyModel.Document = document;
+                    myCompanyModel.Birth = Convert.ToString(birth.ToString("d-M-yyyy"));
+                }
             }
             return myCompanyModel;
         }
