@@ -26,6 +26,32 @@ namespace back_end.Repositories
             {
                 query = $"SELECT * FROM [PersonaFisica] WHERE [id] = '{ownerId}';";
                 myCompanyModel = FillPhysicalPerson(myCompanyModel, query);
+                query = $"SELECT * FROM [Direccion] WHERE [idPersona] = '{companyId}';";
+                myCompanyModel = FillFullAddress(myCompanyModel, query);
+            }
+            return myCompanyModel;
+        }
+
+        private MyCompanyModel FillFullAddress(MyCompanyModel myCompanyModel, string query)
+        {
+            DataTable table = CreateTable(query);
+            if (table.Rows.Count > 0)
+            {
+                DataRow rowResult = table.Rows[0];
+                var province = Convert.ToString(rowResult["provincia"]);
+                var canton = Convert.ToString(rowResult["canton"]);
+                var district = Convert.ToString(rowResult["distrito"]);
+                var address = Convert.ToString(rowResult["otrasSenas"]);
+                if (province != null && canton != null && district != null && address != null)
+                {
+                    myCompanyModel.Province = province;
+                    myCompanyModel.Canton = canton;
+                    myCompanyModel.District = district;
+                    if (address != "")
+                    {
+                        myCompanyModel.Address = address;
+                    }
+                }
             }
             return myCompanyModel;
         }
