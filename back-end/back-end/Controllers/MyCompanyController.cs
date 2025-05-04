@@ -33,7 +33,7 @@ namespace back_end.Controllers
                     ownerId = sid;
                 }
             }
-            MyCompanyModel myCompanyModel = new MyCompanyModel();
+            MyCompanyModel myCompanyModel = _myCompanyRepository.Get(ownerId);
             return myCompanyModel;
         }
     }
