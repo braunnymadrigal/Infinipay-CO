@@ -13,7 +13,7 @@
           <div class="container-fluid">
             <div class="d-flex">
               <router-link
-                to="/EmployerProfile"
+                to="/MyProfile"
                 class="mx-2"
                 style="color: #405d72"
                 >Perfil</router-link
