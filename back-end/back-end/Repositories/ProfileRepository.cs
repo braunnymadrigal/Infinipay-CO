@@ -74,14 +74,16 @@ namespace back_end.Repositories
                 var primerApellido = Convert.ToString(filaResultado["primerApellido"]);
                 var segundoApellido = Convert.ToString(filaResultado["segundoApellido"]);
                 var genero = Convert.ToString(filaResultado["genero"]);
-                if (primerNombre != null && segundoNombre != null && primerApellido != null 
-                    && segundoApellido != null && genero != null)
+                if (primerNombre != null && primerApellido != null && segundoApellido != null && genero != null)
                 {
                     profileModel.PrimerNombre = primerNombre;
-                    profileModel.SegundoNombre= segundoNombre;
                     profileModel.PrimerApellido= primerApellido;
                     profileModel.SegundoApellido= segundoApellido;
                     profileModel.Genero = genero;
+                }
+                if (segundoNombre != null && segundoNombre != "")
+                {
+                    profileModel.SegundoNombre = segundoNombre;
                 }
             }
             return profileModel;
