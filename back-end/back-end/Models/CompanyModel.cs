@@ -28,8 +28,6 @@ namespace back_end.Models
     public string otherSigns { get; set; }
 
     [Required]
-    public DateTime creationDate { get; set; }
-    [Required]
     public int creationDay { get; set; }
     [Required]
     public int creationMonth { get; set; }

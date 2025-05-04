@@ -44,9 +44,6 @@ namespace back_end.Models
     public string gender { get; set; }
 
     [Required]
-    public DateTime birthDate { get; set; }
-
-    [Required]
     public int birthDay { get; set; }
 
     [Required]
