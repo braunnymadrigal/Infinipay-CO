@@ -28,15 +28,40 @@ namespace back_end.Repositories
             }
             consulta = $"SELECT [idPersonaJuridica] FROM [Empleador] WHERE [idPersonaFisica] = '{empleadorId}';";
             string empresaId = GetStringCol1Fila1(consulta);
-            consulta = $"SELECT * FROM [PersonaJuridica] WHERE [id] = '{empresaId}';";
-            profileModel = LlenarEmpresa(profileModel, consulta);
+            if (empresaId != "")
+            {
+                consulta = $"SELECT * FROM [PersonaJuridica] WHERE [id] = '{empresaId}';";
+                profileModel = LlenarEmpresa(profileModel, consulta);
+            }
             consulta = $"SELECT * FROM [Direccion] WHERE [idPersona] = '{tablaPersonaId}';";
             profileModel = LlenarDireccion(profileModel, consulta);
             consulta = $"SELECT * FROM [PersonaFisica] WHERE [id] = '{tablaPersonaId}';";
             profileModel = LlenarPersonaFisica(profileModel, consulta);
+            consulta = $"SELECT * FROM [Persona] WHERE [id] = '{tablaPersonaId}';";
+            profileModel = LlenarPersona(profileModel, consulta);
             return profileModel;
         }
 
+        private ProfileModel LlenarPersona(ProfileModel profileModel, string consulta)
+        {
+            DataTable tablaResultado = CrearTablaConsulta(consulta);
+            if (tablaResultado.Rows.Count > 0)
+            {
+                DataRow filaResultado = tablaResultado.Rows[0];
+                var correo = Convert.ToString(filaResultado["correoElectronico"]);
+                var cedula = Convert.ToString(filaResultado["identificacion"]);
+                var telefono = Convert.ToString(filaResultado["numeroTelefono"]);
+                var fechaNacimiento = Convert.ToString(filaResultado["fechaNacimiento"]);
+                if (correo != null && cedula != null && telefono != null && fechaNacimiento != null)
+                {
+                    profileModel.Correo = correo;
+                    profileModel.Cedula = cedula;
+                    profileModel.Telefono = telefono;
+                    profileModel.FechaNacimiento = fechaNacimiento;
+                }
+            }
+            return profileModel;
+        }
 
         private ProfileModel LlenarPersonaFisica(ProfileModel profileModel, string consulta)
         {
