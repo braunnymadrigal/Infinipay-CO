@@ -53,7 +53,7 @@ namespace back_end.Repositories
                     myCompanyModel.Email = email;
                     myCompanyModel.Phone = phone;
                     myCompanyModel.Document = document;
-                    myCompanyModel.Birth = Convert.ToString(birth.ToString("d-M-yyyy"));
+                    myCompanyModel.Birth = Convert.ToString(birth.ToString("dd-MM-yyyy"));
                 }
             }
             return myCompanyModel;

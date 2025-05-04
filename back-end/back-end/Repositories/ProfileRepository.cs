@@ -51,13 +51,13 @@ namespace back_end.Repositories
                 var correo = Convert.ToString(filaResultado["correoElectronico"]);
                 var cedula = Convert.ToString(filaResultado["identificacion"]);
                 var telefono = Convert.ToString(filaResultado["numeroTelefono"]);
-                var fechaNacimiento = Convert.ToString(filaResultado["fechaNacimiento"]);
-                if (correo != null && cedula != null && telefono != null && fechaNacimiento != null)
+                var fechaNacimiento = Convert.ToDateTime(filaResultado["fechaNacimiento"]);
+                if (correo != null && cedula != null && telefono != null && fechaNacimiento != DateTime.MinValue)
                 {
                     profileModel.Correo = correo;
                     profileModel.Cedula = cedula;
                     profileModel.Telefono = telefono;
-                    profileModel.FechaNacimiento = fechaNacimiento;
+                    profileModel.FechaNacimiento = Convert.ToString(fechaNacimiento.ToString("dd-MM-yyyy"));
                 }
             }
             return profileModel;
