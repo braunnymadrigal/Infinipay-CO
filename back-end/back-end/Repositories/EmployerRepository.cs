@@ -17,7 +17,7 @@ namespace back_end.Repositories
     {
       var builder = WebApplication.CreateBuilder();
       _connectionRoute =
-        builder.Configuration.GetConnectionString("InfinipayDB");
+        builder.Configuration.GetConnectionString("InfinipayDBContext");
       _connection = new SqlConnection(_connectionRoute);
     }
 
