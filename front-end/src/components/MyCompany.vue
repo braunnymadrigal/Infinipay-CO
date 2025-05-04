@@ -1,7 +1,8 @@
 <template>
   <CompanyHeader/>
 
-  <div class="card p-4 mx-auto bg-transparent border-0 w-50" >
+  <div v-if="!showPopup" @click.stop 
+  class="card p-4 mx-auto bg-transparent border-0 w-50" >
     <h1
       class="text-center font-weight-bold"
       style="color: #405D72">
@@ -19,7 +20,7 @@
           class="form-control bg-transparent"
           type="text"
           id="name"
-          v-model="company.name" 
+          v-model="company.Name" 
           readonly
         >
       </div>
@@ -34,7 +35,7 @@
           class="form-control bg-transparent"
           type="text"
           id="description"
-          v-model="company.description" 
+          v-model="company.Description" 
           readonly
         >
       </div>
@@ -49,14 +50,14 @@
           class="form-control bg-transparent"
           type="text"
           id="email"
-          v-model="company.email" 
+          v-model="company.Email" 
           readonly
         >
       </div>
 
       <div class="mb-3">
         <label
-          for="phoneNumber"
+          for="phone"
           class="form-label">
           Teléfono
         </label>
@@ -65,8 +66,8 @@
           <input
             class="form-control bg-transparent"
             type="text"
-            id="phoneNumber"
-            v-model="company.phoneNumber" 
+            id="phone"
+            v-model="company.Phone" 
             readonly
           >
         </div>
@@ -74,15 +75,15 @@
 
       <div class="mb-3">
         <label
-          for="identityDocument"
+          for="document"
           class="form-label">
           Cédula jurídica
         </label>
         <input
           class="form-control bg-transparent"
           type="text"
-          id="identityDocument"
-          v-model="company.identityDocument" 
+          id="document"
+          v-model="company.Document" 
           readonly
         >
       </div>
@@ -97,37 +98,37 @@
           class="form-control bg-transparent"
           type="text"
           id="paymentType"
-          v-model="company.paymentType" 
+          v-model="company.PaymentType" 
           readonly
         >
       </div>
 
       <div class="mb-3">
         <label
-          for="numberOfBenefits"
+          for="benefits"
           class="form-label">
           Cantidad máxima de beneficios por empleado
         </label>
         <input
           class="form-control bg-transparent"
           type="text"
-          id="numberOfBenefits"
-          v-model="company.numberOfBenefits" 
+          id="benefits"
+          v-model="company.Benefits" 
           readonly
         >
       </div>
 
       <div class="mb-3">
         <label
-          for="numberOfBenefits"
-          class="birthDate">
+          for="birth"
+          class="form-label">
           Fecha de creación
         </label>
         <input
           class="form-control bg-transparent"
           type="text"
-          id="birthDate"
-          v-model="company.birthDate" 
+          id="birth"
+          v-model="company.Birth" 
           readonly
         >
       </div>
@@ -143,7 +144,7 @@
             class="form-control bg-transparent"
             type="text"
             id="province" 
-            v-model="company.province"
+            v-model="company.Province"
             readonly
           >
         </div>
@@ -157,7 +158,7 @@
             class="form-control bg-transparent"
             type="text"
             id="canton"
-            v-model="company.canton" 
+            v-model="company.Canton" 
             readonly
           >
         </div>
@@ -171,7 +172,7 @@
             class="form-control bg-transparent"
             type="text"
             id="district"
-            v-model="company.district" 
+            v-model="company.District" 
             readonly
           >
         </div>
@@ -179,15 +180,15 @@
 
       <div class="mb-3">
         <label
-          for="exactAddress"
+          for="address"
           class="form-label">
           Dirección exacta
         </label>
         <input
           class="form-control bg-transparent"
           type="text"
-          id="exactAddress"
-          v-model="company.exactAddress" 
+          id="address"
+          v-model="company.Address" 
           readonly
         >
       </div>
@@ -202,7 +203,7 @@
           class="form-control bg-transparent"
           type="text"
           id="owner"
-          v-model="company.owner" 
+          v-model="company.Owner" 
           readonly
         >
       </div>
@@ -215,6 +216,14 @@
       </div>
     </form>
   </div>
+
+  <div v-if="showPopup" @click.stop 
+  class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      No tiene permisos para ver esta información.
+    </div>
+  </div> 
+
   <!-- FOOTER -->
   <MainFooter/>
 </template>
@@ -222,6 +231,7 @@
 <script>
   import MainFooter from "./MainFooter.vue";
   import CompanyHeader from "./HeaderCompany.vue";
+  import axios from "axios";
   export default {
     components: {
       MainFooter,
@@ -229,27 +239,50 @@
     },
     data() {
       return {
+        showPopup: false,
         company: {
-          name: "Cooperativa de Productores de Leche Dos Pinos R.L",
-          description: "Somos la Cooperativa de Productores de Leche Dos Pinos, empresa de alimentos 100% costarricense y líder en la industria láctea de Centroamérica y Caribe. Contamos con una amplia oferta de productos de consumo humano que supera las 900 variedades. Adicionalmente, a través de la División Agrocomercial, producimos alimentos balanceados para animales y comercializamos más de 3.000 productos para el sector agropecuario nacional. Tenemos presencia productiva en varios países de Centroamérica y exportamos a 10 mercados del mundo; avanzando a paso firme para consolidarnos como una transnacional de alimentos de primerísima calidad y alto valor agregado, fortaleciendo el bienestar, la salud y la nutrición, consecuente con su promesa  de Siempre con Algo Mejor.",
-          email: "centrodecontactos@dospinos.com",
-          phoneNumber: "2508-2525",
-          identityDocument: "3004045002",
-          paymentType: "quincenal",
-          numberOfBenefits: 3,
-          birthDate: "31/12/1900",
-          province: "Alajuela",
-          canton: "Grecia",
-          district: "San Roque",
-          exactAddress: "DEL AEROPUERTO JUAN SANTAMARÍA 6 KM AL OESTE, CONTIGUO A ZONA FRANCA",
-          owner: "Gonzalo Chaves Alvarado",
+          Name: "",
+          Description: "",
+          Email: "",
+          Phone: "",
+          Document: "",
+          PaymentType: "",
+          Benefits: "",
+          Birth: "",
+          Province: "",
+          Canton: "",
+          District: "",
+          Address: "",
+          Owner: "",
         },
       };
     },
     methods: {
       editExample() {
-        console.log("Saved:", this.company);
+        alert("Próximamente llegará la opción 'Editar'.");
       },
+
+      getCompany() {
+        let jwtCookie = this.$cookies.get('jwt');
+        axios.get("https://localhost:7275/api/MyCompany", 
+        { headers: {"Authorization" : `Bearer ${jwtCookie}`} })
+          .then(
+            response => {
+              this.showPopup = false;
+              this.company = response.data;
+            }
+          )
+          .catch(
+            error => {
+              this.showPopup = true;
+              console.log(error);
+            }
+          )
+        ;
+      },
+    },
+    mounted() {
+      this.getCompany();
     },
   };
 </script>

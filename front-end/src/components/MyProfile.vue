@@ -264,8 +264,11 @@
     </form>
   </div>
 
-  <div v-if="showPopup" @click.stop class="d-flex justify-content-center my-5 py-5">
-    <div class="display-1 text-danger">Debe iniciar sesión para ver su perfil.</div>
+  <div v-if="showPopup" @click.stop 
+  class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      Debe iniciar sesión para ver su perfil.
+    </div>
   </div> 
 
   <MainFooter/>
@@ -305,7 +308,7 @@ export default {
   },
   methods: {
     editExample() {
-      console.log("Próximamente llegará la opción 'Editar'.");
+      alert("Próximamente llegará la opción 'Editar'.");
     },
 
     getProfile() {
