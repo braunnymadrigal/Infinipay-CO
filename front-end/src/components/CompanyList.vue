@@ -151,6 +151,21 @@ export default {
           creationDate: "1957-01-01",
         },
       ],
+      methods: {
+        // getCompanyList() {
+        //   axios
+        //     .get("http://localhost:7175/api/company")
+        //     .then((response) => {
+        //       this.companies = response.data;
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error fetching company list:", error);
+        //     });
+        // }
+      },
+      // onmounted() {
+      //   // this.getCompanyList();
+      // },
     };
   },
   methods: {
