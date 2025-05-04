@@ -16,6 +16,7 @@ import BenefitList from "./components/BenefitList.vue";
 import MyCompany from "./components/MyCompany.vue";
 import MyProfile from "./components/MyProfile.vue";
 import AssignedBenefitList from "./components/AssignedBenefitList.vue";
+import EmployeesList from './components/EmployeesList.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -55,6 +56,9 @@ const router = createRouter({
       path: "/AssignedBenefitList",
       name: "AssignedBenefitList",
       component: AssignedBenefitList
+    },
+    { path: '/EmployeesList', name: "EmployeesList",
+      component: EmployeesList
     },
   ],
 });
