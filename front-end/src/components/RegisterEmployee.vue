@@ -109,12 +109,13 @@
             id="role"
             class="form-select"
             v-model="role"
-            required
             style="background-color: #fff8f3"
+            required
           >
-            <option disabled value="">Seleccione el rol del empleado</option>
+            <option disabled value="">
+              Seleccione el rol del empleado</option>
+            <option value="">Sin rol asignado</option>
             <option value="supervisor">Supervisor</option>
-            <option value="employee">Empleado</option>
             <option value="administrator">Administrador</option>
           </select>
         </div>
