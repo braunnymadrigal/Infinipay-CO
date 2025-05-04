@@ -182,7 +182,8 @@ namespace back_end.Repositories
     {
       var birthDate = new DateTime(employer.birthYear, employer.birthMonth
         , employer.birthDay);
-      var rawPassword = employer.firstLastName + birthDate.ToString("ddMMyyyy");
+      var rawPassword = employer.firstLastName + birthDate.ToString("ddMMyyyy")
+        + "!";
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])
