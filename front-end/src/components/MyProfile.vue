@@ -1,4 +1,6 @@
 <template>
+  <CompanyHeader/>
+
   <div class="card p-4 mx-auto bg-transparent border-0 w-50" >
     <h1
       class="text-center font-weight-bold"
@@ -266,9 +268,11 @@
 
 <script>
 import MainFooter from "./MainFooter.vue";
+import CompanyHeader from "./HeaderCompany.vue";
 export default {
   components: {
-    MainFooter
+    MainFooter,
+    CompanyHeader,
   },
   data() {
     return {
