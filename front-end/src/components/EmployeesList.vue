@@ -32,6 +32,10 @@
     </div>
 
       <div class="container mt-5 mb-5">
+        <h1 class="text-center mb-4" style="color: #405D72">
+         Nombre de Empresa</h1>
+        <h2 class="text-center mb-4" style="color: #758694">
+         Lista de Empleados</h2>
         <table class="table is-bordered table-striped
             is-narrow is-hoverable is-fullwidth">
           <thead>
