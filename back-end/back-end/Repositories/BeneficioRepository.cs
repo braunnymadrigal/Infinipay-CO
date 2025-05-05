@@ -1,77 +1,101 @@
-﻿/*using back_end.Models;
+using back_end.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Data;
+using System.Data;
 using Microsoft.Data.SqlClient;
 namespace back_end.Repositories
 {
-    public class BeneficioRepository
+    public class BenefitRepository
     {
-        private SqlConnection _conexion;
-        private string _rutaConexion;
-        public BeneficioRepository()
+        private readonly string _connectionRoute;
+
+        private void mapBenefit(BenefitModel benefit, DataRow row)
+        {
+            benefit.Id = (int)row["IdBeneficio"];
+            benefit.Name = (string)row["Nombre"];
+            benefit.MinMonths = (decimal)row["MesesMinimos"];
+            benefit.Description = (string)row["Descripcion"];
+            benefit.ElegibleEmployee = (string)row["EmpleadoElegible"];
+            benefit.legalName = (string)row["NombreLegal"];
+            benefit.deductionType = (string)row["TipoDeduccion"];
+            benefit.payment = (int)row["Pago"];
+        }
+        public BenefitRepository()
         {
             var builder = WebApplication.CreateBuilder();
-            _rutaConexion = builder.Configuration.GetConnectionString("PaisesContext");
-            _conexion = new SqlConnection(_rutaConexion);
+            _connectionRoute = builder.Configuration.GetConnectionString("InfinipayDBContext");
         }
-        private DataTable CrearTablaConsulta(string consulta)
-        {
-            SqlCommand comandoParaConsulta = new SqlCommand(consulta, _conexion);
-            SqlDataAdapter adaptadorParaTabla = new
-            SqlDataAdapter(comandoParaConsulta);
-            DataTable consultaFormatoTabla = new DataTable();
-            _conexion.Open();
-            adaptadorParaTabla.Fill(consultaFormatoTabla);
-            _conexion.Close();
-            return consultaFormatoTabla;
+        private SqlConnection GetConnection() {
+            return new SqlConnection(_connectionRoute);
         }
-        public List<BeneficioModel> ObtenerBeneficios()
+        private DataTable getQueryTable(string query)
         {
-            List<BeneficioModel> beneficios = new List<BeneficioModel>();
-            string consulta = "SELECT * FROM dbo.Beneficio";
-            DataTable tablaResultado = CrearTablaConsulta(consulta);
-
-            foreach (DataRow fila in tablaResultado.Rows)
+            using (var connection = GetConnection())
+            using (var queryCommand = new SqlCommand(query, connection))
+            using (var tableAdapter = new SqlDataAdapter(queryCommand))
             {
-                beneficios.Add(
-                    new BeneficioModel
-                    {
-                        Id = Guid.Parse(fila["id"].ToString()),
-                        Nombre = fila["nombre"].ToString(),
-                        TiempoMinimo = Convert.ToDecimal(fila["tiempoMinimo"]),
-                        Descripcion = fila["descripcion"].ToString(),
-                        EmpleadoElegible = fila["empleadoElegible"].ToString(),
-                        IdPersonaJuridica = Guid.Parse(fila["idPersonaJuridica"].ToString()),
-                        IdAuditoria = Guid.Parse(fila["idAuditoria"].ToString())
-                    }
-                );
+                var queryTable = new DataTable();
+                connection.Open();
+                tableAdapter.Fill(queryTable);
+                return queryTable;
             }
-
-            return beneficios;
         }
-
-        public bool CrearBeneficio(BeneficioModel beneficio)
+        private bool dataAlreadyExists(string table, string field, string value
+            , SqlTransaction transaction)
         {
-            var consulta = @"INSERT INTO [dbo].[Beneficio] 
-        ([nombre], [tiempoMinimo], [descripcion], [empleadoElegible], [idPersonaJuridica], [idAuditoria])
-        VALUES (@nombre, @tiempoMinimo, @descripcion, @empleadoElegible, @idPersonaJuridica, @idAuditoria)";
+            var cmd = new SqlCommand(
+                $"SELECT COUNT(*) FROM [{table}] WHERE [{field}] = @value",
+                transaction.Connection, transaction);
+                cmd.Parameters.AddWithValue("@value", value);
+            var count = (int)cmd.ExecuteScalar();
+            return count > 0;
+        }
+        public List<BenefitModel> GetAllBenefits()
+        {
+            var query = "SELECT * FROM Beneficio";
+            var table = getQueryTable(query);
+            var benefits = new List<BenefitModel>();
+            foreach (DataRow row in table.Rows)
+            {
+                var benefit = new BenefitModel();
+                mapBenefit(benefit, row);
+                benefits.Add(benefit);
+            }
+            return benefits;
+        }
+        public BenefitModel GetBenefitById(int id)
+        {
+            var query = $"SELECT * FROM Beneficio WHERE IdBeneficio = {id}";
+            var table = getQueryTable(query);
+            if (table.Rows.Count == 0) return null;
+            var row = table.Rows[0];
+            var benefit = new BenefitModel();
+            mapBenefit(benefit, row);
+            return benefit;
+        }
+        public bool CreateBenefit(BenefitModel benefit)
+        {
+            var query = @"INSERT INTO Beneficio 
+                (Nombre, MesesMinimos, Descripcion, EmpleadoElegible, NombreLegal, TipoDeduccion, Pago)
+                VALUES (@Nombre, @MesesMinimos, @Descripcion, @EmpleadoElegible, @NombreLegal, @TipoDeduccion, @Pago)";
+    
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Nombre", benefit.Name);
+                    command.Parameters.AddWithValue("@MesesMinimos", benefit.MinMonths);
+                    command.Parameters.AddWithValue("@Descripcion", benefit.Description);
+                    command.Parameters.AddWithValue("@EmpleadoElegible", benefit.ElegibleEmployee);
+                    command.Parameters.AddWithValue("@NombreLegal", benefit.legalName);
+                    command.Parameters.AddWithValue("@TipoDeduccion", benefit.deductionType);
+                    command.Parameters.AddWithValue("@Pago", benefit.payment);
 
-            var comando = new SqlCommand(consulta, _conexion);
-            comando.Parameters.AddWithValue("@nombre", beneficio.Nombre);
-            comando.Parameters.AddWithValue("@tiempoMinimo", beneficio.TiempoMinimo);
-            comando.Parameters.AddWithValue("@descripcion", beneficio.Descripcion);
-            comando.Parameters.AddWithValue("@empleadoElegible", beneficio.EmpleadoElegible);
-            comando.Parameters.AddWithValue("@idPersonaJuridica", beneficio.IdPersonaJuridica);
-            comando.Parameters.AddWithValue("@idAuditoria", beneficio.IdAuditoria);
-
-            _conexion.Open();
-            bool exito = comando.ExecuteNonQuery() >= 1;
-            _conexion.Close();
-
-            return exito;
+                    return command.ExecuteNonQuery() > 0;
+                }
+            }
         }
 
 
     }
 }
-*/
