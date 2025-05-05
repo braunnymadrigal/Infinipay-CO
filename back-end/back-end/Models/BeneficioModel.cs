@@ -1,43 +1,46 @@
-﻿/*using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace back_end.Models
 {
-    public class BeneficioModel
+    public class BenefitModel
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
-        [MaxLength(100)]
-        public string Nombre { get; set; }
+        // [MaxLength(100)]
+        public string Name { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(4,2)")]
-        public decimal TiempoMinimo { get; set; }
+        public decimal MinMonths { get; set; }
 
         [Required]
-        [MaxLength(256)]
-        public string Descripcion { get; set; }
+        // [MaxLength(256)]
+        public string Description { get; set; }
 
         [Required]
-        [MaxLength(9)]
-        [RegularExpression("^(todos|semanal|quincenal|mensual)$")]
-        public string EmpleadoElegible { get; set; }
+        // [MaxLength(9)]
+        // [RegularExpression("^(todos|semanal|quincenal|mensual)$")]
+        public string ElegibleEmployee { get; set; }
 
         [Required]
-        public Guid IdPersonaJuridica { get; set; }
-
-        [ForeignKey("IdPersonaJuridica")]
-        public PersonaJuridica PersonaJuridica { get; set; }
+        public string legalName { get; set; }
 
         [Required]
-        public Guid IdAuditoria { get; set; }
+        public string deductionType { get; set; }
 
-        [ForeignKey("IdAuditoria")]
-        public Auditoria Auditoria { get; set; }
+        [Required]
+        public int payment { get; set; }
+        // [ForeignKey("IdPersonaJuridica")]
+        // public PersonaJuridica PersonaJuridica { get; set; }
+
+        // [Required]
+        // public Guid IdAuditoria { get; set; }
+
+        // [ForeignKey("IdAuditoria")]
+        // public Auditoria Auditoria { get; set; }
     }
 }
-
-*/
