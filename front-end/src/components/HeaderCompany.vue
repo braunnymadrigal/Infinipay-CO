@@ -20,6 +20,9 @@
               Beneficios
             </a>
             <a href="#" class="mx-2" style="color: #405d72">Empleados</a>
+            <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
+              Salir
+            </a>
           </div>
         </div>
       </nav>
@@ -50,11 +53,14 @@
           console.error("Error fetching user role:", error);
           this.$router.push('/MyCompany');
         }
+      },
+
+      logout() {
+        this.$cookies.set('jwt', "");
+        this.$router.push('/');
       }
     }
-
   }
-
 </script>
 
 <style>
