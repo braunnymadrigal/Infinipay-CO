@@ -1,5 +1,5 @@
 <template>
-  <CompanyHeader/>
+  <CompanyHeader :rol="profile.Rol" />
 
   <div v-if="!showPopup" @click.stop 
   class="card p-4 mx-auto bg-transparent border-0 w-50" >

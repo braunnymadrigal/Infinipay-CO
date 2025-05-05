@@ -80,9 +80,9 @@ namespace back_end.Repositories
               throw new Exception("USERNAME_DUPLICADO");
 
             Guid employerId =
-              GetPersonIdByUsername(employee.employerUsername);
-
-            var auditId = insertAudit(employee.employerUsername, transaction);
+              GetPersonIdByUsername(employee.loggedUsername);
+            Debug.WriteLine("LOGGED USER: " + employee.loggedUsername);
+            var auditId = insertAudit(employee.loggedUsername, transaction);
             var personId = insertPerson(employee, auditId, transaction);
 
             insertNaturalPerson(employee, personId, transaction);
