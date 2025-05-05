@@ -1,4 +1,4 @@
-﻿/*using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using back_end.Models;
 using back_end.Repositories;
@@ -8,31 +8,37 @@ namespace back_end.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BeneficioController : ControllerBase
+    public class BenefitController : ControllerBase
     {
-        private readonly BeneficioRepository _beneficioRepository;
-        public BeneficioController()
+        private readonly BenefitRepository _benefitRepository;
+        public BenefitController()
         {
-           _beneficioRepository = new BeneficioRepository();
+           _benefitRepository = new BenefitRepository();
         }
         [HttpGet]
-        public List<BeneficioModel> Get()
+        public List<BenefitModel> GetAllBenefits()
         {
-            var beneficios = _beneficioRepository.ObtenerBeneficios();
-            return beneficios;
+            var benefits = _benefitRepository.GetAllBenefits();
+            return benefits;
+        }
+        [HttpGet ("{id}")]
+        public BenefitModel GetBenefitById(int id)
+        {
+            var benefit = _benefitRepository.GetBenefitById(id);
+            return benefit;
         }
         [HttpPost]
-        public async Task<ActionResult<bool>> CrearBeneficio(BeneficioModel beneficio)
+        public async Task<ActionResult<bool>> CreateBenefit(BenefitModel benefit)
         {
             try
             {
-                if (beneficio == null)
+                if (benefit == null)
                 {
                     return BadRequest();
                 }
 
-                BeneficioRepository beneficioRepository = new BeneficioRepository();
-                var result = beneficioRepository.CrearBeneficio(beneficio);
+                BenefitRepository benefitRepository = new BenefitRepository();
+                var result = benefitRepository.CreateBenefit(benefit);
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -43,4 +49,3 @@ namespace back_end.Controllers
 
     }
 }
-*/
