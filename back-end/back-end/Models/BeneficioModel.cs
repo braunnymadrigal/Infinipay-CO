@@ -29,14 +29,8 @@ namespace back_end.Models
         [Required]
         public Guid IdPersonaJuridica { get; set; }
 
-        [ForeignKey("IdPersonaJuridica")]
-        public PersonaJuridica PersonaJuridica { get; set; }
-
         [Required]
         public Guid IdAuditoria { get; set; }
-
-        [ForeignKey("IdAuditoria")]
-        public Auditoria Auditoria { get; set; }
     }
 }
 

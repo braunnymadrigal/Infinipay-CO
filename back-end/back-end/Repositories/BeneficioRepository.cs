@@ -1,4 +1,5 @@
-﻿using back_end.Models;
+﻿using System.Data;
+using back_end.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data;
 using Microsoft.Data.SqlClient;
@@ -11,7 +12,7 @@ namespace back_end.Repositories
         public BeneficioRepository()
         {
             var builder = WebApplication.CreateBuilder();
-            _rutaConexion = builder.Configuration.GetConnectionString("PaisesContext");
+            _rutaConexion = builder.Configuration.GetConnectionString("InfinipayDBContext");
             _conexion = new SqlConnection(_rutaConexion);
         }
         private DataTable CrearTablaConsulta(string consulta)
