@@ -12,17 +12,6 @@
 
       <form @submit.prevent="submitForm">
 
-        <!-- CAMPO TEMPORAL HASTA SABER COMO OBTENER EL USUARIO LOGUEADO -->
-        <div class="mb-3" style="margin-top: 30px">
-          <label for="employerUsername" class="form-label">
-            Usuario del empleador</label>
-          <input type="text" class="form-control" v-model="employerUsername"
-            style="background-color: #FFF8F3;" id="employerUsername" required 
-            maxlength="30" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
-            placeholder="Escriba el nombre de usuario del empleador de la empresa."
-          />
-        </div>
-
         <div class="row mb-3 justify-content-center" style="margin-top: 30px">
           <div class="col-md-6 col-lg-6">
             <label for="firstName" class="form-label">Primer nombre</label>
@@ -382,7 +371,6 @@ export default {
   },
   data() {
     return {
-      employerUsername : '',
       firstName: '',
       secondName: '',
       firstLastName: '',
@@ -412,6 +400,9 @@ export default {
         district: '',
         otherSigns: ''
       },
+
+      loggedUsername: '',
+
       months: [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
@@ -428,9 +419,61 @@ export default {
       }
       return years;
     },
-    submitForm: function() {
+
+    async getLoggedUsername() {
+    try {
+      let jwtCookie = this.$cookies.get('jwt');
+      const response = await axios.get("https://localhost:7275/api/Login/GetLoggedUser", {
+        headers: { "Authorization": `Bearer ${jwtCookie}` }
+      });
+      return response.data.Nickname;
+    } catch (error) {
+      console.error("Error al obtener el usuario logueado:", error);
+      setTimeout(() => {
+        this.$router.push('LoginUser');
+      }, 4000);
+      return null;
+    }
+  },
+
+
+  async submitForm() {
+    this.loggedUsername = await this.getLoggedUsername();
+    console.log("Datos del formulario:", {
+      loggedUsername: this.loggedUsername,
+      firstName: this.firstName,
+      secondName: this.secondName,
+      firstLastName: this.firstLastName,
+      secondLastName: this.secondLastName,
+      idNumber: this.idNumber,
+      username: this.username,
+      phoneNumber: this.phoneNumber,
+      email: this.email,
+      role: this.role,
+      province: this.address.province,
+      canton: this.address.canton,
+      district: this.address.district,
+      otherSigns: this.address.otherSigns,
+      gender: this.gender,
+      birthDay: Number(this.birthDay),
+      birthMonth: Number(this.birthMonth),
+      birthYear: Number(this.birthYear),
+      hireDay: Number(this.hireDay),
+      hireMonth: Number(this.hireMonth),
+      hireYear: Number(this.hireYear),
+      reportsHours: Number(this.reportsHours),
+      salary: Number(this.salary),
+      typeContract: this.typeContract,
+      creationDay: Number(this.creationDay),
+      creationMonth: Number(this.creationMonth),
+      creationYear: Number(this.creationYear),
+    });
+    if (!this.loggedUsername) {
+      alert("No se pudo obtener el usuario logueado.");
+      return;
+    }
     axios.post("https://localhost:7275/api/Employee", {
-      employerUsername: this.employerUsername,
+      loggedUsername: this.loggedUsername,
       firstName: this.firstName,
       secondName: this.secondName,
       firstLastName: this.firstLastName,
@@ -458,18 +501,16 @@ export default {
       creationMonth: Number(this.creationMonth),
       creationYear: Number(this.creationYear),
     })
-      .then(function(response) {
-        console.log("Respuesta del servidor:", response.data);
-        if (response.data === true) {
-          alert("¡Empleado registrado exitosamente!");
-          this.$router.push('/'); // Redirigir a la página de inicio de momento
-        } else {
-          alert(
-            "No se pudo registrar el empleado. Verifica los datos ingresados."
-          );
-        }
-      }.bind(this))
-      .catch(function(error) {
+    .then(function(response) {
+      console.log("Respuesta del servidor:", response.data);
+      if (response.data === true) {
+        alert("¡Empleado registrado exitosamente!");
+        this.$router.push('MyProfile');
+      } else {
+        alert("No se pudo registrar el empleado. Verifica los datos ingresados.");
+      }
+    }.bind(this))
+    .catch(function(error) {
         console.error("Error:", error);
         if (error.response) {
           const message = error.response.data?.message || "Error desconocido";
