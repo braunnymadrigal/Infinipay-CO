@@ -31,7 +31,7 @@
                 style="color: #405d72">Empleados</router-link
               >
               <router-link
-                v-if="rol === 'empleador'"
+                v-if="rol === 'empleador' || rol === 'administrador'"
                 to="/RegisterEmployee"
                 class="mx-2"
                 style="color: #405d72"
