@@ -24,10 +24,20 @@
                 style="color: #405d72"
                 >Empresa</router-link
               >
-              <router-link to="/BenefitList" class="mx-2" style="color: #405d72"
-                >Beneficios</router-link
+              <router-link to="/BenefitList" class="mx-2"
+                style="color: #405d72">Beneficios</router-link
               >
-              <a href="#" class="mx-2" style="color: #405d72">Empleados</a>
+              <router-link to="/EmployeeList" class="mx-2"
+                style="color: #405d72">Empleados</router-link
+              >
+              <router-link
+                v-if="rol === 'empleador'"
+                to="/RegisterEmployee"
+                class="mx-2"
+                style="color: #405d72"
+              >
+                Registrar empleados
+              </router-link>
             </div>
           </div>
         </nav>
@@ -35,7 +45,18 @@
     </div>
 
 </template>
-<script setup></script>
+<script>
+export default {
+  name: 'CompanyHeader',
+  props: {
+    rol: {
+      type: String,
+      required: false,
+      default: ''
+    }
+  }
+}
+</script>
 <style>
   @import '../assets/css/HeaderFooter.css';
 </style>
