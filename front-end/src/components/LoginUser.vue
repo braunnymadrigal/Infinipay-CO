@@ -98,13 +98,23 @@
       </form>
     </div>
   </div>
-  <div v-if="showPopup" @click.stop 
+  <div v-if="showWrongPassword" @click.stop 
   class="h-100 d-flex align-items-center justify-content-center 
   bg-transparent">
     <div class="card bg-transparent border-0" 
     style="max-width: 600px; width: 100%">
       <div class="text-danger">
-        Correo electrónico/nombre de usuario o contraseña incorrectos
+        Correo electrónico/nombre de usuario o contraseña incorrectos.
+      </div>
+    </div>
+  </div>
+  <div v-if="showLoginForbidden" @click.stop 
+  class="h-100 d-flex align-items-center justify-content-center 
+  bg-transparent">
+    <div class="card bg-transparent border-0" 
+    style="max-width: 600px; width: 100%">
+      <div class="text-danger">
+        Demasiados intentos fallidos. Intentar de nuevo en 10 minutos.
       </div>
     </div>
   </div>
@@ -130,24 +140,33 @@ export default {
   data() {
     return {
       user: { userId: "", userPassword: "" },
-      showPopup: false,
+      showWrongPassword: false,
+      showLoginForbidden: false,
     };
   },
   methods: {
     startLogin() {
+      this.showWrongPassword = false;
+      this.showLoginForbidden = false;
       axios
         .post("https://localhost:7275/api/Login/Login", {NicknameOrEmail: this.user.userId, Password: this.user.userPassword})
         .then(
           response => {
-            this.showPopup = false;
             this.$cookies.set('jwt', response.data);
             this.$router.push('MyProfile');
           }
         )
         .catch(
           error => {
-            this.showPopup = true;
-            console.log(error);
+            if (error.response) {
+              if (error.response.data == "LOGIN IS FORBIDDEN TO YOU") {
+                this.showLoginForbidden = true;
+              } else {
+                this.showWrongPassword = true;
+              }
+            } else {
+              console.log(error);
+            }
           }
         )
       ;

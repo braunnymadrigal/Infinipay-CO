@@ -25,17 +25,16 @@ namespace back_end.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] LoginUserModel loginUserModel)
         {
-            IActionResult returnActionResult = NotFound("CUSTOM ERROR:user not found");
-            UserModel userModel = _loginRepository.Authenticate(loginUserModel);
-            if (userModel.Nickname != "")
+            IActionResult iActionResult = BadRequest("UNKNOWN ERROR");
+            try
             {
-                String token = _loginRepository.Generate(userModel);
-                if (token != "")
-                {
-                    returnActionResult = Ok(token);
-                }
+                string token = _loginRepository.Login(loginUserModel);
+                iActionResult = Ok(token);
+            } catch (Exception e)
+            {
+                iActionResult = NotFound(e.Message);
             }
-            return returnActionResult;
+            return iActionResult;
         }
 
         [AllowAnonymous]

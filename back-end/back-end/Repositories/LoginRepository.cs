@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Repositories
 {
@@ -24,34 +25,39 @@ namespace back_end.Repositories
             _config = config;
         }
 
-        public string Generate(UserModel userModel)
+        public string Login(LoginUserModel loginUserModel)
         {
-            string returnString = "";
-            var jwtConfigKey = _config["JwtConfig:Key"];
-            if (jwtConfigKey != null)
-            {
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigKey));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
-                var claims = new[]
-                {
-                new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
-                new Claim(ClaimTypes.Sid, userModel.PersonaId),
-                new Claim(ClaimTypes.Role, userModel.Role),
-            };
-                var token = new JwtSecurityToken
-                (
-                    _config["JwtConfig:Issuer"],
-                    _config["JwtConfig:Audience"],
-                    claims,
-                    expires: DateTime.Now.AddMinutes(15),
-                    signingCredentials: credentials
-                );
-                returnString = new JwtSecurityTokenHandler().WriteToken(token);
-            }
-            return returnString;
+            UserModel userModel = Authenticate(loginUserModel);
+            return ( Generate(userModel) ); 
         }
 
-        public UserModel Authenticate(LoginUserModel loginUserModel)
+        private string Generate(UserModel userModel)
+        {
+            var jwtConfigKey = _config["JwtConfig:Key"];
+            if (jwtConfigKey == null)
+            {
+                throw new Exception("'JwtConfig:Key' IS MISSING");
+            }
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
+            new Claim(ClaimTypes.Sid, userModel.PersonaId),
+            new Claim(ClaimTypes.Role, userModel.Role),
+            };
+            var token = new JwtSecurityToken
+            (
+                _config["JwtConfig:Issuer"],
+                _config["JwtConfig:Audience"],
+                claims,
+                expires: DateTime.Now.AddMinutes(15),
+                signingCredentials: credentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private UserModel Authenticate(LoginUserModel loginUserModel)
         {
             UserModel userModel = new UserModel();
             var nicknameOrEmail = (loginUserModel.NicknameOrEmail).ToLower();
@@ -63,31 +69,94 @@ namespace back_end.Repositories
             {
                 consulta = $"SELECT [id], [correoElectronico] FROM [Persona] WHERE [correoElectronico] = '{nicknameOrEmail}';";
                 userModel = ObtenerTablaPersona(userModel, consulta);
-                if (userModel.Nickname != "")
+                if (userModel.Nickname == "")
                 {
-                    consulta = $"SELECT [nickname], [contrasena], [idPersonaFisica] FROM [Usuario] WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
-                    userModel = ObtenerTablaUsuario(userModel, consulta);
+                    throw new Exception("USER NOT FOUND BY EMAIL");
                 }
+                consulta = $"SELECT * FROM [Usuario] WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
             }
             else
             {
-                consulta = $"SELECT [nickname], [contrasena], [idPersonaFisica] FROM [Usuario] WHERE [nickname]='{nicknameOrEmail}';";
-                userModel = ObtenerTablaUsuario(userModel, consulta);
+                consulta = $"SELECT * FROM [Usuario] WHERE [nickname]='{nicknameOrEmail}';";
             }
-            if (userModel.Nickname != "" && userModel.Password != null)
+            userModel = ObtenerTablaUsuario(userModel, consulta);
+            if (userModel.Nickname == "" || userModel.Password == null)
             {
-                okPassword = password.SequenceEqual(userModel.Password);
+                throw new Exception("USER NOT FOUND BY NICKNAME");
             }
+            bool isItPossibleToLogin = IsItPossibleToLogin(userModel);
+            if (!isItPossibleToLogin)
+            {
+                throw new Exception("LOGIN IS FORBIDDEN TO YOU");
+            }
+            okPassword = password.SequenceEqual(userModel.Password);
             if (!okPassword)
             {
-                userModel.Nickname = "";
+                userModel = DoInCaseNotOkPassword(userModel);
+                throw new Exception("WRONG PASSWORD");
             }
-            else
+            userModel = DoInCaseOkPassword(userModel);
+            return userModel;
+        }
+
+        private UserModel DoInCaseOkPassword(UserModel userModel)
+        {
+            string query = $"SELECT [rol] FROM [Empleado] WHERE [idPersonaFisica]='{userModel.PersonaId}';";
+            userModel = ObtenerRol(userModel, query);
+            query = $"UPDATE [Usuario] SET [numIntentos] = 0 WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
+            MakeAnUpdate(query);
+            return userModel;
+        }
+
+        private UserModel DoInCaseNotOkPassword(UserModel userModel)
+        {
+            userModel.Nickname = "";
+            int numAttempts = userModel.NumAttempts + 1;
+            string query = $"UPDATE [Usuario] SET [numIntentos] = {numAttempts} WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
+            MakeAnUpdate(query);
+            if (numAttempts >= 5)
             {
-                consulta = $"SELECT [rol] FROM [Empleado] WHERE [idPersonaFisica]='{userModel.PersonaId}';";
-                userModel = ObtenerRol(userModel, consulta);
+                query = $"UPDATE [Usuario] SET [fechaExactaBloqueo] = SYSDATETIME() WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
+                MakeAnUpdate(query);
             }
             return userModel;
+        }
+
+        private bool IsItPossibleToLogin(UserModel userModel)
+        {
+            bool isPossible = true;
+            if (userModel.NumAttempts >= 5)
+            {
+                if (userModel.LastBlock == DateTime.MinValue)
+                {
+                    string query = $"UPDATE [Usuario] SET [fechaExactaBloqueo] = SYSDATETIME() WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
+                    MakeAnUpdate(query);
+                    isPossible = false;
+                }
+                else
+                {
+                    DateTime currentDateTime = DateTime.Now;
+                    DateTime lastBlockPlusTen = (userModel.LastBlock).AddMinutes(10);
+                    int resultOfDateTimeComparison = DateTime.Compare(lastBlockPlusTen, currentDateTime);
+                    if (resultOfDateTimeComparison >= 0)
+                    {
+                        isPossible = false;
+                    }
+                }
+            }
+            return isPossible;
+        }
+
+        private void MakeAnUpdate(string query)
+        {
+            SqlCommand command = new SqlCommand(query, _connection);
+            _connection.Open();
+            bool success = command.ExecuteNonQuery() >= 1;
+            _connection.Close();
+            if (!success)
+            {
+                throw new Exception("AN SQL UPDATE WAS NOT POSSIBLE");
+            }
         }
 
         private UserModel ObtenerRol(UserModel userModel, string consulta)
@@ -116,11 +185,23 @@ namespace back_end.Repositories
                 var nickname = Convert.ToString(filaResultado["nickname"]);
                 var password = (byte[])(filaResultado["contrasena"]);
                 var personaId = Convert.ToString(filaResultado["idPersonaFisica"]);
-                if (nickname != null && password != null && personaId != null)
+                var numAttempts = Convert.ToString(filaResultado["numIntentos"]);
+                var lastBlock = Convert.ToString(filaResultado["fechaExactaBloqueo"]);
+                if (nickname != null && password != null && personaId != null 
+                    && numAttempts != null && lastBlock != null)
                 {
                     userModel.Nickname = nickname;
                     userModel.Password = password;
                     userModel.PersonaId = personaId;
+                    if (numAttempts != "")
+                    {
+                        userModel.NumAttempts= Int32.Parse(numAttempts);
+                    }
+                    if (lastBlock != "")
+                    {
+                        userModel.LastBlock = DateTime.Parse(lastBlock);
+                    }
+                    
                 }
             }
             return userModel;
