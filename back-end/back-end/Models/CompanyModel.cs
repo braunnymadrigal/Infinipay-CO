@@ -13,7 +13,6 @@ namespace back_end.Models
     public string legalName { get; set; }
     [Required]
     public string employerUsername { get; set; }
-    [Required]
     public string description { get; set; }
     [Required]
     public string paymentType { get; set; }

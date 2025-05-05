@@ -166,7 +166,8 @@ namespace back_end.Repositories
           transaction.Connection, transaction);
 
       cmd.Parameters.AddWithValue("@id", personId);
-      cmd.Parameters.AddWithValue("@descripcion", company.description);
+      cmd.Parameters.AddWithValue("@descripcion"
+        , company.description ?? (object)DBNull.Value);
       cmd.Parameters.AddWithValue("@tipoPago", company.paymentType);
       cmd.Parameters.AddWithValue("@beneficiosPorEmpleado", company.benefits);
       cmd.Parameters.AddWithValue("@razonSocial", company.legalName);
