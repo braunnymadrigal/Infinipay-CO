@@ -6,7 +6,7 @@
     style="max-width: 1000px; background-color: #fff8f3; border: none"
   >
     <h1 class="text-center" style="color: #405d72">Agregar beneficio</h1>
-    <h2 class="text-center" style="color: #758694">Datos de el beneficio</h2>
+    <h2 class="text-center" style="color: #758694">Datos del beneficio</h2>
     <div class="">
       <form @submit.prevent="submitForm">
         <div class="mb-3">
@@ -194,7 +194,8 @@ function submitForm() {
   newBenefit.value.minMonths = 0;
   newBenefit.value.formula = 0;
   newBenefit.value.typeFormula = "";
-  // axios.post
+
+  // createBenefit(newBenefit.value);
 }
 
 const allOptions = ["Semanal", "Quincenal", "Mensual"];
@@ -210,6 +211,19 @@ function toggleAll(event) {
     newBenefit.value.appliesTo = [];
   }
 }
+
+// function createBenefit(benefit) {
+//   axios
+//     .post("http://localhost:7271/api/benefits", benefit)
+//     .then((response) => {
+//       console.log("Beneficio creado:", response.data);
+//       alert("Beneficio creado exitosamente.");
+//     })
+//     .catch((error) => {
+//       console.error("Error al crear el beneficio:", error);
+//       alert("Error al crear el beneficio. Inténtalo de nuevo.");
+//     });
+// }
 </script>
 
 <style lang="scss" scoped></style>
