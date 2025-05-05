@@ -18,20 +18,6 @@ namespace back_end.Repositories
 
     private SqlConnection GetConnection() =>
       new SqlConnection(_connectionRoute);
-
-    private DataTable getQueryTable(string query)
-    {
-      using (var connection = GetConnection())
-      using (var queryCommand = new SqlCommand(query, connection))
-      using (var tableAdapter = new SqlDataAdapter(queryCommand))
-      {
-        var queryTable = new DataTable();
-        connection.Open();
-        tableAdapter.Fill(queryTable);
-        return queryTable;
-      }
-    }
-
     private bool dataAlreadyExists(string table, string field, string value
       , SqlTransaction transaction)
     {
