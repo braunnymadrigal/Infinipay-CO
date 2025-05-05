@@ -29,18 +29,19 @@
           <th style="white-space: nowrap">Nombre</th>
           <th style="white-space: nowrap">Descripción</th>
           <th style="white-space: nowrap">Tiempo minimo</th>
-          <th style="white-space: nowrap">Califican</th>
           <th style="white-space: nowrap">Deducción</th>
           <th style="white-space: nowrap">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="benefit in benefits" :key="benefit.name">
-          <td>{{ benefit.name }}</td>
-          <td>{{ truncateString(benefit.description, 150) }}</td>
-          <td>{{ benefit.minTime + " meses" }}</td>
-          <td>{{ benefit.elegible.join(', ') }}</td>
-          <td>{{ benefit.formula.join(', ') }}</td>
+        <tr v-if="assignedBenefits.length === 0">
+          <td colspan="5" class="text-center">No hay beneficios asignados.</td>
+        </tr>
+        <tr v-else v-for="benefit in assignedBenefits" :key="benefit.name">
+          <td>{{ benefit.benefitName }}</td>
+          <td>{{ truncateString(benefit.benefitDescription, 150) }}</td>
+          <td>{{ benefit.benefitMinTime + " meses" }}</td>
+          <td>{{ benefit.formattedDeduction }}</td>
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button class="btn btn-danger btn-sm"
@@ -65,12 +66,12 @@
 
   </div>
 
-  <AssignedBenefitListModal v-if="showAssignedBenefitListModal"
+  <AssignedBenefitListModal v-if="showAssignedBenefitListModal && AssignedBenefitListModal"
                             :benefit="selectedBenefit"
                             @close="showAssignedBenefitListModal = false" />
 
   <AddAssignedBenefitListModal v-if="showAddAssignedBenefitListModal"
-                            :benefit="selectedBenefit"
+                            :allBenefits="allBenefits"
                             @close="showAddAssignedBenefitListModal = false" />
 
   <MainFooter />
@@ -78,6 +79,8 @@
 </template>
 
 <script>
+  import axios from "axios";
+
   import HeaderCompany from "./HeaderCompany.vue";
   import MainFooter from "./MainFooter.vue";
   import AssignedBenefitListModal from "./AssignedBenefitListModal";
@@ -95,37 +98,12 @@
         showAssignedBenefitListModal: false,
         selectedBenefit: null,
         showAddAssignedBenefitListModal: false,
-        benefits: [
-          {
-            name: "Plan Dental",
-            description: `Nuestro plan dental ofrece cobertura integral que
-            incluye limpiezas semestrales, exámenes, radiografías
-            y descuentos en tratamientos como empastes y ortodoncia,
-            garantizando salud bucal y ahorro para toda la familia.`,
-            minTime: 5,
-            elegible: ['Semanal', 'Quincenal'],
-            formula: ['32 0000 CRC'],
-            creationDate: '02/05/2025',
-            creatorUser: 'fodp3323',
-            modificationDate: null,
-            modificationUser: null,
-          },
-          {
-            name: "Servicio Automotores",
-            description: `Nuestro plan de servicios para autos incluye
-            mantenimiento preventivo, cambio de aceite, revisiones generales y
-            asistencia en carretera, brindando tranquilidad, seguridad y mayor
-            duración para tu vehículo todos los días.`,
-            minTime: 1,
-            elegible: ['Mensual', 'Semanal', 'Quincenal'],
-            formula: ['32 0000 CRC'],
-            creationDate: '02/03/2025',
-            creatorUser: 'pep123',
-            modificationDate: '04/04/2025',
-            modificationUser: 'pop123'
-          }
-        ]
+        allBenefits: [],
+        assignedBenefits: [],
       };
+    },
+    created() {
+      this.getBenefits();
     },
     methods: {
       truncateString(str, maxLength) {
@@ -140,8 +118,59 @@
       },
       openAddAssignedBenefitListModal() {
         this.showAddAssignedBenefitListModal = true;
+      },
+      async formulaFormat(benefit) {
+        if (benefit.formulaType === 'montoFijo') {
+          return benefit.formulaParamUno + " CRC";
+        } else if (benefit.formulaType === 'porcentaje') {
+          return benefit.formulaParamUno + "%";
+        } else if (benefit.formulaType === 'API') {
+          try {
+            const response = await axios.get(benefit.urlAPI, {
+              params: {
+                param1: benefit.formulaParamUno,
+                param2: benefit.formulaParamDos,
+                param3: benefit.formulaParamTres
+              }
+            });
+
+            return response.data.resultado ?? "Resultado no disponible";
+          } catch (error) {
+            console.error("Error en llamada a API:", error);
+            return "Resultado no habilitado.";
+          }
+        }
+      },
+
+      async getBenefits() {
+        try {
+          const response = await axios
+            .get("https://localhost:7275/api/Login/GetLoggedUser", {
+              headers: {
+                Authorization: `Bearer ${this.$cookies.get(`jwt`)}`
+              }
+            });
+
+        const userNickname = response.data.Nickname;
+
+        const benefitsUser = await axios
+          .get("https://localhost:7275/api/AssignedBenefitList", {
+            params: {
+              userNickname: userNickname
+            }
+          });
+          this.allBenefits = await Promise.all(benefitsUser.data.map(async (benefit) => {
+            benefit.formattedDeduction = await this.formulaFormat(benefit);
+            return benefit;
+          }));
+          console.log(this.allBenefits);
+          this.assignedBenefits = this.allBenefits.filter(b => b.isAssigned);
+          console.log(this.allBenefits);
+        } catch(error) {
+            console.error("Error getting userNickname", error);
+        }
       }
-    }
+    },
   };
 </script>
 
