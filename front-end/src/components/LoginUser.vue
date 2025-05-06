@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <!-- HEADER -->
   <div class="container my-5">
     <div class="text-center mb-4">
@@ -149,7 +149,10 @@ export default {
       this.showWrongPassword = false;
       this.showLoginForbidden = false;
       axios
-        .post("https://localhost:7275/api/Login/Login", {NicknameOrEmail: this.user.userId, Password: this.user.userPassword})
+        .post("https://localhost:7275/api/Login/Login", {
+          NicknameOrEmail:
+            this.user.userId, Password: this.user.userPassword
+        })
         .then(
           response => {
             this.$cookies.set('jwt', response.data);
