@@ -60,9 +60,6 @@ namespace back_end.Models
     public int hireYear { get; set; }
 
     [Required]
-    public string loggedUsername { get; set; }
-
-    [Required]
     public string role { get; set; }
 
     [Required]

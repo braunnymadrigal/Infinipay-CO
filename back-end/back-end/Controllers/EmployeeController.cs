@@ -2,6 +2,7 @@
 using back_end.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace back_end.Controllers
 {
@@ -25,8 +26,19 @@ namespace back_end.Controllers
         {
           return BadRequest();
         }
+        string logguedId = "";
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity != null)
+        {
+          var userClaims = identity.Claims;
+          var sid = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+          if (sid != null)
+          {
+            logguedId = sid;
+          }
+        }
         EmployeeRepository employeeRepository = new EmployeeRepository();
-        var result = employeeRepository.createNewEmployee(employee);
+        var result = employeeRepository.createNewEmployee(employee, logguedId);
         return new JsonResult(result);
       }
       catch (Exception ex)

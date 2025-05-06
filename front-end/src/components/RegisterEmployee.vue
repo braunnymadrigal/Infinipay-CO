@@ -411,114 +411,78 @@ export default {
     };
   },
   methods: {
-    generateYears() {
-      const current = new Date().getFullYear();
-      const years = [];
-      for (let y = current; y >= 1900; y--) {
-        years.push(y);
-      }
-      return years;
-    },
-
-    async getLoggedUsername() {
-    try {
-      let jwtCookie = this.$cookies.get('jwt');
-      const response = await axios.get("https://localhost:7275/api/Login/GetLoggedUser", {
-        headers: { "Authorization": `Bearer ${jwtCookie}` }
-      });
-      return response.data.Nickname;
-    } catch (error) {
-      console.error("Error al obtener el usuario logueado:", error);
-      setTimeout(() => {
-        this.$router.push('LoginUser');
-      }, 4000);
-      return null;
+  generateYears() {
+    const current = new Date().getFullYear();
+    const years = [];
+    for (let y = current; y >= 1900; y--) {
+      years.push(y);
     }
+    return years;
   },
 
+  submitForm() {
+    let jwtCookie = this.$cookies.get('jwt');
 
-  async submitForm() {
-    this.loggedUsername = await this.getLoggedUsername();
-    console.log("Datos del formulario:", {
-      loggedUsername: this.loggedUsername,
-      firstName: this.firstName,
-      secondName: this.secondName,
-      firstLastName: this.firstLastName,
-      secondLastName: this.secondLastName,
-      idNumber: this.idNumber,
-      username: this.username,
-      phoneNumber: this.phoneNumber,
-      email: this.email,
-      role: this.role,
-      province: this.address.province,
-      canton: this.address.canton,
-      district: this.address.district,
-      otherSigns: this.address.otherSigns,
-      gender: this.gender,
-      birthDay: Number(this.birthDay),
-      birthMonth: Number(this.birthMonth),
-      birthYear: Number(this.birthYear),
-      hireDay: Number(this.hireDay),
-      hireMonth: Number(this.hireMonth),
-      hireYear: Number(this.hireYear),
-      reportsHours: Number(this.reportsHours),
-      salary: Number(this.salary),
-      typeContract: this.typeContract,
-      creationDay: Number(this.creationDay),
-      creationMonth: Number(this.creationMonth),
-      creationYear: Number(this.creationYear),
-    });
-    if (!this.loggedUsername) {
-      alert("No se pudo obtener el usuario logueado.");
+    if (!jwtCookie) {
+      alert("Su sesión ha expirado. Por favor, inicie sesión nuevamente.");
+      this.$router.push('LoginUser');
       return;
     }
-    axios.post("https://localhost:7275/api/Employee", {
-      loggedUsername: this.loggedUsername,
-      firstName: this.firstName,
-      secondName: this.secondName,
-      firstLastName: this.firstLastName,
-      secondLastName: this.secondLastName,
-      idNumber: this.idNumber,
-      username: this.username,
-      phoneNumber: this.phoneNumber,
-      email: this.email,
-      role: this.role,
-      province: this.address.province,
-      canton: this.address.canton,
-      district: this.address.district,
-      otherSigns: this.address.otherSigns,
-      gender: this.gender,
-      birthDay: Number(this.birthDay),
-      birthMonth: Number(this.birthMonth),
-      birthYear: Number(this.birthYear),
-      hireDay: Number(this.hireDay),
-      hireMonth: Number(this.hireMonth),
-      hireYear: Number(this.hireYear),
-      reportsHours: Number(this.reportsHours),
-      salary: Number(this.salary),
-      typeContract: this.typeContract,
-      creationDay: Number(this.creationDay),
-      creationMonth: Number(this.creationMonth),
-      creationYear: Number(this.creationYear),
-    })
-    .then(function(response) {
-      console.log("Respuesta del servidor:", response.data);
-      if (response.data === true) {
-        alert("¡Empleado registrado exitosamente!");
-        this.$router.push('MyProfile');
-      } else {
-        alert("No se pudo registrar el empleado. Verifica los datos ingresados.");
-      }
-    }.bind(this))
-    .catch(function(error) {
-        console.error("Error:", error);
-        if (error.response) {
-          const message = error.response.data?.message || "Error desconocido";
-          alert(message);
+
+    axios.post(
+      "https://localhost:7275/api/Employee",
+      {
+        firstName: this.firstName,
+        secondName: this.secondName,
+        firstLastName: this.firstLastName,
+        secondLastName: this.secondLastName,
+        idNumber: this.idNumber,
+        username: this.username,
+        phoneNumber: this.phoneNumber,
+        email: this.email,
+        role: this.role,
+        province: this.address.province,
+        canton: this.address.canton,
+        district: this.address.district,
+        otherSigns: this.address.otherSigns,
+        gender: this.gender,
+        birthDay: Number(this.birthDay),
+        birthMonth: Number(this.birthMonth),
+        birthYear: Number(this.birthYear),
+        hireDay: Number(this.hireDay),
+        hireMonth: Number(this.hireMonth),
+        hireYear: Number(this.hireYear),
+        reportsHours: Number(this.reportsHours),
+        salary: Number(this.salary),
+        typeContract: this.typeContract,
+        creationDay: Number(this.creationDay),
+        creationMonth: Number(this.creationMonth),
+        creationYear: Number(this.creationYear),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${jwtCookie}`
         }
-      });
-    }
+      }
+    )
+    .then((response) => {
+      console.log("Respuesta del servidor:", response.data);
+      alert("¡Empleado registrado exitosamente!");
+      this.$router.push('MyProfile');
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      if (error.response) {
+        const message = error.response.data?.message || "Error desconocido";
+        alert(message);
+      } else {
+        alert("Su sesión ha expirado. Por favor, inicie sesión nuevamente.");
+        this.$router.push('LoginUser');
+      }
+    });
   }
+}
+
 };
 </script>
 
