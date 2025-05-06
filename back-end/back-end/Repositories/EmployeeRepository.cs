@@ -30,31 +30,29 @@ namespace back_end.Repositories
       var count = (int)cmd.ExecuteScalar();
       return count > 0;
     }
-
-    // METODO TEMPORAL HASTA SABER COMO OBTENER EL USUARIO LOGUEADO
-    public Guid GetPersonIdByUsername(string username)
+    public string GetUsernameByPersonId(string personId)
     {
       using (var connection = GetConnection())
       {
         connection.Open();
         var query =
-          "SELECT idPersonaFisica FROM Usuario WHERE nickname = @username";
+          "SELECT nickname FROM Usuario WHERE idPersonaFisica = @personId";
         using (var cmd = new SqlCommand(query, connection))
         {
-          cmd.Parameters.AddWithValue("@username", username);
+          cmd.Parameters.AddWithValue("@personId", personId);
           using (var reader = cmd.ExecuteReader())
           {
             if (reader.Read())
             {
-              return reader.GetGuid(0);
+              return reader.GetString(0);
             }
           }
         }
       }
-      throw new Exception("No se encontró el usuario con ese nombre.");
+      throw new Exception("No se encontró un usuario con ese ID.");
     }
 
-    public bool createNewEmployee(EmployeeModel employee)
+    public bool createNewEmployee(EmployeeModel employee, string logguedId)
     {
       using (var connection = GetConnection())
       {
@@ -79,16 +77,16 @@ namespace back_end.Repositories
               , employee.username, transaction))
               throw new Exception("USERNAME_DUPLICADO");
 
-            Guid employerId =
-              GetPersonIdByUsername(employee.loggedUsername);
-            Debug.WriteLine("LOGGED USER: " + employee.loggedUsername);
-            var auditId = insertAudit(employee.loggedUsername, transaction);
+            string loggedUsername = GetUsernameByPersonId(logguedId);
+            Debug.WriteLine("LOGGED USER ID: " + logguedId);
+            Debug.WriteLine("LOGGED USER: " + loggedUsername);
+            var auditId = insertAudit(loggedUsername, transaction);
             var personId = insertPerson(employee, auditId, transaction);
 
             insertNaturalPerson(employee, personId, transaction);
             insertAddress(employee, personId, transaction);
             insertUser(employee, personId, transaction);
-            insertEmployeeDetails(employee, employerId, personId
+            insertEmployeeDetails(employee, logguedId, personId
               , transaction);
             insertEmployeeContractDetails(employee, personId, transaction);
 
@@ -217,7 +215,7 @@ namespace back_end.Repositories
     }
 
     private void insertEmployeeDetails(EmployeeModel employee
-      , Guid employerId, Guid personId, SqlTransaction transaction)
+      , string logguedId, Guid personId, SqlTransaction transaction)
     {
       var hireDate = new DateTime(employee.hireYear, employee.hireMonth
         , employee.hireDay);
@@ -235,7 +233,7 @@ namespace back_end.Repositories
          , employee.role ?? (object)DBNull.Value);
       cmd.Parameters.Add("@fechaContratacion"
         , SqlDbType.Date).Value = hireDate;
-      cmd.Parameters.AddWithValue("@idEmpleadorContratador", employerId);
+      cmd.Parameters.AddWithValue("@idEmpleadorContratador", logguedId);
       Debug.WriteLine("Employee Done");
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: assignCompanyToEmployer.");
