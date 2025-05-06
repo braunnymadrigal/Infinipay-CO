@@ -24,7 +24,6 @@
                  ; cursor: pointer;">
                 Beneficios
               </a>
-              <a href="#" class="mx-2" style="color: #405d72">Empleados</a>
             
             <router-link to="/EmployeesList" class="mx-2"
                 style="color: #405d72">Empleados</router-link>
