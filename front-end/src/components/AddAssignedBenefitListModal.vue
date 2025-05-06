@@ -109,16 +109,20 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    opacity: 1;
   }
 
   .modal-content {
     opacity: 1 !important;
     background-color: white;
+    color: black !important;
+    box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    z-index: 10000;
     padding: 20px;
     border-radius: 10px;
     min-width: 600px;
