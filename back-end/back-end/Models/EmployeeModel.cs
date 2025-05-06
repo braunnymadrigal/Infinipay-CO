@@ -62,7 +62,6 @@ namespace back_end.Models
     [Required]
     public string loggedUsername { get; set; }
 
-    [Required]
     public string role { get; set; }
 
     [Required]

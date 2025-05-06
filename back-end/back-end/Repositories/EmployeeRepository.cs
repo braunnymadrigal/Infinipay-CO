@@ -231,7 +231,8 @@ namespace back_end.Repositories
                 transaction.Connection, transaction);
 
       cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
-      cmd.Parameters.AddWithValue("@rol", employee.role);
+      cmd.Parameters.AddWithValue("@rol"
+         , employee.role ?? (object)DBNull.Value);
       cmd.Parameters.Add("@fechaContratacion"
         , SqlDbType.Date).Value = hireDate;
       cmd.Parameters.AddWithValue("@idEmpleadorContratador", employerId);
