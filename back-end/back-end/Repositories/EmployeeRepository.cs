@@ -120,7 +120,7 @@ namespace back_end.Repositories
     private Guid insertPerson(EmployeeModel employee, Guid auditId
       , SqlTransaction transaction)
     {
-      string idType = "juridica";
+      string idType = "fisica";
 
       var cmd = new SqlCommand(@"
                 INSERT INTO [dbo].[Persona]
