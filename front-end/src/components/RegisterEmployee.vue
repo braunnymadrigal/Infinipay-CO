@@ -1,13 +1,14 @@
 <template>
-  <HeaderCompany/>
+  <HeaderCompany rol="profile.Rol" />
 
   <div v-if="showPopup" @click.stop 
     class="d-flex justify-content-center my-5 py-5">
     <div class="display-1 text-danger" style="padding: 150px;">
-      No tiene permisos para ver esta información.
+      No tienes permisos para registrar empleados.
     </div>
   </div>
-        
+
+  <div v-else>
     <div
       class="card p-4 mx-auto"
       style="max-width: 1000px; background-color: #fff8f3; border: none"
@@ -363,8 +364,8 @@
         </div>
       </form>
     </div>
-
-    <MainFooter/>
+  </div>
+  <MainFooter/>
 </template>
 
 <script>
@@ -479,14 +480,11 @@ export default {
       if (error.response) {
         const message = error.response.data?.message || "Error desconocido";
         alert(message);
-      } else {
-        alert("Su sesión ha expirado. Por favor, inicie sesión nuevamente.");
-        this.$router.push('LoginUser');
+        this.$router.push('MyProfile');
       }
     });
   }
-}
-
+},
 };
 </script>
 
