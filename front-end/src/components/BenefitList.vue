@@ -2,7 +2,7 @@
   <HeaderCompany />
 
   <div class="container mt-5 mb-5">
-    <h1 class="text-center" style="color: #405d72">Lista beneficios</h1>
+    <h1 class="text-center" style="color: #405d72">Lista de beneficios</h1>
     <div class="row justify-content-start">
       <div class="col-2">
         <router-link to="/RegisterBenefit">
@@ -24,8 +24,8 @@
           <th style="white-space: nowrap">Nombre</th>
           <th style="white-space: nowrap">Descripción</th>
           <th style="white-space: nowrap">Tiempo minimo</th>
-          <th style="white-space: nowrap">Empleados elegibles</th>
-          <th style="white-space: nowrap">Formula</th>
+          <th style="white-space: nowrap">Califican</th>
+          <th style="white-space: nowrap">Deduccion</th>
           <th style="white-space: nowrap">Acciones</th>
         </tr>
       </thead>
@@ -38,15 +38,24 @@
           <td>{{ benefit.formula }}</td>
           <td>
             <div class="d-flex justify-content-center gap-2">
-              <button v-on:click="eliminar" class="btn btn-danger btn-sm">
+              <button
+                class="btn btn-danger btn-sm"
+                style="width: 70px; border: transparent; width: 70px"
+              >
                 Eliminar
               </button>
-              <button
-                class="btn btn-secondary btn-sm"
-                style="background-color: #405d72; border: transparent"
-              >
-                Ver
-              </button>
+              <router-link :to="'/BenefitDetails/' + benefit.id">
+                <button
+                  class="btn btn-primary btn-sm"
+                  style="
+                    background-color: #405d72;
+                    border: transparent;
+                    width: 70px;
+                  "
+                >
+                  Ver
+                </button>
+              </router-link>
             </div>
           </td>
         </tr>
@@ -60,6 +69,8 @@
 <script setup>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
+import { ref } from "vue";
+// import { ref, onMounted } from "vue";
 
 function truncateString(str, maxLength) {
   if (str.length > maxLength) {
@@ -68,15 +79,23 @@ function truncateString(str, maxLength) {
   return str;
 }
 
+// onMounted() {
+//   // Fetch data from the API or perform any other setup tasks here
+//   // For example, you can use axios to fetch data from your backend
+//   // axios.get('/api/benefits').then(response => {
+//   //   benefits.value = response.data;
+//   // });
+// }
+
 // Temporary data for benefits
-const benefits = [
+const benefits = ref([
   {
     id: 1,
     name: "Asociacion solidarista",
     description:
-      "Como empresa, valoramos profundamente el bienestar de nuestros colaboradores y reconocemos el papel fundamental que desempeñan en nuestro",
+      "Como empresa, valoramos profundamente el bienestar de nuestros colaboradores y reconocemos el papel fundamental que desempeñan en nuestro éxito.",
     minMonths: 6,
-    appliesTo: ["Supervisores", "Mensual"],
+    appliesTo: ["Quincenal", "Mensual"],
     formula: "40%",
   },
   {
@@ -97,7 +116,7 @@ const benefits = [
     appliesTo: ["Quincenal", "Mensual", "Semanal"],
     formula: "60 000 CRC",
   },
-];
+]);
 </script>
 
 <style lang="scss" scoped></style>
