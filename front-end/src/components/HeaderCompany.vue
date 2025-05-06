@@ -24,7 +24,7 @@
               Beneficios
             </a>
             
-            <router-link to="/EmployeeList" class="mx-2"
+            <router-link to="/EmployeesList" class="mx-2"
                 style="color: #405d72">Empleados</router-link>
             
              <router-link
