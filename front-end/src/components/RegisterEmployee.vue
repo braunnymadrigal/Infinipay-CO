@@ -1,6 +1,13 @@
 <template>
   <HeaderCompany/>
 
+  <div v-if="showPopup" @click.stop 
+    class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      No tiene permisos para ver esta información.
+    </div>
+  </div>
+        
     <div
       class="card p-4 mx-auto"
       style="max-width: 1000px; background-color: #fff8f3; border: none"
@@ -371,6 +378,7 @@ export default {
   },
   data() {
     return {
+      showPopup: false,
       firstName: '',
       secondName: '',
       firstLastName: '',
@@ -423,12 +431,6 @@ export default {
   submitForm() {
     let jwtCookie = this.$cookies.get('jwt');
 
-    if (!jwtCookie) {
-      alert("Su sesión ha expirado. Por favor, inicie sesión nuevamente.");
-      this.$router.push('LoginUser');
-      return;
-    }
-
     axios.post(
       "https://localhost:7275/api/Employee",
       {
@@ -466,11 +468,13 @@ export default {
       }
     )
     .then((response) => {
+      this.showPopup = false;
       console.log("Respuesta del servidor:", response.data);
       alert("¡Empleado registrado exitosamente!");
       this.$router.push('MyProfile');
     })
     .catch((error) => {
+      this.showPopup = true;
       console.error("Error:", error);
       if (error.response) {
         const message = error.response.data?.message || "Error desconocido";

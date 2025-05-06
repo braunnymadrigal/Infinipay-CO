@@ -3,6 +3,7 @@ using back_end.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
@@ -16,6 +17,8 @@ namespace back_end.Controllers
     {
       _employeeRepository = new EmployeeRepository();
     }
+
+    [Authorize(Roles = "empleador,administrador")]
     [HttpPost]
     public async Task<ActionResult<bool>> createNewEmployee(EmployeeModel
       employee)
