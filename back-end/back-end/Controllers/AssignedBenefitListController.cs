@@ -25,5 +25,27 @@ namespace back_end.Controllers
       var benefits = _assignedBenefitListRepository.GetBenefits(userNickname);
       return benefits;
     }
+    [HttpPost("AssignBenefit")]
+    public async Task<ActionResult<bool>> 
+        AssignBenefit([FromBody] AssignBenefitRequest request)
+      {
+        try
+        {
+          if (request == null)
+          {
+            return BadRequest();
+          }
+          AssignedBenefitListRepository assignRepository 
+            = new AssignedBenefitListRepository();
+           var assignmentResult = assignRepository.AssignBenefit(request);
+           return new JsonResult(assignmentResult);
+
+        } catch (Exception)
+        {
+          return StatusCode(StatusCodes.Status500InternalServerError
+            , "Error assigning benefit");
+        }
+      }
   }
+
 }

@@ -44,13 +44,25 @@ namespace back_end.Repositories
       return queryTable;
     }
 
+    private bool GetAssignmentResult(string query, SqlParameter[] parameters)
+    {
+      SqlCommand queryCommand = new SqlCommand(query, _connection);
+      queryCommand.Parameters.AddRange(parameters);
+
+      _connection.Open();
+      bool assignmentResultSuccess = queryCommand.ExecuteNonQuery() >= 1;
+      _connection.Close();
+
+      return assignmentResultSuccess;
+    }
     public List<AssignedBenefitListModel> GetBenefits(string userNickname)
     {
       List<AssignedBenefitListModel> benefitsList = new 
         List<AssignedBenefitListModel>();
 
       string query = @"
-        SELECT 
+        SELECT
+            b.id,
             b.nombre,
             b.tiempoMinimo,
             b.descripcion,
@@ -64,11 +76,13 @@ namespace back_end.Repositories
             a.fechaCreacion,
             a.ultimoUsuarioModificador,
             a.ultimaFechaModificacion,
+            pj.beneficiosPorEmpleado,
             CASE 
                 WHEN bpe.idEmpleado IS NOT NULL THEN 1
                 ELSE 0
             END AS isAssigned
         FROM Beneficio b
+        JOIN PersonaJuridica pj ON pj.id = b.idPersonaJuridica
         JOIN Empleador em ON em.idPersonaJuridica = b.idPersonaJuridica
         JOIN Auditoria a ON a.id = b.idAuditoria
         JOIN Empleado e ON e.idEmpleadorContratador = em.idPersonaFisica
@@ -92,25 +106,41 @@ namespace back_end.Repositories
       {
         benefitsList.Add(new AssignedBenefitListModel
         {
-          benefitName = Convert.ToString(column["nombre"]),
-          benefitMinTime = Convert.ToDecimal(column["tiempoMinimo"]),
-          benefitDescription = Convert.ToString(column["descripcion"]),
-          benefitElegibleEmployees =
-            Convert.ToString(column["empleadoElegible"]),
-          formulaType = Convert.ToString(column["tipoFormula"]),
+          benefitId = column["id"] != DBNull.Value ? (Guid)column["id"] : Guid.Empty,
+          benefitName = column["nombre"] != DBNull.Value ? Convert.ToString(column["nombre"]) : null,
+          benefitMinTime = column["tiempoMinimo"] != DBNull.Value ? Convert.ToDecimal(column["tiempoMinimo"]) : 0,
+          benefitDescription = column["descripcion"] != DBNull.Value ? Convert.ToString(column["descripcion"]) : null,
+          benefitElegibleEmployees = column["empleadoElegible"] != DBNull.Value ? Convert.ToString(column["empleadoElegible"]) : null,
+          formulaType = column["tipoFormula"] != DBNull.Value ? Convert.ToString(column["tipoFormula"]) : null,
           urlAPI = column["urlAPI"] != DBNull.Value ? Convert.ToString(column["urlAPI"]) : null,
-          formulaParamUno = Convert.ToString(column["paramUno"]),
+          formulaParamUno = column["paramUno"] != DBNull.Value ? Convert.ToString(column["paramUno"]) : null,
           formulaParamDos = column["paramDos"] != DBNull.Value ? Convert.ToString(column["paramDos"]) : null,
           formulaParamTres = column["paramTres"] != DBNull.Value ? Convert.ToString(column["paramTres"]) : null,
-          userCreator = Convert.ToString(column["usuarioCreador"]),
-          creationDate = Convert.ToDateTime(column["fechaCreacion"]),
+          userCreator = column["usuarioCreador"] != DBNull.Value ? Convert.ToString(column["usuarioCreador"]) : null,
+          creationDate = column["fechaCreacion"] != DBNull.Value ? Convert.ToDateTime(column["fechaCreacion"]) : DateTime.MinValue,
           userModifier = column["ultimoUsuarioModificador"] != DBNull.Value ? Convert.ToString(column["ultimoUsuarioModificador"]) : null,
           modifiedDate = column["ultimaFechaModificacion"] != DBNull.Value ? Convert.ToDateTime(column["ultimaFechaModificacion"]) : (DateTime?)null,
-          isAssigned = Convert.ToBoolean(column["isAssigned"])
+          asignado = column["isAssigned"] != DBNull.Value && Convert.ToBoolean(column["isAssigned"]),
+          beneficiosPorEmpleado = column["beneficiosPorEmpleado"] != DBNull.Value ? Convert.ToInt16(column["beneficiosPorEmpleado"]) : (short)0
         });
       }
-
       return benefitsList;
+    }
+
+    public bool AssignBenefit(AssignBenefitRequest request)
+    {
+      string query = @"
+        INSERT INTO BeneficioPorEmpleado ([idBeneficio], [idEmpleado])
+        VALUES(@BeneficioId, @PersonaFisicaId)";
+
+      SqlParameter[] parameters = new SqlParameter[]
+        {
+        new SqlParameter("@PersonaFisicaId", request.userPersonId),
+        new SqlParameter("@BeneficioId", request.benefitId)
+
+        };
+
+      return GetAssignmentResult(query, parameters);
     }
   }
 }
