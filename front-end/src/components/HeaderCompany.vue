@@ -20,9 +20,10 @@
                          class="mx-2"
                          style="color: #405d72">Empresa</router-link>
                          
-            <a @click="goToBenefits" class="mx-2" style="color: #405d72; cursor: pointer;">
-              Beneficios
-            </a>
+              <a @click="goToBenefits" class="mx-2" style="color: #405d72
+                 ; cursor: pointer;">
+                Beneficios
+              </a>
             
             <router-link to="/EmployeesList" class="mx-2"
                 style="color: #405d72">Empleados</router-link>
@@ -35,20 +36,18 @@
               >
                 Registrar empleados
               </router-link>
-              
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
             </a>
-            
+
+            </div>
           </div>
-        </div>
-      </nav>
-    </header>
-  </div>
-
+        </nav>
+      </header>
+    </div>
 </template>
-<script>
 
+<script>
   import axios from "axios";
   export default {
     name: 'CompanyHeader',
@@ -88,6 +87,7 @@
     }
   }
 </script>
+
 <style>
   @import '../assets/css/HeaderFooter.css';
 </style>
