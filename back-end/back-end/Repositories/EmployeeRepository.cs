@@ -78,8 +78,6 @@ namespace back_end.Repositories
               throw new Exception("USERNAME_DUPLICADO");
 
             string loggedUsername = GetUsernameByPersonId(logguedId);
-            Debug.WriteLine("LOGGED USER ID: " + logguedId);
-            Debug.WriteLine("LOGGED USER: " + loggedUsername);
             var auditId = insertAudit(loggedUsername, transaction);
             var personId = insertPerson(employee, auditId, transaction);
 
@@ -120,7 +118,7 @@ namespace back_end.Repositories
     private Guid insertPerson(EmployeeModel employee, Guid auditId
       , SqlTransaction transaction)
     {
-      string idType = "juridica";
+      string idType = "fisica";
 
       var cmd = new SqlCommand(@"
                 INSERT INTO [dbo].[Persona]
@@ -143,7 +141,6 @@ namespace back_end.Repositories
 
       var personId = (Guid)cmd.ExecuteScalar();
 
-      Debug.WriteLine("Inserted person with ID: " + personId);
       return personId;
     }
 
@@ -187,7 +184,6 @@ namespace back_end.Repositories
       cmd.Parameters.AddWithValue("@distrito", employee.district);
       cmd.Parameters.AddWithValue("@otrasSenas"
         , employee.otherSigns ?? (object)DBNull.Value);
-      Debug.WriteLine("Address Done");
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: insertAddress.");
     }
@@ -198,7 +194,6 @@ namespace back_end.Repositories
         , employee.birthDay);
       var rawPassword = employee.firstLastName + birthDate.ToString("ddMMyyyy")
         + "!";
-      Debug.WriteLine(rawPassword);
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])
@@ -209,7 +204,6 @@ namespace back_end.Repositories
       cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
       cmd.Parameters.AddWithValue("@nickname", employee.username);
       cmd.Parameters.AddWithValue("@contrasena", rawPassword);
-      Debug.WriteLine("User Done");
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: Usuario.");
     }
@@ -234,7 +228,6 @@ namespace back_end.Repositories
       cmd.Parameters.Add("@fechaContratacion"
         , SqlDbType.Date).Value = hireDate;
       cmd.Parameters.AddWithValue("@idEmpleadorContratador", logguedId);
-      Debug.WriteLine("Employee Done");
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: assignCompanyToEmployer.");
     }
@@ -259,7 +252,6 @@ namespace back_end.Repositories
       cmd.Parameters.AddWithValue("@salarioBruto", employee.salary);
       cmd.Parameters.AddWithValue("@tipoContrato", employee.typeContract);
       cmd.Parameters.AddWithValue("@idEmpleado", naturalPersonId);
-      Debug.WriteLine("Contract Done");
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: assignCompanyToEmployer.");
     }
