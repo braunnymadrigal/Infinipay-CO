@@ -28,9 +28,9 @@
         <tr>
           <th style="white-space: nowrap">Nombre</th>
           <th style="white-space: nowrap">Descripción</th>
-          <th style="white-space: nowrap">Tiempo minimo</th>
+          <th style="white-space: nowrap;">Tiempo minimo</th>
           <th style="white-space: nowrap">Deducción</th>
-          <th style="white-space: nowrap">Acciones</th>
+          <th style="white-space: nowrap; text-align: center;">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -66,12 +66,14 @@
 
   </div>
 
-  <AssignedBenefitListModal v-if="showAssignedBenefitListModal && AssignedBenefitListModal"
+  <AssignedBenefitListModal v-if="showAssignedBenefitListModal"
                             :benefit="selectedBenefit"
                             @close="showAssignedBenefitListModal = false" />
 
   <AddAssignedBenefitListModal v-if="showAddAssignedBenefitListModal"
-                            :allBenefits="allBenefits"
+                            :availableBenefits="availableBenefits"
+                            :maxBenefitsPerEmployee="maxBenefitsPerEmployee"
+                            :numAssignedBenefits="assignedBenefits.length"
                             @close="showAddAssignedBenefitListModal = false" />
 
   <MainFooter />
@@ -100,6 +102,8 @@
         showAddAssignedBenefitListModal: false,
         allBenefits: [],
         assignedBenefits: [],
+        availableBenefits: [],
+        maxBenefitsPerEmployee: 0
       };
     },
     created() {
@@ -123,7 +127,7 @@
         if (benefit.formulaType === 'montoFijo') {
           return benefit.formulaParamUno + " CRC";
         } else if (benefit.formulaType === 'porcentaje') {
-          return benefit.formulaParamUno + "%";
+          return benefit.formulaParamUno;
         } else if (benefit.formulaType === 'API') {
           try {
             const response = await axios.get(benefit.urlAPI, {
@@ -134,10 +138,10 @@
               }
             });
 
-            return response.data.resultado ?? "Resultado no disponible";
+            return response.data.resultado ?? "Result not available";
           } catch (error) {
-            console.error("Error en llamada a API:", error);
-            return "Resultado no habilitado.";
+            console.error("API call error:", error);
+            return "Result not available.";
           }
         }
       },
@@ -163,11 +167,11 @@
             benefit.formattedDeduction = await this.formulaFormat(benefit);
             return benefit;
           }));
-          console.log(this.allBenefits);
-          this.assignedBenefits = this.allBenefits.filter(b => b.isAssigned);
-          console.log(this.allBenefits);
+          this.assignedBenefits = this.allBenefits.filter(b => b.asignado);
+          this.availableBenefits = this.allBenefits.filter(b => !b.asignado);
+          this.maxBenefitsPerEmployee = this.allBenefits[0].beneficiosPorEmpleado;
         } catch(error) {
-            console.error("Error getting userNickname", error);
+            console.error("Error getting user Nickname", error);
         }
       }
     },
