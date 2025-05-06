@@ -17,14 +17,43 @@ namespace back_end.Controllers
     public AssignedBenefitListController()
     {
       _assignedBenefitListRepository = new AssignedBenefitListRepository();
+
+      if (_assignedBenefitListRepository == null)
+      {
+        throw new NullReferenceException(
+          "Error creando AssignedBenefitListRepositor");
+      }
+
     }
 
     [HttpGet]
-    public List<AssignedBenefitListModel> Get([FromQuery] string userNickname)
+    public ActionResult<List<AssignedBenefitListModel>> Get([FromQuery] 
+      string userNickname)
     {
-      var benefits = _assignedBenefitListRepository.GetBenefits(userNickname);
-      return benefits;
+      if (string.IsNullOrWhiteSpace(userNickname))
+      {
+        return BadRequest("Nombre de usuario es requerido");
+      }
+
+      try
+      {
+        var benefits = _assignedBenefitListRepository.GetBenefits(userNickname);
+
+        if (benefits == null)
+        {
+          return NotFound("Beneficios son nulos");
+        }
+
+        return Ok(benefits);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, 
+          new {message = "Error obteniendo beneficios", details = ex.Message});
+      }
     }
+
+
     [HttpPost("AssignBenefit")]
     public async Task<ActionResult<bool>> 
         AssignBenefit([FromBody] AssignBenefitRequest request)
@@ -40,10 +69,11 @@ namespace back_end.Controllers
            var assignmentResult = assignRepository.AssignBenefit(request);
            return new JsonResult(assignmentResult);
 
-        } catch (Exception)
+        } catch (Exception ex)
         {
           return StatusCode(StatusCodes.Status500InternalServerError
-            , "Error assigning benefit");
+            , new { message = "Error al asignar beneficio"
+              , details = ex.Message });
         }
       }
   }

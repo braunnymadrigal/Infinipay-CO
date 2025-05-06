@@ -16,45 +16,103 @@ namespace back_end.Repositories
     public AssignedBenefitListRepository()
     {
       var builder = WebApplication.CreateBuilder();
-      _connectionRoute =
-        builder.Configuration.GetConnectionString("InfinipayDBContext");
+
+      _connectionRoute = builder.Configuration.
+        GetConnectionString("InfinipayDBContext")
+              ?? throw new Exception("Connection string not found.");
+
       _connection = new SqlConnection(_connectionRoute);
     }
 
     private DataTable GetQueryTable(string query)
     {
-      SqlCommand queryCommand = new SqlCommand(query, _connection);
-      SqlDataAdapter tableAdapter = new SqlDataAdapter(queryCommand);
       DataTable queryTable = new DataTable();
-      _connection.Open();
-      tableAdapter.Fill(queryTable);
+
+      try
+      {
+        using (SqlCommand queryCommand = new SqlCommand(query, _connection))
+        using (SqlDataAdapter tableAdapter = new SqlDataAdapter(queryCommand))
+        {
+          if (_connection.State != ConnectionState.Open)
+          {
+            _connection.Open();
+          }
+
+          tableAdapter.Fill(queryTable);
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al ejecutar consulta: " + ex.Message, ex);
+      }
       _connection.Close();
+
       return queryTable;
     }
 
     private DataTable GetQueryTable(string query, SqlParameter[] parameters)
     {
-      SqlCommand queryCommand = new SqlCommand(query, _connection);
-      queryCommand.Parameters.AddRange(parameters);
-      SqlDataAdapter tableAdapter = new SqlDataAdapter(queryCommand);
       DataTable queryTable = new DataTable();
-      _connection.Open();
-      tableAdapter.Fill(queryTable);
-      _connection.Close();
+
+      try
+      {
+        using (SqlCommand queryCommand = new SqlCommand(query, _connection))
+        using (SqlDataAdapter tableAdapter = new SqlDataAdapter(queryCommand))
+        {
+          if (parameters != null && parameters.Length > 0)
+          {
+            queryCommand.Parameters.AddRange(parameters);
+          }
+
+          if (_connection.State != ConnectionState.Open)
+          {
+            _connection.Open();
+          }
+
+          tableAdapter.Fill(queryTable);
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al ejecutar consulta con parámetros: " 
+          + ex.Message, ex);
+      }
+       _connection.Close();
+
       return queryTable;
     }
 
     private bool GetAssignmentResult(string query, SqlParameter[] parameters)
     {
-      SqlCommand queryCommand = new SqlCommand(query, _connection);
-      queryCommand.Parameters.AddRange(parameters);
+      bool assignmentResultSuccess = false;
 
-      _connection.Open();
-      bool assignmentResultSuccess = queryCommand.ExecuteNonQuery() >= 1;
+      try
+      {
+        using (SqlCommand queryCommand = new SqlCommand(query, _connection))
+        {
+          if (parameters != null && parameters.Length > 0)
+          {
+            queryCommand.Parameters.AddRange(parameters);
+          }
+
+          if (_connection.State != ConnectionState.Open)
+          {
+            _connection.Open();
+          }
+
+          assignmentResultSuccess = queryCommand.ExecuteNonQuery() >= 1;
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al ejecutar consulta de asignación de " +
+          "beneficio: " + ex.Message, ex);
+      }
       _connection.Close();
 
       return assignmentResultSuccess;
     }
+
     public List<AssignedBenefitListModel> GetBenefits(string userNickname)
     {
       List<AssignedBenefitListModel> benefitsList = new 
@@ -100,30 +158,39 @@ namespace back_end.Repositories
         new SqlParameter("@nickname", userNickname)
       };
 
-      DataTable tableResult = GetQueryTable(query, parameters);
-
-      foreach (DataRow column in tableResult.Rows)
+      try
       {
-        benefitsList.Add(new AssignedBenefitListModel
+        DataTable tableResult = GetQueryTable(query, parameters);
+
+        foreach (DataRow column in tableResult.Rows)
         {
-          benefitId = column["id"] != DBNull.Value ? (Guid)column["id"] : Guid.Empty,
-          benefitName = column["nombre"] != DBNull.Value ? Convert.ToString(column["nombre"]) : null,
-          benefitMinTime = column["tiempoMinimo"] != DBNull.Value ? Convert.ToDecimal(column["tiempoMinimo"]) : 0,
-          benefitDescription = column["descripcion"] != DBNull.Value ? Convert.ToString(column["descripcion"]) : null,
-          benefitElegibleEmployees = column["empleadoElegible"] != DBNull.Value ? Convert.ToString(column["empleadoElegible"]) : null,
-          formulaType = column["tipoFormula"] != DBNull.Value ? Convert.ToString(column["tipoFormula"]) : null,
-          urlAPI = column["urlAPI"] != DBNull.Value ? Convert.ToString(column["urlAPI"]) : null,
-          formulaParamUno = column["paramUno"] != DBNull.Value ? Convert.ToString(column["paramUno"]) : null,
-          formulaParamDos = column["paramDos"] != DBNull.Value ? Convert.ToString(column["paramDos"]) : null,
-          formulaParamTres = column["paramTres"] != DBNull.Value ? Convert.ToString(column["paramTres"]) : null,
-          userCreator = column["usuarioCreador"] != DBNull.Value ? Convert.ToString(column["usuarioCreador"]) : null,
-          creationDate = column["fechaCreacion"] != DBNull.Value ? Convert.ToDateTime(column["fechaCreacion"]) : DateTime.MinValue,
-          userModifier = column["ultimoUsuarioModificador"] != DBNull.Value ? Convert.ToString(column["ultimoUsuarioModificador"]) : null,
-          modifiedDate = column["ultimaFechaModificacion"] != DBNull.Value ? Convert.ToDateTime(column["ultimaFechaModificacion"]) : (DateTime?)null,
-          asignado = column["isAssigned"] != DBNull.Value && Convert.ToBoolean(column["isAssigned"]),
-          beneficiosPorEmpleado = column["beneficiosPorEmpleado"] != DBNull.Value ? Convert.ToInt16(column["beneficiosPorEmpleado"]) : (short)0
-        });
+          benefitsList.Add(new AssignedBenefitListModel
+          {
+            benefitId = column["id"] != DBNull.Value ? (Guid)column["id"] : Guid.Empty,
+            benefitName = column["nombre"] != DBNull.Value ? Convert.ToString(column["nombre"]) : null,
+            benefitMinTime = column["tiempoMinimo"] != DBNull.Value ? Convert.ToDecimal(column["tiempoMinimo"]) : 0,
+            benefitDescription = column["descripcion"] != DBNull.Value ? Convert.ToString(column["descripcion"]) : null,
+            benefitElegibleEmployees = column["empleadoElegible"] != DBNull.Value ? Convert.ToString(column["empleadoElegible"]) : null,
+            formulaType = column["tipoFormula"] != DBNull.Value ? Convert.ToString(column["tipoFormula"]) : null,
+            urlAPI = column["urlAPI"] != DBNull.Value ? Convert.ToString(column["urlAPI"]) : null,
+            formulaParamUno = column["paramUno"] != DBNull.Value ? Convert.ToString(column["paramUno"]) : null,
+            formulaParamDos = column["paramDos"] != DBNull.Value ? Convert.ToString(column["paramDos"]) : null,
+            formulaParamTres = column["paramTres"] != DBNull.Value ? Convert.ToString(column["paramTres"]) : null,
+            userCreator = column["usuarioCreador"] != DBNull.Value ? Convert.ToString(column["usuarioCreador"]) : null,
+            creationDate = column["fechaCreacion"] != DBNull.Value ? Convert.ToDateTime(column["fechaCreacion"]) : DateTime.MinValue,
+            userModifier = column["ultimoUsuarioModificador"] != DBNull.Value ? Convert.ToString(column["ultimoUsuarioModificador"]) : null,
+            modifiedDate = column["ultimaFechaModificacion"] != DBNull.Value ? Convert.ToDateTime(column["ultimaFechaModificacion"]) : (DateTime?)null,
+            asignado = column["isAssigned"] != DBNull.Value && Convert.ToBoolean(column["isAssigned"]),
+            beneficiosPorEmpleado = column["beneficiosPorEmpleado"] != DBNull.Value ? Convert.ToInt16(column["beneficiosPorEmpleado"]) : (short)0
+          });
+        }
       }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al obtener lista de beneficios" 
+          + ex.Message, ex);
+      }
+
       return benefitsList;
     }
 
@@ -140,7 +207,15 @@ namespace back_end.Repositories
 
         };
 
-      return GetAssignmentResult(query, parameters);
+      try
+      {
+        return GetAssignmentResult(query, parameters);
+      }
+      catch (Exception ex) 
+      { 
+        throw new Exception("Error al intentar asignar beneficio a empleado" +
+          ex.Message, ex);
+      }
     }
   }
 }

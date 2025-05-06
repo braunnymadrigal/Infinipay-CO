@@ -41,7 +41,8 @@
     methods: {
       async goToBenefits() {
         try {
-          const response = await axios.get("https://localhost:7275/api/Login/GetLoggedUser", {
+          const response = await
+            axios.get("https://localhost:7275/api/Login/GetLoggedUser", {
             headers: {
               Authorization: `Bearer ${this.$cookies.get('jwt')}`
             }

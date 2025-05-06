@@ -163,15 +163,20 @@
               userNickname: userNickname
             }
           });
-          this.allBenefits = await Promise.all(benefitsUser.data.map(async (benefit) => {
+          this.allBenefits = await Promise.all(
+            benefitsUser.data.map(async (benefit) => {
             benefit.formattedDeduction = await this.formulaFormat(benefit);
             return benefit;
           }));
           this.assignedBenefits = this.allBenefits.filter(b => b.asignado);
           this.availableBenefits = this.allBenefits.filter(b => !b.asignado);
-          this.maxBenefitsPerEmployee = this.allBenefits[0].beneficiosPorEmpleado;
+          this.maxBenefitsPerEmployee =
+            this.allBenefits[0].beneficiosPorEmpleado;
         } catch(error) {
-            console.error("Error getting user Nickname", error);
+          if (error.response?.config?.url.includes("GetLoggedUser")) {
+            console.error("Error obteniendo nombre de usuario", error);
+          }
+            console.error("Error al intentar asignar un beneficio", error);
         }
       }
     },

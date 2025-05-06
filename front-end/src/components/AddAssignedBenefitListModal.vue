@@ -18,7 +18,8 @@
         </thead>
         <tbody>
           <tr v-if="!availableBenefits || availableBenefits.length === 0">
-            <td colspan="4" class="text-center">No hay beneficios para asignar.</td>
+            <td colspan="4" class="text-center">No hay beneficios para 
+            asignar.</td>
           </tr>
           <tr v-else v-for="benefit in availableBenefits" :key="benefit.name">
             <td>{{ benefit.benefitName }}</td>
@@ -28,8 +29,8 @@
             <td>
               <div class="d-flex justify-content-center gap-2">
                 <button class="btn btn-success btn-sm"
-                        :disabled="numAssignedBenefits === maxBenefitsPerEmployee"
-                        style="width: 70px;
+                  :disabled="numAssignedBenefits === maxBenefitsPerEmployee"
+                  style="width: 70px;
                   border: transparent;
                   width: 70px"
                         @click="assignBenefit(benefit)">
@@ -81,7 +82,8 @@
 
           const userPersonId = response.data.PersonaId;
 
-          axios.post("https://localhost:7275/api/AssignedBenefitList/AssignBenefit", {
+          axios.post(
+            "https://localhost:7275/api/AssignedBenefitList/AssignBenefit", {
             userPersonId: userPersonId,
             benefitId: selectedAddBenefit.benefitId
           }).then(function (response) {
@@ -89,7 +91,11 @@
             window.location.href = "/AssignedBenefitList";
           });
         } catch(error) {
-          console.error("Error getting user Nickname", error);
+          if (error.response?.config?.url.includes("GetLoggedUser")) {
+            console.error("Error obteniendo nombre de usuario", error);
+          } else {
+          console.error("Error al intentar asignar un beneficio", error);
+          }
         }
       }
     }

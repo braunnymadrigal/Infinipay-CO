@@ -3,12 +3,14 @@
       <div class="modal-content" v-if="benefit">
         <h3>{{ benefit.benefitName }}</h3>
         <p>{{ benefit.benefitDescription }}</p>
-        <p><strong>Tiempo mínimo:</strong> {{ benefit.benefitMinTime }} meses</p>
+        <p><strong>Tiempo mínimo:</strong> {{ benefit.benefitMinTime }} 
+          meses</p>
         <p><strong>Deducción:</strong> {{ benefit.formattedDeduction }}</p>
         <div class="d-flex flex-column align-items-center"
              style="border: none">
           <p style="font-size: 15px">Creado por <a :href="'/'">
-            {{'@' + benefit.userCreator}}</a> el {{formatDate(benefit.creationDate)}}</p>
+            {{'@' + benefit.userCreator}}</a>
+            el {{formatDate(benefit.creationDate)}}</p>
           <p style="font-size: 15px" v-if="benefit.modificationUser">
             Modificado por
             <a :href="'/'">
