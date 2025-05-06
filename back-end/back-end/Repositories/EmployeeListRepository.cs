@@ -28,12 +28,13 @@ namespace back_end.Repositories
       _connection.Close();
       return queryTable;
     }
-    public List<EmployeeListModel> obtainEmployeeInfo()
+
+    public List<EmployeeListModel> obtainEmployeeInfo(string logguedId)
     {
       var dataTablePerson = obtainPersonInfo();
       var dataTableAddress = obtainAddress();
       var dataTableNatural = obtainNaturalPersonInfo();
-      var dataTableEmployee = obtainEmployeeDetails();
+      var dataTableEmployee = obtainEmployeeDetails(logguedId);
       var result = new List<EmployeeListModel>();
       foreach (var person in dataTablePerson)
       {
@@ -134,13 +135,14 @@ namespace back_end.Repositories
       }
       return naturalPersons;
     }
-    public List<EmployeeListModel> obtainEmployeeDetails()
+    public List<EmployeeListModel> obtainEmployeeDetails(string logguedId)
     {
       var employeeDetails = new List<EmployeeListModel>();
-      string query = @"
+      string query = $@"
         SELECT 
            idPersonaFisica, rol, fechaContratacion, observaciones
-        FROM Empleado";
+        FROM Empleado
+        WHERE idEmpleadorContratador = '{logguedId}';";
       DataTable table = getQueryTable(query);
       foreach (DataRow rows in table.Rows)
       {
