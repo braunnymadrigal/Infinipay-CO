@@ -1,6 +1,13 @@
 <template>
   <HeaderCompany/>
 
+  <div v-if="showPopup" @click.stop 
+  class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      No tiene permisos para ver esta información.
+    </div>
+  </div> 
+  
   <div v-if="isLoading" class="text-center mt-5">
     <p>Cargando información...</p>
   </div>
