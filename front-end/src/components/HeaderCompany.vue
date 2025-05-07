@@ -21,14 +21,12 @@
                          style="color: #405d72">Empresa</router-link>             
 
             <router-link 
-                         v-if="rol === 'empleador' || rol === 'administrador'"
                          to="/BenefitList"
                          class="mx-2"
                          style="color: #405d72">Beneficios Empresa
             </router-link>
 
             <router-link
-                         v-else
                          to="/AssignedBenefitList"
                          class="mx-2"
                          style="color: #405d72">Beneficios

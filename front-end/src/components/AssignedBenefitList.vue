@@ -1,81 +1,88 @@
 ﻿<template>
   <HeaderCompany />
 
-  <div class="card p-4 mx-auto"
-       style="max-width: 1000px; background-color: #fff8f3; border: none">
-    <h1 class="text-center"
-        style="color: #405d72">
-      Beneficios asignados
-    </h1>
+  <div v-if="showPopup" @click.stop
+       class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      No tiene permisos para ver esta informacion.
+    </div>
   </div>
 
-  <div class="container mt-5 mb-5">
-    <div class="row justify-content-start">
-      <div class="col-2">
-        <button type="button"
-                class="btn btn-success"
-                style="background-color: #405d72;
-                border: transparent"
-                @click="openAddAssignedBenefitListModal()">
-          Agregar
-        </button>
-      </div>
+  <div v-else>
+    <div class="card p-4 mx-auto"
+         style="max-width: 1000px; background-color: #fff8f3; border: none">
+      <h1 class="text-center"
+          style="color: #405d72">
+        Beneficios asignados
+      </h1>
     </div>
 
-    <table class="table is-bordered table-striped
+    <div class="container mt-5 mb-5">
+      <div class="row justify-content-start">
+        <div class="col-2">
+          <button type="button"
+                  class="btn btn-success"
+                  style="background-color: #405d72;
+                border: transparent"
+                  @click="openAddAssignedBenefitListModal()">
+            Agregar
+          </button>
+        </div>
+      </div>
+
+      <table class="table is-bordered table-striped
            is-narrow is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th style="white-space: nowrap">Nombre</th>
-          <th style="white-space: nowrap">Descripción</th>
-          <th style="white-space: nowrap;">Tiempo minimo</th>
-          <th style="white-space: nowrap">Deducción</th>
-          <th style="white-space: nowrap; text-align: center;">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-if="assignedBenefits.length === 0">
-          <td colspan="5" class="text-center">No hay beneficios asignados.</td>
-        </tr>
-        <tr v-else v-for="benefit in assignedBenefits" :key="benefit.name">
-          <td>{{ benefit.benefitName }}</td>
-          <td>{{ truncateString(benefit.benefitDescription, 150) }}</td>
-          <td>{{ benefit.benefitMinTime + " meses" }}</td>
-          <td>{{ benefit.formattedDeduction }}</td>
-          <td>
-            <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-danger btn-sm"
-                      style="width: 70px;
+        <thead>
+          <tr>
+            <th style="white-space: nowrap">Nombre</th>
+            <th style="white-space: nowrap">Descripción</th>
+            <th style="white-space: nowrap;">Tiempo minimo</th>
+            <th style="white-space: nowrap">Deducción</th>
+            <th style="white-space: nowrap; text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="assignedBenefits.length === 0">
+            <td colspan="5" class="text-center">No hay beneficios asignados.</td>
+          </tr>
+          <tr v-else v-for="benefit in assignedBenefits" :key="benefit.name">
+            <td>{{ benefit.benefitName }}</td>
+            <td>{{ truncateString(benefit.benefitDescription, 150) }}</td>
+            <td>{{ benefit.benefitMinTime + " meses" }}</td>
+            <td>{{ benefit.formattedDeduction }}</td>
+            <td>
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-danger btn-sm"
+                        style="width: 70px;
+                      border: transparent;
+                      width: 70px">
+                  Eliminar
+                </button>
+                <button class="btn btn-success btn-sm"
+                        style="background-color: #405d72;
                       border: transparent;
                       width: 70px"
-              >
-                Eliminar
-              </button>
-              <button class="btn btn-success btn-sm"
-                      style="background-color: #405d72;
-                      border: transparent;
-                      width: 70px"
-                      @click="openAssignedBenefitListModal(benefit)">
-                Ver
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                        @click="openAssignedBenefitListModal(benefit)">
+                  Ver
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
+    </div>
+
+    <AssignedBenefitListModal v-if="showAssignedBenefitListModal"
+                              :benefit="selectedBenefit"
+                              @close="showAssignedBenefitListModal = false" />
+
+    <AddAssignedBenefitListModal v-if="showAddAssignedBenefitListModal"
+                                 :availableBenefits="availableBenefits"
+                                 :maxBenefitsPerEmployee="maxBenefitsPerEmployee"
+                                 :numAssignedBenefits="assignedBenefits.length"
+                                 @close="showAddAssignedBenefitListModal = false" />
   </div>
-
-  <AssignedBenefitListModal v-if="showAssignedBenefitListModal"
-                            :benefit="selectedBenefit"
-                            @close="showAssignedBenefitListModal = false" />
-
-  <AddAssignedBenefitListModal v-if="showAddAssignedBenefitListModal"
-                            :availableBenefits="availableBenefits"
-                            :maxBenefitsPerEmployee="maxBenefitsPerEmployee"
-                            :numAssignedBenefits="assignedBenefits.length"
-                            @close="showAddAssignedBenefitListModal = false" />
-
   <MainFooter />
 
 </template>
@@ -97,6 +104,7 @@
     },
     data() {
       return {
+        showPopup: false,
         showAssignedBenefitListModal: false,
         selectedBenefit: null,
         showAddAssignedBenefitListModal: false,
@@ -148,41 +156,37 @@
 
       async getBenefits() {
         try {
-          const response = await axios
-            .get("https://localhost:7275/api/Login/GetLoggedUser", {
-              headers: {
-                Authorization: `Bearer ${this.$cookies.get(`jwt`)}`
-              }
+          let jwtCookie = this.$cookies.get('jwt');
+
+          const benefitsUser =
+            await axios.get("https://localhost:7275/api/AssignedBenefitList", {
+              headers: { "Authorization": `Bearer ${jwtCookie}` }
             });
-
-        const userNickname = response.data.Nickname;
-
-        const benefitsUser = await axios
-          .get("https://localhost:7275/api/AssignedBenefitList", {
-            params: {
-              userNickname: userNickname
-            }
-          });
+          this.showPopup = false;
           this.allBenefits = await Promise.all(
             benefitsUser.data.map(async (benefit) => {
-            benefit.formattedDeduction = await this.formulaFormat(benefit);
-            return benefit;
-          }));
+              benefit.formattedDeduction = await this.formulaFormat(benefit);
+              return benefit;
+            })
+          );
+
           this.assignedBenefits = this.allBenefits.filter(b => b.asignado);
           this.availableBenefits = this.allBenefits.filter(b => !b.asignado);
           this.maxBenefitsPerEmployee =
             this.allBenefits[0].beneficiosPorEmpleado;
-        } catch(error) {
-          if (error.response?.config?.url.includes("GetLoggedUser")) {
-            console.error("Error obteniendo nombre de usuario", error);
+
+        } catch (error) {
+          this.showPopup = true;
+          console.error("Error:", error);
+          if (error.response) {
+            const message = error.response.data?.message || "Error desconocido";
+            alert(message);
           }
-            console.error("Error al intentar asignar un beneficio", error);
         }
       }
-    },
+    }
   };
 </script>
 
 <style scoped>
-
 </style>

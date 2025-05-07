@@ -2,7 +2,8 @@
 using back_end.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
@@ -26,18 +27,32 @@ namespace back_end.Controllers
 
     }
 
+    [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpGet]
-    public ActionResult<List<AssignedBenefitListModel>> Get([FromQuery] 
-      string userNickname)
+    public ActionResult<List<AssignedBenefitListModel>> Get()
     {
-      if (string.IsNullOrWhiteSpace(userNickname))
+      string logguedId = "";
+      var identity = HttpContext.User.Identity as ClaimsIdentity;
+      if (identity != null)
       {
-        return BadRequest("Nombre de usuario es requerido");
+        var userClaims = identity.Claims;
+        var sid =
+          userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+        if (!string.IsNullOrEmpty(sid))
+        {
+          logguedId = sid;
+        }
       }
 
+      if (string.IsNullOrWhiteSpace(logguedId))
+      {
+        return BadRequest(
+          "No se pudo obtener el nombre de usuario desde el token/cookie");
+      }
       try
       {
-        var benefits = _assignedBenefitListRepository.GetBenefits(userNickname);
+        var benefits =
+          _assignedBenefitListRepository.GetBenefits(logguedId);
 
         if (benefits == null)
         {
@@ -48,34 +63,57 @@ namespace back_end.Controllers
       }
       catch (Exception ex)
       {
-        return StatusCode(StatusCodes.Status500InternalServerError, 
-          new {message = "Error obteniendo beneficios", details = ex.Message});
+        return StatusCode(StatusCodes.Status500InternalServerError,
+            new
+            {
+              message =
+            "Error obteniendo beneficios",
+              details = ex.Message
+            });
       }
     }
 
-
+    [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpPost("AssignBenefit")]
-    public async Task<ActionResult<bool>> 
+    public async Task<ActionResult<bool>>
         AssignBenefit([FromBody] AssignBenefitRequest request)
+    {
+      try
       {
-        try
+        if (request == null)
         {
-          if (request == null)
-          {
-            return BadRequest();
-          }
-          AssignedBenefitListRepository assignRepository 
-            = new AssignedBenefitListRepository();
-           var assignmentResult = assignRepository.AssignBenefit(request);
-           return new JsonResult(assignmentResult);
-
-        } catch (Exception ex)
-        {
-          return StatusCode(StatusCodes.Status500InternalServerError
-            , new { message = "Error al asignar beneficio"
-              , details = ex.Message });
+          return BadRequest();
         }
+        string logguedId = "";
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity != null)
+        {
+          var userClaims = identity.Claims;
+          var sid =
+            userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+          if (sid != null)
+          {
+            logguedId = sid;
+          }
+        }
+        AssignedBenefitListRepository assignRepository
+          = new AssignedBenefitListRepository();
+        var assignmentResult = assignRepository.AssignBenefit(request
+         , logguedId);
+        return new JsonResult(assignmentResult);
+
       }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError
+          , new
+          {
+            message = "Error al asignar beneficio"
+            ,
+            details = ex.Message
+          });
+      }
+    }
   }
 
 }

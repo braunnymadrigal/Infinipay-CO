@@ -48,10 +48,10 @@ namespace back_end.Repositories
       }
       catch (Exception ex)
       {
-        throw new Exception("Error al ejecutar consulta con parámetros: " 
+        throw new Exception("Error al ejecutar consulta con parámetros: "
           + ex.Message, ex);
       }
-       _connection.Close();
+      _connection.Close();
 
       return queryTable;
     }
@@ -87,11 +87,56 @@ namespace back_end.Repositories
       return assignmentResultSuccess;
     }
 
-    public List<AssignedBenefitListModel> GetBenefits(string userNickname)
+    public string GetUsernameByPersonId(string logguedId)
     {
-      List<AssignedBenefitListModel> benefitsList = new 
+      try
+      {
+        string username = null;
+
+        var query = "SELECT nickname FROM Usuario WHERE idPersonaFisica = @personId";
+
+        using (var cmd = new SqlCommand(query, _connection))
+        {
+          cmd.Parameters.AddWithValue("@personId", logguedId);
+
+          if (_connection.State != ConnectionState.Open)
+          {
+            _connection.Open();
+          }
+
+          using (var reader = cmd.ExecuteReader())
+          {
+            if (reader.Read())
+            {
+              username = reader.GetString(0);
+            }
+          }
+        }
+
+        if (string.IsNullOrEmpty(username))
+        {
+          throw new Exception("No se encontró un usuario con ese ID.");
+        }
+
+        return username;
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al obtener nombre de usuario: " + ex.Message, ex);
+      }
+      finally
+      {
+        _connection.Close();
+      }
+    }
+
+
+    public List<AssignedBenefitListModel> GetBenefits(string logguedId)
+    {
+      List<AssignedBenefitListModel> benefitsList = new
         List<AssignedBenefitListModel>();
 
+      string userNickname = GetUsernameByPersonId(logguedId);
       string query = @"
         SELECT
             b.id,
@@ -161,14 +206,14 @@ namespace back_end.Repositories
       }
       catch (Exception ex)
       {
-        throw new Exception("Error al obtener lista de beneficios" 
+        throw new Exception("Error al obtener lista de beneficios"
           + ex.Message, ex);
       }
 
       return benefitsList;
     }
 
-    public bool AssignBenefit(AssignBenefitRequest request)
+    public bool AssignBenefit(AssignBenefitRequest request, string logguedId)
     {
       string query = @"
         INSERT INTO BeneficioPorEmpleado ([idBeneficio], [idEmpleado])
@@ -176,7 +221,7 @@ namespace back_end.Repositories
 
       SqlParameter[] parameters = new SqlParameter[]
         {
-        new SqlParameter("@PersonaFisicaId", request.userPersonId),
+        new SqlParameter("@PersonaFisicaId", logguedId),
         new SqlParameter("@BeneficioId", request.benefitId)
 
         };
@@ -185,8 +230,8 @@ namespace back_end.Repositories
       {
         return GetAssignmentResult(query, parameters);
       }
-      catch (Exception ex) 
-      { 
+      catch (Exception ex)
+      {
         throw new Exception("Error al intentar asignar beneficio a empleado" +
           ex.Message, ex);
       }
