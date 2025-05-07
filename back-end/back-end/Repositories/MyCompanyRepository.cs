@@ -120,7 +120,7 @@ namespace back_end.Repositories
                 {
                     if (secondGivenName != "")
                     {
-                        fullName = firstGivenName + " " + secondGivenName + firstFamilyName + " " + secondFamilyName;
+                        fullName = firstGivenName + " " + secondGivenName + " " + firstFamilyName + " " + secondFamilyName;
                     }
                     else
                     {
