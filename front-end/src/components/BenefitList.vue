@@ -71,6 +71,7 @@ import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
 import axios from "axios";
 import { ref, onMounted } from "vue";
+import cookies from "vue-cookies";
 
 function truncateString(str, maxLength) {
   if (str.length > maxLength) {
@@ -80,39 +81,24 @@ function truncateString(str, maxLength) {
 }
 
 const benefits = ref([]);
-const user = ref({});
 
-const getBenefits = async () => {
-  try {
-    const jwt = this.$cookies.get("jwt");
+function getBenefits() {
+  console.log("Obteniendo beneficios...");
 
-    if (!jwt) {
-      console.error("No JWT token found in cookies");
-      return;
-    }
+  let jwt = cookies.get("jwt");
+  console.log("JWT:", jwt);
 
-    const userRes = await axios.get(
-      "https://localhost:7275/api/Login/GetLoggedUser",
-      {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      }
-    );
-
-    user.value = userRes.data;
-
-    const benefitsRes = await axios.get(
-      `https://localhost:7275/api/Benefit/user/${encodeURIComponent(
-        user.value.nicknameOrEmail
-      )}`
-    );
-
-    benefits.value = benefitsRes.data;
-  } catch (error) {
-    console.error("Error obteniendo los beneficios:", error);
-  }
-};
+  axios
+    .get("https://localhost:7275/api/Benefit/", {
+      headers: { Authorization: `Bearer ${jwt}` },
+    })
+    .then((response) => {
+      benefits.value = response.data;
+    })
+    .catch((error) => {
+      console.error("Error obteniendo los beneficios:", error);
+    });
+}
 
 onMounted(() => {
   getBenefits();
