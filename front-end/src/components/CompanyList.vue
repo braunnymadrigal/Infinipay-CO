@@ -66,12 +66,25 @@
         </thead>
         <tbody>
           <tr v-for="(company, index) of companies" :key="index">
-            <td>{{ company.name }}</td>
+            <td>{{ company.legalName }}</td>
             <td>{{ truncateString(company.description, 150) }}</td>
-            <td>{{ company.legalId + " meses" }}</td>
-            <td>{{ company.address }}</td>
-            <td>{{ company.contactNumber }}</td>
-            <td>{{ company.creationDate }}</td>
+            <td>{{ company.idNumber }}</td>
+            <td>
+              {{
+                company.province +
+                ", " +
+                company.canton +
+                ", " +
+                company.district
+              }}
+            </td>
+            <td>{{ company.phoneNumber }}</td>
+            <td>
+              {{ company.creationDay }}/{{ company.creationMonth }}/{{
+                company.creationYear
+              }}
+            </td>
+
             <td>
               <div class="d-flex justify-content-center gap-2">
                 <button v-on:click="eliminar" class="btn btn-danger btn-sm">
@@ -94,96 +107,38 @@
 </template>
 
 <script>
+import axios from "axios";
 import MainFooter from "./MainFooter.vue";
+
 export default {
   components: {
     MainFooter,
   },
-  setup() {
-    return {};
-  },
   data() {
     return {
-      companies: [
-        {
-          name: "Cooperativa de Productores de Leche Dos Pinos R.L.",
-          description:
-            "Principal cooperativa láctea de Costa Rica, reconocida por su compromiso con la calidad, innovación y responsabilidad social.",
-          legalId: "3-002-045428",
-          address: "San José, Costa Rica",
-          contactNumber: "+506 2247 2000",
-          creationDate: "1947-01-01",
-        },
-        {
-          name: "BAC Credomatic",
-          description:
-            "Institución financiera líder en servicios bancarios y tecnológicos en Centroamérica, destacada por su innovación y enfoque en el cliente.",
-          legalId: "3-101-011262",
-          address: "San José, Costa Rica",
-          contactNumber: "+506 2295 9797",
-          creationDate: "1952-01-01",
-        },
-        {
-          name: "Florida Ice and Farm Company (FIFCO)",
-          description:
-            "Empresa costarricense de alimentos y bebidas con un fuerte enfoque en sostenibilidad y responsabilidad social empresarial.",
-          legalId: "3-101-007265",
-          address: "Heredia, Costa Rica",
-          contactNumber: "+506 2209 9000",
-          creationDate: "1908-01-01",
-        },
-        {
-          name: "Intel Costa Rica",
-          description:
-            "Subsidiaria de la multinacional tecnológica Intel, especializada en investigación, desarrollo y servicios globales de ingeniería.",
-          legalId: "3-101-234567",
-          address: "Belén, Heredia, Costa Rica",
-          contactNumber: "+506 2209 2000",
-          creationDate: "1997-01-01",
-        },
-        {
-          name: "Grupo Purdy",
-          description:
-            "Empresa líder en el sector automotriz costarricense, representante oficial de marcas como Toyota y Lexus, reconocida por su servicio al cliente.",
-          legalId: "3-101-123456",
-          address: "San José, Costa Rica",
-          contactNumber: "+506 2523 3000",
-          creationDate: "1957-01-01",
-        },
-      ],
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 09fe45f947eeec95cd3e4b88177909d1616be9d2
-      methods: {
-        // getCompanyList() {
-        //   axios
-        //     .get("http://localhost:7175/api/company")
-        //     .then((response) => {
-        //       this.companies = response.data;
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error fetching company list:", error);
-        //     });
-        // }
-      },
-      // onmounted() {
-      //   // this.getCompanyList();
-      // },
-<<<<<<< HEAD
-=======
->>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
-=======
->>>>>>> 09fe45f947eeec95cd3e4b88177909d1616be9d2
+      companies: [],
     };
   },
   methods: {
+    getCompanyList() {
+      axios
+        .get("http://localhost:7275/api/Company")
+        .then((response) => {
+          this.companies = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching company list:", error);
+        });
+    },
     truncateString(str, maxLength) {
       if (str.length > maxLength) {
         return str.substring(0, maxLength) + "...";
       }
       return str;
     },
+  },
+  mounted() {
+    this.getCompanyList();
   },
 };
 </script>

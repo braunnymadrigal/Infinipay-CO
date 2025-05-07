@@ -28,8 +28,77 @@ namespace back_end.Repositories
       var count = (int)cmd.ExecuteScalar();
       return count > 0;
     }
+        private DataTable getQueryTable(string query)
+    {
+        using (var connection = GetConnection())
+        using (var queryCommand = new SqlCommand(query, connection))
+        using (var tableAdapter = new SqlDataAdapter(queryCommand))
+        {
+            var queryTable = new DataTable();
+            connection.Open();
+            tableAdapter.Fill(queryTable);
+            return queryTable;
+        }
+    }
 
-    public Guid GetPersonIdByUsername(string username)
+        public List<CompanyModel> GetAllCompanies()
+        {
+            var query = @"
+        SELECT 
+            p.identificacion,
+            p.numeroTelefono,
+            p.correoElectronico,
+            pj.razonSocial,
+            pj.descripcion,
+            pj.tipoPago,
+            pj.beneficiosPorEmpleado,
+            d.provincia,
+            d.canton,
+            d.distrito,
+            d.otrasSenas,
+            a.fechaCreacion,
+            u.nickname AS employerUsername
+        FROM PersonaJuridica pj
+        JOIN Persona p ON p.id = pj.id
+        JOIN Direccion d ON d.idPersona = p.id
+        JOIN Auditoria a ON a.id = p.idAuditoria
+        JOIN Empleador e ON e.idPersonaJuridica = pj.id
+        JOIN Usuario u ON u.idPersonaFisica = e.idPersonaFisica";
+
+            var table = getQueryTable(query);
+            var companies = new List<CompanyModel>();
+
+            foreach (DataRow row in table.Rows)
+            {
+                var creationDate = Convert.ToDateTime(row["fechaCreacion"]);
+
+                var company = new CompanyModel
+                {
+                    idNumber = row["identificacion"].ToString(),
+                    phoneNumber = row["numeroTelefono"].ToString(),
+                    email = row["correoElectronico"].ToString(),
+                    legalName = row["razonSocial"].ToString(),
+                    description = row["descripcion"].ToString(),
+                    paymentType = row["tipoPago"].ToString(),
+                    benefits = Convert.ToInt32(row["beneficiosPorEmpleado"]),
+                    province = row["provincia"].ToString(),
+                    canton = row["canton"].ToString(),
+                    district = row["distrito"].ToString(),
+                    otherSigns = row["otrasSenas"].ToString(),
+                    creationDay = creationDate.Day,
+                    creationMonth = creationDate.Month,
+                    creationYear = creationDate.Year,
+                    employerUsername = row["employerUsername"].ToString()
+                };
+
+                companies.Add(company);
+            }
+
+            return companies;
+        }
+
+
+        public Guid GetPersonIdByUsername(string username)
     {
       using (var connection = GetConnection())
       {
