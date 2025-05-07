@@ -98,7 +98,7 @@
           class="form-control bg-transparent"
           type="text"
           id="paymentType"
-          v-model="company.PaymentType" 
+          :value="capitalize(company.PaymentType)"
           readonly
         >
       </div>
@@ -258,6 +258,12 @@
       };
     },
     methods: {
+
+      capitalize(word) {
+        if (!word) return '';
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      },
+
       editExample() {
         alert("Próximamente llegará la opción 'Editar'.");
       },

@@ -21,22 +21,12 @@ namespace back_end.Repositories
       _connection = new SqlConnection(_connectionRoute);
     }
 
-    private DataTable getQueryTable(string query)
-    {
-      var queryCommand = new SqlCommand(query, _connection);
-      var tableAdapter = new SqlDataAdapter(queryCommand);
-      var queryTable = new DataTable();
-      _connection.Open();
-      tableAdapter.Fill(queryTable);
-      _connection.Close();
-      return queryTable;
-    }
     private bool dataAlreadyExists(string table, string field, string value
-      , SqlTransaction tx)
+      , SqlTransaction transaction)
     {
       var cmd = new SqlCommand(
         $"SELECT COUNT(*) FROM [{table}] WHERE [{field}] = @value"
-        , _connection, tx);
+        , _connection, transaction);
       cmd.Parameters.AddWithValue("@value", value);
       var count = (int)cmd.ExecuteScalar();
       return count > 0;
@@ -99,7 +89,6 @@ namespace back_end.Repositories
 
       cmd.Parameters.AddWithValue("@usuarioCreador", username);
       var id = (Guid)cmd.ExecuteScalar();
-      Debug.WriteLine("Inserted audit with ID: " + id);
       return id;
     }
 
@@ -129,7 +118,6 @@ namespace back_end.Repositories
         birthDate;
 
       var id = (Guid)cmd.ExecuteScalar();
-      Debug.WriteLine("Inserted person with ID: " + id);
       return id;
     }
 
@@ -184,7 +172,6 @@ namespace back_end.Repositories
         , employer.birthDay);
       var rawPassword = employer.firstLastName + birthDate.ToString("ddMMyyyy")
         + "!";
-      Debug.WriteLine(rawPassword);
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])

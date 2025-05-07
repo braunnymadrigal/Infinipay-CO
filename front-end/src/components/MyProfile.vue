@@ -1,5 +1,5 @@
 <template>
-  <CompanyHeader :rol="profile.Rol" />
+  <CompanyHeader/>
 
   <div v-if="!showPopup" @click.stop 
   class="card p-4 mx-auto bg-transparent border-0 w-50" >
@@ -8,6 +8,16 @@
       style="color: #405D72">
       Mi perfil
     </h1>
+
+    <button
+      v-if="profile.Rol === 'empleador' || profile.Rol === 'administrador'"
+      @click="goToRegisterEmployee"
+      class="btn btn-secondary"
+      style="background-color: #405D72; border: transparent; margin-top:
+      30px; margin-bottom: 30px;"
+    >
+      Registrar nuevo empleado
+    </button>
 
     <form @submit.prevent="editExample">
       <div class="row mb-3 justify-content-center" style="margin-top: 30px;">
@@ -204,8 +214,7 @@
         <input
           class="form-control bg-transparent"
           type="text"
-          id="gender"
-          v-model="profile.Genero" 
+          id="gender" :value="capitalize(profile.Genero)"
           readonly
         >
       </div>
@@ -250,7 +259,7 @@
           class="form-control bg-transparent"
           type="text"
           id="companyRole"
-          v-model="profile.Rol" 
+          :value="capitalize(profile.Rol)"
           readonly
         >
       </div>
@@ -307,6 +316,16 @@ export default {
     };
   },
   methods: {
+    
+    capitalize(word) {
+      if (!word) return '';
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    },
+
+    goToRegisterEmployee() {
+      this.$router.push('/RegisterEmployee');
+    }, 
+
     editExample() {
       alert("Próximamente llegará la opción 'Editar'.");
     },

@@ -106,7 +106,6 @@ namespace back_end.Repositories
                 , transaction);
       cmd.Parameters.AddWithValue("@usuarioCreador", username);
       var auditId = (Guid)cmd.ExecuteScalar();
-      Debug.WriteLine("Inserted audit with ID: " + auditId);
       return auditId;
     }
 
@@ -136,7 +135,6 @@ namespace back_end.Repositories
 
       var personId = (Guid)cmd.ExecuteScalar();
 
-      Debug.WriteLine("Inserted person with ID: " + personId);
       return personId;
     }
 
