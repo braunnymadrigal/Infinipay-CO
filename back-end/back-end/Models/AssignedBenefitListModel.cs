@@ -24,7 +24,6 @@ namespace back_end.Models
 
   public class AssignBenefitRequest
   {
-    public string userPersonId { get; set; }
     public string benefitId { get; set; }
   }
 }
