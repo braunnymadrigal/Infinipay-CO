@@ -1,52 +1,37 @@
 <template>
   <div>
     <!-- Header -->
+    <div class="container my-5">
     <div class="text-center mb-4">
-      <img
-        src="../assets/images/logo.png"
-        alt="Company logo"
-        class="img-fluid"
-        style="max-width: 350px"
-      />
+      <img src="../assets/images/logo.png" alt="Company logo" class="img-fluid"
+        style="max-width: 350px;">
     </div>
-
     <header class="mb-5 custom-header">
       <nav class="navbar navbar-expand-lg rounded custom-navbar">
         <div class="container-fluid">
           <div class="d-flex">
-            <router-link
-              to="/LoginUser"
-              class="btn btn-outline-primary me-2"
-              style="
-                background-color: #405d72;
-                color: #ffffff;
-                border: transparent;
-              "
-            >
-              Iniciar sesión</router-link
-            >
-            <router-link
-              to="/RegisterEmployer"
-              class="btn btn-primary"
-              style="background-color: #405d72; border: transparent"
-              >Registrá tu empresa
-            </router-link>
+            <router-link to="/LoginUser" class="btn btn-outline-primary me-2"
+              style="background-color: #405D72; color: #FFFFFF;
+              border: transparent;"> Iniciar sesión</router-link>
+            <router-link to="/RegisterEmployer" class="btn btn-primary"
+              style="background-color: #405D72;
+              border: transparent;">Registrá tu empresa
+          </router-link>
           </div>
           <div class="ms-auto">
-            <router-link
-              to="/"
-              class="btn btn-secondary"
-              style="
-                background-color: #f7e7dc;
-                color: #2b3f4e;
-                border: 2px solid transparent;
-              "
-              >Página principal
+            <router-link to="/" class="btn btn-primary me-2"
+              style="background-color: #F7E7DC; color: #2b3f4e;
+                border: 2px solid transparent;">Página Principal
+            </router-link>
+            <router-link to="/" class="btn btn-secondary"
+              style="background-color: #F7E7DC; color: #2b3f4e;
+                border: 2px solid transparent;">¿Necesitás ayuda?
             </router-link>
           </div>
         </div>
       </nav>
     </header>
+    </div>
 
     <div class="container mt-5 mb-5">
       <h1 class="text-center mb-5" style="color: #405d72">Lista de empresas</h1>
