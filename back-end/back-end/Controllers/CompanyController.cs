@@ -13,6 +13,12 @@ namespace back_end.Controllers
     {
       _companyRepository = new CompanyRepository();
     }
+    [HttpGet]
+    public List<CompanyModel> GetAllCompanies()
+    {
+        var companies = _companyRepository.GetAllCompanies();
+        return companies;
+    }
     [HttpPost]
     public async Task<ActionResult<bool>> createNewCompany(CompanyModel
       company)

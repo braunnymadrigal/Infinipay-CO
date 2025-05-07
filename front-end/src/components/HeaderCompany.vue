@@ -36,6 +36,10 @@
             <router-link to="/EmployeesList" class="mx-2"
                 style="color: #405d72">Empleados</router-link>
             
+            <router-link to="/CompanyList" class="mx-2"
+              style="color: #405d72;">Lista de empresas
+            </router-link>
+
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
             </a>
