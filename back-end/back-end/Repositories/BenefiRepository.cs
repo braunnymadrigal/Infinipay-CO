@@ -10,14 +10,23 @@ namespace back_end.Repositories
 
         private void mapBenefit(BenefitModel benefit, DataRow row)
         {
-            benefit.Id = (int)row["IdBeneficio"];
-            benefit.Name = (string)row["Nombre"];
-            benefit.MinMonths = (decimal)row["MesesMinimos"];
-            benefit.Description = (string)row["Descripcion"];
-            benefit.ElegibleEmployee = (string)row["EmpleadoElegible"];
-            benefit.legalName = (string)row["NombreLegal"];
-            benefit.deductionType = (string)row["TipoDeduccion"];
-            benefit.payment = (int)row["Pago"];
+        
+            benefit.BenefitId = row["IdBeneficio"] != DBNull.Value ? (Guid?)row["IdBeneficio"] : null;
+            benefit.BenefitName = row["Nombre"] != DBNull.Value ? (string)row["Nombre"] : null;
+            benefit.BenefitMinTime = row["MesesMinimos"] != DBNull.Value ? (decimal?)row["MesesMinimos"] : null;
+            benefit.BenefitDescription = row["Descripcion"] != DBNull.Value ? (string)row["Descripcion"] : null;
+            benefit.BenefitElegibleEmployees = row["EmpleadoElegible"] != DBNull.Value ? (string)row["EmpleadoElegible"] : null;
+            benefit.FormulaType = row["TipoDeduccion"] != DBNull.Value ? (string)row["TipoDeduccion"] : null;
+            benefit.formulaParamUno = row["Parametro1"] != DBNull.Value ? (string)row["Parametro1"] : null;
+            benefit.formulaParamDos = row["Parametro2"] != DBNull.Value ? (string)row["Parametro2"] : null;
+            benefit.formulaParamTres = row["Parametro3"] != DBNull.Value ? (string)row["Parametro3"] : null;
+            benefit.UserCreator = row["UsuarioCreador"] != DBNull.Value ? (string)row["UsuarioCreador"] : null;
+            benefit.urlAPI = row["UrlAPI"] != DBNull.Value ? (string)row["UrlAPI"] : null;
+            benefit.CreationDate = row["FechaCreacion"] != DBNull.Value ? (DateTime?)row["FechaCreacion"] : null;
+            benefit.UserModifier = row["UsuarioModificador"] != DBNull.Value ? (string)row["UsuarioModificador"] : null;
+            benefit.ModifiedDate = row["FechaModificacion"] != DBNull.Value ? (DateTime?)row["FechaModificacion"] : null;
+        
+
         }
         public BenefitRepository()
         {
@@ -74,27 +83,73 @@ namespace back_end.Repositories
         }
         public bool CreateBenefit(BenefitModel benefit)
         {
-            var query = @"INSERT INTO Beneficio 
-                (Nombre, MesesMinimos, Descripcion, EmpleadoElegible, NombreLegal, TipoDeduccion, Pago)
-                VALUES (@Nombre, @MesesMinimos, @Descripcion, @EmpleadoElegible, @NombreLegal, @TipoDeduccion, @Pago)";
-    
             using (var connection = GetConnection())
             {
                 connection.Open();
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Nombre", benefit.Name);
-                    command.Parameters.AddWithValue("@MesesMinimos", benefit.MinMonths);
-                    command.Parameters.AddWithValue("@Descripcion", benefit.Description);
-                    command.Parameters.AddWithValue("@EmpleadoElegible", benefit.ElegibleEmployee);
-                    command.Parameters.AddWithValue("@NombreLegal", benefit.legalName);
-                    command.Parameters.AddWithValue("@TipoDeduccion", benefit.deductionType);
-                    command.Parameters.AddWithValue("@Pago", benefit.payment);
 
-                    return command.ExecuteNonQuery() > 0;
+                var insertAuditoriaQuery = @"
+            INSERT INTO Auditoria (usuarioCreador, ultimaFechaModificacion, ultimoUsuarioModificador)
+            OUTPUT INSERTED.id
+            VALUES (@UsuarioCreador, SYSDATETIME(), @UsuarioModificador);";
+
+                Guid idAuditoria;
+                using (var cmd = new SqlCommand(insertAuditoriaQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@UsuarioCreador", benefit.UserCreator ?? "");
+                    cmd.Parameters.AddWithValue("@UsuarioModificador", benefit.UserCreator ?? "");
+                    idAuditoria = (Guid)cmd.ExecuteScalar();
+                }
+
+                var insertFormulaQuery = @"
+            INSERT INTO Formula (tipoFormula, urlAPI, paramUno, paramDos, paramTres)
+            OUTPUT INSERTED.id
+            VALUES (@TipoFormula, @UrlAPI, @ParamUno, @ParamDos, @ParamTres);";
+
+                Guid idFormula;
+                using (var cmd = new SqlCommand(insertFormulaQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@TipoFormula", benefit.FormulaType ?? "");
+                    cmd.Parameters.AddWithValue("@UrlAPI", (object?)benefit.urlAPI ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ParamUno", benefit.formulaParamUno ?? "");
+                    cmd.Parameters.AddWithValue("@ParamDos", (object?)benefit.formulaParamDos ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ParamTres", (object?)benefit.formulaParamTres ?? DBNull.Value);
+                    idFormula = (Guid)cmd.ExecuteScalar();
+                }
+
+                var insertBenefitQuery = @"
+            INSERT INTO Beneficio (nombre, tiempoMinimo, descripcion, empleadoElegible, idPersonaJuridica, idAuditoria)
+            OUTPUT INSERTED.id
+            VALUES (@Nombre, @TiempoMinimo, @Descripcion, @Elegible, @IdPersonaJuridica, @IdAuditoria);";
+
+                Guid idBeneficio;
+                using (var cmd = new SqlCommand(insertBenefitQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@Nombre", benefit.BenefitName ?? "");
+                    cmd.Parameters.AddWithValue("@TiempoMinimo", benefit.BenefitMinTime ?? 0);
+                    cmd.Parameters.AddWithValue("@Descripcion", benefit.BenefitDescription ?? "");
+                    cmd.Parameters.AddWithValue("@Elegible", benefit.BenefitElegibleEmployees ?? "todos");
+                    cmd.Parameters.AddWithValue("@IdPersonaJuridica", /* tu lógica aquí */ Guid.Parse("00000000-0000-0000-0000-000000000001")); // <-- CAMBIAR ESTO
+                    cmd.Parameters.AddWithValue("@IdAuditoria", idAuditoria);
+                    idBeneficio = (Guid)cmd.ExecuteScalar();
+                }
+
+                var insertDeduccionQuery = @"
+            INSERT INTO Deduccion (nombre, descripcion, idPersonaJuridica, idBeneficio, idFormula, idAuditoria)
+            VALUES (@Nombre, @Descripcion, @IdPersonaJuridica, @IdBeneficio, @IdFormula, @IdAuditoria);";
+
+                using (var cmd = new SqlCommand(insertDeduccionQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@Nombre", benefit.BenefitName ?? "");
+                    cmd.Parameters.AddWithValue("@Descripcion", benefit.BenefitDescription ?? "");
+                    cmd.Parameters.AddWithValue("@IdPersonaJuridica", /* tu lógica aquí */ Guid.Parse("00000000-0000-0000-0000-000000000001")); // <-- CAMBIAR ESTO
+                    cmd.Parameters.AddWithValue("@IdBeneficio", idBeneficio);
+                    cmd.Parameters.AddWithValue("@IdFormula", idFormula);
+                    cmd.Parameters.AddWithValue("@IdAuditoria", idAuditoria);
+                    return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
+
 
 
     }

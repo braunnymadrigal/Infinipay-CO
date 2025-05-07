@@ -34,7 +34,6 @@
             v-model="newBenefit.description"
             id="BenefitDescription"
             maxlength="300"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
             placeholder="Sólo se permiten espacios, letras y acentos del abecedario español."
             rows="4"
           ></textarea>
@@ -43,44 +42,19 @@
           <label for="BenefitAppliesTo" class="form-label"
             >Empleados elegibles</label
           >
-          <div>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                class="me-2"
-                :checked="isAllSelected"
-                @change="toggleAll"
-              />
-              Todos
-            </label>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                value="Semanal"
-                v-model="newBenefit.appliesTo"
-                class="me-2"
-              />
-              Semanal
-            </label>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                value="Quincenal"
-                v-model="newBenefit.appliesTo"
-                class="me-2"
-              />
-              Quincenal
-            </label>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                value="Mensual"
-                v-model="newBenefit.appliesTo"
-                class="me-2"
-              />
-              Mensual
-            </label>
-          </div>
+          <select
+            id="BenefitAppliesTo"
+            class="form-select"
+            style="background-color: #fff8f3"
+            v-model="newBenefit.elegibleEmployees"
+            required
+          >
+            <option disabled value="">Seleccione una opción</option>
+            <option value="todos">Todos</option>
+            <option value="semanal">Semanal</option>
+            <option value="quincenal">Quincenal</option>
+            <option value="mensual">Mensual</option>
+          </select>
         </div>
 
         <div class="mb-3">
@@ -103,34 +77,88 @@
           style="background-color: #fff8f3"
         >
           <legend class="fs-6 fw-bold mb-3" style="color: #405d72">
-            Fórmula del beneficio
+            Deducción
           </legend>
 
           <div class="mb-3">
             <label for="BenefitTypeFormula" class="form-label"
-              >Tipo de fórmula</label
+              >Tipo de deduccion</label
             >
             <select
               id="BenefitTypeFormula"
               class="form-select"
               style="background-color: #fff8f3"
-              v-model="newBenefit.typeFormula"
+              v-model="newBenefit.formulaType"
               required
             >
               <option value="Porcentaje">Porcentaje</option>
               <option value="Monto fijo">Monto fijo</option>
+              <option value="Api">Api</option>
             </select>
           </div>
 
-          <div class="mb-3">
-            <label for="BenefitFormula" class="form-label">Fórmula</label>
+          <div
+            v-if="
+              newBenefit.formulaType === 'Porcentaje' ||
+              newBenefit.formulaType === 'Monto fijo'
+            "
+            class="mb-3"
+          >
+            <label for="BenefitFormula" class="form-label">Deducción</label>
             <input
               type="number"
               class="form-control"
               id="BenefitFormula"
               style="background-color: #fff8f3"
-              v-model="newBenefit.formula"
+              v-model="newBenefit.param1"
               required
+              min="0"
+            />
+          </div>
+
+          <!-- Mostrar campos para la opción API -->
+          <div v-if="newBenefit.formulaType === 'Api'" class="mb-3">
+            <label for="ApiURL" class="form-label">URL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="ApiURL"
+              style="background-color: #fff8f3"
+              v-model="newBenefit.apiUrl"
+            />
+          </div>
+
+          <div v-if="newBenefit.formulaType === 'Api'" class="mb-3">
+            <label for="Parameter1" class="form-label">Parametro 1</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Parameter1"
+              style="background-color: #fff8f3"
+              v-model="newBenefit.param1"
+            />
+          </div>
+
+          <div v-if="newBenefit.formulaType === 'Api'" class="mb-3">
+            <label for="Parameter2" class="form-label">Parametro 2</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Parameter2"
+              style="background-color: #fff8f3"
+              v-model="newBenefit.param2"
+              min="0"
+            />
+          </div>
+
+          <div v-if="newBenefit.formulaType === 'Api'" class="mb-3">
+            <label for="Parameter3" class="form-label">Parametro 3</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Parameter3"
+              style="background-color: #fff8f3"
+              v-model="newBenefit.param3"
               min="0"
             />
           </div>
@@ -157,73 +185,73 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
+import axios from "axios";
 
 const newBenefit = ref({
   name: "",
   description: "",
-  appliesTo: [],
+  elegibleEmployees: "",
   minMonths: 0,
-  formula: 0,
-  typeFormula: "",
+  formulaType: "",
+  param1: "",
+  param2: "",
+  param3: "",
+  userid: "",
+  apiUrl: "",
 });
 
-function submitForm() {
+async function submitForm() {
   if (
-    newBenefit.value.name === "" ||
-    newBenefit.value.description === "" ||
-    newBenefit.value.appliesTo.length === 0 ||
+    newBenefit.value.name.trim() === "" ||
+    newBenefit.value.description.trim() === "" ||
+    newBenefit.value.elegibleEmployees === "" ||
     newBenefit.value.minMonths <= 0 ||
-    newBenefit.value.formula <= 0 ||
-    newBenefit.value.typeFormula === ""
+    newBenefit.value.formulaType === "" ||
+    newBenefit.value.userid === ""
   ) {
     alert("Por favor, completa todos los campos requeridos.");
     return;
   }
 
-  console.table(
-    "Formulario enviado:",
-    JSON.parse(JSON.stringify(newBenefit.value))
-  );
-
-  newBenefit.value.name = "";
-  newBenefit.value.description = "";
-  newBenefit.value.appliesTo = [];
-  newBenefit.value.minMonths = 0;
-  newBenefit.value.formula = 0;
-  newBenefit.value.typeFormula = "";
-
-  // createBenefit(newBenefit.value);
-}
-
-const allOptions = ["Semanal", "Quincenal", "Mensual"];
-
-const isAllSelected = computed(() =>
-  allOptions.every((opt) => newBenefit.value.appliesTo.includes(opt))
-);
-
-function toggleAll(event) {
-  if (event.target.checked) {
-    newBenefit.value.appliesTo = [...allOptions];
-  } else {
-    newBenefit.value.appliesTo = [];
+  try {
+    const response = await axios.get(
+      "https://localhost:7275/api/Login/GetLoggedUser",
+      {
+        headers: {
+          Authorization: `Bearer ${this.$cookies.get(`jwt`)}`,
+        },
+      }
+    );
+    newBenefit.value.userid = response.data.id;
+    await createBenefit(newBenefit.value);
+    alert("Beneficio creado exitosamente.");
+    newBenefit.value = {
+      name: "",
+      description: "",
+      elegibleEmployees: "",
+      minMonths: 0,
+      formulaType: "",
+      param1: "",
+      param2: "",
+      param3: "",
+      userid: "",
+      apiUrl: "",
+    };
+  } catch (error) {
+    alert("Error al crear el beneficio. Inténtalo de nuevo.");
   }
 }
 
-// function createBenefit(benefit) {
-//   axios
-//     .post("http://localhost:7271/api/benefits", benefit)
-//     .then((response) => {
-//       console.log("Beneficio creado:", response.data);
-//       alert("Beneficio creado exitosamente.");
-//     })
-//     .catch((error) => {
-//       console.error("Error al crear el beneficio:", error);
-//       alert("Error al crear el beneficio. Inténtalo de nuevo.");
-//     });
-// }
+async function createBenefit(benefit) {
+  const response = await axios.post(
+    "http://localhost:7275/api/Benefit",
+    benefit
+  );
+  return response.data;
+}
 </script>
 
 <style lang="scss" scoped></style>

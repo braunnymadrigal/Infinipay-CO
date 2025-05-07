@@ -1,47 +1,45 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace back_end.Models
 {
     public class BenefitModel
     {
-        [Key]
-        public int Id { get; set; }
+        [JsonPropertyName("name")]
+        public string? BenefitName { get; set; }
 
-        [Required]
-        // [MaxLength(100)]
-        public string Name { get; set; }
+        [JsonPropertyName("description")]
+        public string? BenefitDescription { get; set; }
 
-        [Required]
-        [Column(TypeName = "decimal(4,2)")]
-        public decimal MinMonths { get; set; }
+        [JsonPropertyName("elegibleEmployees")]
+        public string? BenefitElegibleEmployees { get; set; }
 
-        [Required]
-        // [MaxLength(256)]
-        public string Description { get; set; }
+        [JsonPropertyName("minMonths")]
+        public decimal? BenefitMinTime { get; set; }
 
-        [Required]
-        // [MaxLength(9)]
-        // [RegularExpression("^(todos|semanal|quincenal|mensual)$")]
-        public string ElegibleEmployee { get; set; }
+        [JsonPropertyName("typeFormula")]
+        public string? FormulaType { get; set; }
 
-        [Required]
-        public string legalName { get; set; }
+        [JsonPropertyName("param1")]
+        public string? formulaParamUno { get; set; }
+        
+        [JsonPropertyName("param2")]
+        public string? formulaParamDos { get; set; }
 
-        [Required]
-        public string deductionType { get; set; }
+        [JsonPropertyName("param3")]
+        public string? formulaParamTres { get; set; }
 
-        [Required]
-        public int payment { get; set; }
-        // [ForeignKey("IdPersonaJuridica")]
-        // public PersonaJuridica PersonaJuridica { get; set; }
+        [JsonPropertyName("userid")]
+        public string? UserCreator { get; set; }
 
-        // [Required]
-        // public Guid IdAuditoria { get; set; }
+        [JsonPropertyName("apiUrl")]
+        public string? urlAPI { get; set; }
 
-        // [ForeignKey("IdAuditoria")]
-        // public Auditoria Auditoria { get; set; }
+        public Guid? BenefitId { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public string? UserModifier { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+
+
     }
 }
-
