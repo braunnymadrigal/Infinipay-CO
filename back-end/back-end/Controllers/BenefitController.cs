@@ -15,18 +15,21 @@ namespace back_end.Controllers
         {
            _benefitRepository = new BenefitRepository();
         }
-        [HttpGet]
-        public List<BenefitModel> GetAllBenefits()
+        [HttpGet("user/{nicknameOrEmail}")]
+        public ActionResult<List<BenefitModel>> GetAllBenefits(string nicknameOrEmail)
         {
-            var benefits = _benefitRepository.GetAllBenefits();
-            return benefits;
+            var user = new LoginUserModel { NicknameOrEmail = nicknameOrEmail };
+            var benefits = _benefitRepository.GetAllBenefits(user);
+            return Ok(benefits);
         }
-        [HttpGet ("{id}")]
-        public BenefitModel GetBenefitById(int id)
-        {
-            var benefit = _benefitRepository.GetBenefitById(id);
-            return benefit;
-        }
+
+        //[HttpGet("empresa/{idEmpresa}/beneficio/{id}")]
+        //public BenefitModel GetBenefitById(Guid idEmpresa, Guid id)
+        //{
+        //    var benefit = _benefitRepository.GetBenefitById(idEmpresa, id);
+        //    return benefit;
+        //}
+
         [HttpPost]
         public async Task<ActionResult<bool>> CreateBenefit(BenefitModel benefit)
         {
