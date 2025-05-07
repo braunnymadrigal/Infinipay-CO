@@ -152,6 +152,9 @@ export default {
         },
       ],
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 09fe45f947eeec95cd3e4b88177909d1616be9d2
       methods: {
         // getCompanyList() {
         //   axios
@@ -167,8 +170,11 @@ export default {
       // onmounted() {
       //   // this.getCompanyList();
       // },
+<<<<<<< HEAD
 =======
 >>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
+=======
+>>>>>>> 09fe45f947eeec95cd3e4b88177909d1616be9d2
     };
   },
   methods: {
