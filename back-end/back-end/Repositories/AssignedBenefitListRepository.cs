@@ -24,32 +24,6 @@ namespace back_end.Repositories
       _connection = new SqlConnection(_connectionRoute);
     }
 
-    private DataTable GetQueryTable(string query)
-    {
-      DataTable queryTable = new DataTable();
-
-      try
-      {
-        using (SqlCommand queryCommand = new SqlCommand(query, _connection))
-        using (SqlDataAdapter tableAdapter = new SqlDataAdapter(queryCommand))
-        {
-          if (_connection.State != ConnectionState.Open)
-          {
-            _connection.Open();
-          }
-
-          tableAdapter.Fill(queryTable);
-        }
-      }
-      catch (Exception ex)
-      {
-        throw new Exception("Error al ejecutar consulta: " + ex.Message, ex);
-      }
-      _connection.Close();
-
-      return queryTable;
-    }
-
     private DataTable GetQueryTable(string query, SqlParameter[] parameters)
     {
       DataTable queryTable = new DataTable();
