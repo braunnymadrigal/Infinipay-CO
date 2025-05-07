@@ -18,12 +18,22 @@
                          
             <router-link to="/MyCompany"
                          class="mx-2"
-                         style="color: #405d72">Empresa</router-link>
-                         
-              <a @click="goToBenefits" class="mx-2" style="color: #405d72
-                 ; cursor: pointer;">
-                Beneficios
-              </a>
+                         style="color: #405d72">Empresa</router-link>             
+
+            <router-link 
+                         v-if="rol === 'empleador' || rol === 'administrador'"
+                         to="/BenefitList"
+                         class="mx-2"
+                         style="color: #405d72">Beneficios Empresa
+            </router-link>
+
+            <router-link
+                         v-else
+                         to="/AssignedBenefitList"
+                         class="mx-2"
+                         style="color: #405d72">Beneficios
+
+            </router-link>
             
             <router-link to="/EmployeesList" class="mx-2"
                 style="color: #405d72">Empleados</router-link>
@@ -48,7 +58,6 @@
 </template>
 
 <script>
-  import axios from "axios";
   export default {
     name: 'CompanyHeader',
     props: {
@@ -59,27 +68,6 @@
     }
   },
     methods: {
-      async goToBenefits() {
-        try {
-          const response = await axios.get("https://localhost:7275/api/Login/GetLoggedUser", {
-            headers: {
-              Authorization: `Bearer ${this.$cookies.get('jwt')}`
-            }
-          });
-
-          const role = response.data.Role;
-
-          if (role === 'empleado') {
-            this.$router.push('/AssignedBenefitList');
-          } else {
-            this.$router.push('/BenefitList');
-          }
-        } catch (error) {
-          console.error("Error fetching user role:", error);
-          this.$router.push('/MyCompany');
-        }
-      },
-
       logout() {
         this.$cookies.set('jwt', "");
         this.$router.push('/');
