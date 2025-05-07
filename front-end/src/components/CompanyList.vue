@@ -117,6 +117,7 @@ export default {
   data() {
     return {
 <<<<<<< HEAD
+<<<<<<< HEAD
       companies: [
         {
           name: "Cooperativa de Productores de Leche Dos Pinos R.L.",
@@ -188,6 +189,9 @@ export default {
 =======
       companies: [],
 >>>>>>> 4820c2e (Se implementa el backend y api correcto para traer los datos de bd)
+=======
+      companies: [],
+>>>>>>> 4820c2e09a33c6cde474e1ed89b098935cf15c73
     };
   },
   methods: {
