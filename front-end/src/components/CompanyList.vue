@@ -66,12 +66,25 @@
         </thead>
         <tbody>
           <tr v-for="(company, index) of companies" :key="index">
-            <td>{{ company.name }}</td>
+            <td>{{ company.legalName }}</td>
             <td>{{ truncateString(company.description, 150) }}</td>
-            <td>{{ company.legalId + " meses" }}</td>
-            <td>{{ company.address }}</td>
-            <td>{{ company.contactNumber }}</td>
-            <td>{{ company.creationDate }}</td>
+            <td>{{ company.idNumber }}</td>
+            <td>
+              {{
+                company.province +
+                ", " +
+                company.canton +
+                ", " +
+                company.district
+              }}
+            </td>
+            <td>{{ company.phoneNumber }}</td>
+            <td>
+              {{ company.creationDay }}/{{ company.creationMonth }}/{{
+                company.creationYear
+              }}
+            </td>
+
             <td>
               <div class="d-flex justify-content-center gap-2">
                 <button v-on:click="eliminar" class="btn btn-danger btn-sm">
@@ -94,16 +107,16 @@
 </template>
 
 <script>
+import axios from "axios";
 import MainFooter from "./MainFooter.vue";
+
 export default {
   components: {
     MainFooter,
   },
-  setup() {
-    return {};
-  },
   data() {
     return {
+<<<<<<< HEAD
       companies: [
         {
           name: "Cooperativa de Productores de Leche Dos Pinos R.L.",
@@ -172,15 +185,31 @@ export default {
 >>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
 =======
 >>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
+=======
+      companies: [],
+>>>>>>> 4820c2e (Se implementa el backend y api correcto para traer los datos de bd)
     };
   },
   methods: {
+    getCompanyList() {
+      axios
+        .get("http://localhost:7275/api/Company")
+        .then((response) => {
+          this.companies = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching company list:", error);
+        });
+    },
     truncateString(str, maxLength) {
       if (str.length > maxLength) {
         return str.substring(0, maxLength) + "...";
       }
       return str;
     },
+  },
+  mounted() {
+    this.getCompanyList();
   },
 };
 </script>
