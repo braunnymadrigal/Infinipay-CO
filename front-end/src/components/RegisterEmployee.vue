@@ -175,7 +175,7 @@
               Seleccione el rol del empleado</option>
             <option value="sinRol">Sin rol asignado</option>
             <option value="supervisor">Supervisor</option>
-            <option value="administrator">Administrador</option>
+            <option value="administrador">Administrador</option>
           </select>
         </div>
 
