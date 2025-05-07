@@ -1,46 +1,56 @@
 ﻿<template>
-  <div class="modal-backdrop" @click.self="$emit('close')">
-    <div class="modal-content">
-      <div v-if="numAssignedBenefits === maxBenefitsPerEmployee"
-           class="alert alert-warning">
-        {{ warningMaxBenefits }}
-      </div>
-      <table class="table is-bordered table-striped
+  <div v-if="showPopup" @click.stop
+       class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      No tiene permisos para ver esta informacion.
+    </div>
+  </div>
+  <div v-else>
+    <div class="modal-backdrop" @click.self="$emit('close')">
+      <div class="modal-content">
+        <div v-if="numAssignedBenefits === maxBenefitsPerEmployee"
+             class="alert alert-warning">
+          {{ warningMaxBenefits }}
+        </div>
+        <table class="table is-bordered table-striped
        is-narrow is-hoverable is-fullwidth">
-        <thead>
-          <tr>
-            <th style="white-space: nowrap">Nombre</th>
-            <th style="white-space: nowrap">Descripción</th>
-            <th style="white-space: nowrap">Tiempo minimo</th>
-            <th style="white-space: nowrap">Deducción</th>
-            <th style="white-space: nowrap">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="!availableBenefits || availableBenefits.length === 0">
-            <td colspan="4" class="text-center">No hay beneficios para 
-            asignar.</td>
-          </tr>
-          <tr v-else v-for="benefit in availableBenefits" :key="benefit.name">
-            <td>{{ benefit.benefitName }}</td>
-            <td>{{ benefit.benefitDescription }}</td>
-            <td>{{ benefit.benefitMinTime + " meses" }}</td>
-            <td>{{ benefit.formattedDeduction }}</td>
-            <td>
-              <div class="d-flex justify-content-center gap-2">
-                <button class="btn btn-success btn-sm"
-                  :disabled="numAssignedBenefits === maxBenefitsPerEmployee"
-                  style="width: 70px;
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">Nombre</th>
+              <th style="white-space: nowrap">Descripción</th>
+              <th style="white-space: nowrap">Tiempo minimo</th>
+              <th style="white-space: nowrap">Deducción</th>
+              <th style="white-space: nowrap">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="!availableBenefits || availableBenefits.length === 0">
+              <td colspan="4" class="text-center">
+                No hay beneficios para
+                asignar.
+              </td>
+            </tr>
+            <tr v-else v-for="benefit in availableBenefits" :key="benefit.name">
+              <td>{{ benefit.benefitName }}</td>
+              <td>{{ benefit.benefitDescription }}</td>
+              <td>{{ benefit.benefitMinTime + " meses" }}</td>
+              <td>{{ benefit.formattedDeduction }}</td>
+              <td>
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-success btn-sm"
+                          :disabled="numAssignedBenefits === maxBenefitsPerEmployee"
+                          style="width: 70px;
                   border: transparent;
                   width: 70px"
-                        @click="assignBenefit(benefit)">
-                  Agregar
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                          @click="assignBenefit(benefit)">
+                    Agregar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +75,7 @@
     },
     data() {
       return {
+        showPopup: false,
         selectedAddBenefit: null,
         warningMaxBenefits:
           "Máxima cantidad de beneficios asignables alcanzado.",
@@ -73,28 +84,30 @@
     methods: {
       async assignBenefit(selectedAddBenefit) {
         try {
-          const response = await axios
-            .get("https://localhost:7275/api/Login/GetLoggedUser", {
+          let jwtCookie = this.$cookies.get("jwt");
+
+          const response = await axios.post(
+            "https://localhost:7275/api/AssignedBenefitList/AssignBenefit",
+            {
+              benefitId: selectedAddBenefit.benefitId
+            },
+            {
               headers: {
-                Authorization: `Bearer ${this.$cookies.get(`jwt`)}`
+                Authorization: `Bearer ${jwtCookie}`
               }
-            });
+            }
+          );
+          this.showPopup = false;
+          console.log(response);
+          window.location.href = "/AssignedBenefitList";
 
-          const userPersonId = response.data.PersonaId;
-
-          axios.post(
-            "https://localhost:7275/api/AssignedBenefitList/AssignBenefit", {
-            userPersonId: userPersonId,
-            benefitId: selectedAddBenefit.benefitId
-          }).then(function (response) {
-            console.log(response);
-            window.location.href = "/AssignedBenefitList";
-          });
-        } catch(error) {
-          if (error.response?.config?.url.includes("GetLoggedUser")) {
-            console.error("Error obteniendo nombre de usuario", error);
-          } else {
-          console.error("Error al intentar asignar un beneficio", error);
+        } catch (error) {
+          this.showPopup = true;
+          console.error("Error:", error);
+          if (error.response) {
+            const message = error.response.data?.message || "Error desconocido";
+            alert(message);
+            this.$router.push('MyProfile');
           }
         }
       }
