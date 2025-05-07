@@ -28,14 +28,6 @@
             <router-link to="/EmployeesList" class="mx-2"
                 style="color: #405d72">Empleados</router-link>
             
-             <router-link
-                v-if="rol === 'empleador' || rol === 'administrador'"
-                to="/RegisterEmployee"
-                class="mx-2"
-                style="color: #405d72"
-              >
-                Registrar empleados
-              </router-link>
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
             </a>
@@ -51,13 +43,7 @@
   import axios from "axios";
   export default {
     name: 'CompanyHeader',
-    props: {
-    rol: {
-      type: String,
-      required: false,
-      default: ''
-    }
-  },
+ 
     methods: {
       async goToBenefits() {
         try {
