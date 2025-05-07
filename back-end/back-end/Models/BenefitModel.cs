@@ -36,6 +36,8 @@ namespace back_end.Models
         public string? urlAPI { get; set; }
 
         public Guid? BenefitId { get; set; }
+
+        public int? BenefitsPerEmployee { get; set; }
         public DateTime? CreationDate { get; set; }
         public string? UserModifier { get; set; }
         public DateTime? ModifiedDate { get; set; }

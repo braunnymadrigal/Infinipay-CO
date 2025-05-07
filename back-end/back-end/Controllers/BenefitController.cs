@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using back_end.Models;
 using back_end.Repositories;
-using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace back_end.Controllers
 {
@@ -11,44 +12,71 @@ namespace back_end.Controllers
     public class BenefitController : ControllerBase
     {
         private readonly BenefitRepository _benefitRepository;
+
         public BenefitController()
         {
-           _benefitRepository = new BenefitRepository();
+            _benefitRepository = new BenefitRepository();
         }
-        [HttpGet("user/{nicknameOrEmail}")]
-        public ActionResult<List<BenefitModel>> GetAllBenefits(string nicknameOrEmail)
+        [Authorize(Roles = "empleador")]
+        [HttpGet]
+        public ActionResult<List<BenefitModel>> GetAllBenefits()
         {
-            var user = new LoginUserModel { NicknameOrEmail = nicknameOrEmail };
-            var benefits = _benefitRepository.GetAllBenefits(user);
+            var nickname = "";
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                var Nickname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (Nickname != null)
+                {
+                    nickname = Nickname;
+                }
+            }
+            var benefits = _benefitRepository.GetAllBenefits(nickname);
             return Ok(benefits);
         }
 
-        //[HttpGet("empresa/{idEmpresa}/beneficio/{id}")]
-        //public BenefitModel GetBenefitById(Guid idEmpresa, Guid id)
-        //{
-        //    var benefit = _benefitRepository.GetBenefitById(idEmpresa, id);
-        //    return benefit;
-        //}
-
+        [Authorize(Roles = "empleador,administrador")]
         [HttpPost]
         public async Task<ActionResult<bool>> CreateBenefit(BenefitModel benefit)
         {
             try
             {
                 if (benefit == null)
+                    return BadRequest(new { message = "Datos inválidos." });
+
+                string userId = "";
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+                if (identity != null)
                 {
-                    return BadRequest();
+                    var claims = identity.Claims;
+                    var sid = claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+                    if (!string.IsNullOrEmpty(sid))
+                        userId = sid;
                 }
 
-                BenefitRepository benefitRepository = new BenefitRepository();
-                var result = benefitRepository.CreateBenefit(benefit);
+                benefit.UserCreator = userId;
+
+                var result = _benefitRepository.CreateBenefit(benefit);
                 return new JsonResult(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando un beneficio");
+                if (ex.Message.Contains("BENEFICIO_DUPLICADO"))
+                {
+                    return Conflict(new
+                    {
+                        message = "Error: ya existe un beneficio registrado con ese nombre."
+                    });
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "Error creando el beneficio.",
+                    details = ex.Message
+                });
             }
         }
-
     }
 }
