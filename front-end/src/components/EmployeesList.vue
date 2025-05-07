@@ -12,7 +12,7 @@
     <p>Cargando información...</p>
   </div>
 
-  <div v-if="!isLoading" class="container mt-5 mb-5">
+  <div v-if="!isLoading && !showPopup" class="container mt-5 mb-5">
     <h1 class="text-center mb-4" style="color: #405D72">
       Nombre de Empresa
     </h1>
@@ -65,7 +65,7 @@
           <p><strong>Teléfono:</strong>
             {{ selectedEmployee.phoneNumber || 'Teléfono no disponible' }}</p>
           <p><strong>Rol:</strong>
-            {{ selectedEmployee.role || 'Rol no disponible' }}</p>
+            {{ selectedEmployee.role || 'No asignado' }}</p>
           <p><strong>Fecha de ingreso:</strong>
             {{ selectedEmployee.hireDate || 'Fecha no disponible' }}</p>
           <p><strong>Supervisor asignado:</strong>
