@@ -13,7 +13,7 @@
             {{'@' + benefit.userCreator}}
           </a>
             el {{formatDate(benefit.creationDate)}}</p>
-          <p style="font-size: 15px" v-if="benefit.modificationUser">
+          <p style="font-size: 15px" v-if="benefit.userModifier">
             Modificado por
             <a :href="'/AssignedBenefitList'">
               {{'@' + benefit.userModifier}}
