@@ -137,6 +137,27 @@ namespace back_end.Repositories
             {
                 connection.Open();
 
+                Guid userId;
+                var getUserIdQuery = @"
+        SELECT u.id
+        FROM Usuario u
+        WHERE u.nickname = @nickname OR u.email = @correo;
+        ";
+
+                using (var cmd = new SqlCommand(getUserIdQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@nickname", benefit.UserCreator);
+                    cmd.Parameters.AddWithValue("@correo", benefit.UserCreator);
+                    var result = cmd.ExecuteScalar();
+
+                    if (result == DBNull.Value || result == null)
+                    {
+                        return false;
+                    }
+
+                    userId = (Guid)result;
+                }
+
                 var insertAuditoriaQuery = @"
             INSERT INTO Auditoria (usuarioCreador, ultimaFechaModificacion, ultimoUsuarioModificador)
             OUTPUT INSERTED.id
@@ -176,7 +197,7 @@ namespace back_end.Repositories
 
                 using (var cmd = new SqlCommand(getIdPersonaJuridicaQuery, connection))
                 {
-                    cmd.Parameters.AddWithValue("@IdPersonaFisica", benefit.UserCreator);
+                    cmd.Parameters.AddWithValue("@IdPersonaFisica", userId);
                     idPersonaJuridica = (Guid)cmd.ExecuteScalar();
                 }
 
@@ -197,7 +218,6 @@ namespace back_end.Repositories
                     idBeneficio = (Guid)cmd.ExecuteScalar();
                 }
 
-                // Insertar Deducción
                 var insertDeduccionQuery = @"
             INSERT INTO Deduccion (nombre, descripcion, idPersonaJuridica, idBeneficio, idFormula, idAuditoria)
             VALUES (@Nombre, @Descripcion, @IdPersonaJuridica, @IdBeneficio, @IdFormula, @IdAuditoria);";
@@ -214,6 +234,7 @@ namespace back_end.Repositories
                 }
             }
         }
+
 
 
 
