@@ -60,7 +60,7 @@ namespace back_end.Repositories
         }
         public List<BenefitModel> GetAllBenefits()
         {
-            var query = "SELECT * FROM Beneficio";
+            var query = "SELECT * FROM Beneficio where";
             var table = getQueryTable(query);
             var benefits = new List<BenefitModel>();
             foreach (DataRow row in table.Rows)
@@ -116,6 +116,20 @@ namespace back_end.Repositories
                     idFormula = (Guid)cmd.ExecuteScalar();
                 }
 
+                Guid idPersonaJuridica;
+                var getIdPersonaJuridicaQuery = @"
+            SELECT ej.idPersonaJuridica
+            FROM Usuario u
+            JOIN Empleador e ON u.idPersonaFisica = e.idPersonaFisica
+            JOIN PersonaJuridica ej ON e.idPersonaJuridica = ej.id
+            WHERE u.idPersonaFisica = @IdPersonaFisica;";
+
+                using (var cmd = new SqlCommand(getIdPersonaJuridicaQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@IdPersonaFisica", benefit.UserCreator);
+                    idPersonaJuridica = (Guid)cmd.ExecuteScalar();
+                }
+
                 var insertBenefitQuery = @"
             INSERT INTO Beneficio (nombre, tiempoMinimo, descripcion, empleadoElegible, idPersonaJuridica, idAuditoria)
             OUTPUT INSERTED.id
@@ -128,11 +142,12 @@ namespace back_end.Repositories
                     cmd.Parameters.AddWithValue("@TiempoMinimo", benefit.BenefitMinTime ?? 0);
                     cmd.Parameters.AddWithValue("@Descripcion", benefit.BenefitDescription ?? "");
                     cmd.Parameters.AddWithValue("@Elegible", benefit.BenefitElegibleEmployees ?? "todos");
-                    cmd.Parameters.AddWithValue("@IdPersonaJuridica", /* tu lógica aquí */ Guid.Parse("00000000-0000-0000-0000-000000000001")); // <-- CAMBIAR ESTO
+                    cmd.Parameters.AddWithValue("@IdPersonaJuridica", idPersonaJuridica);
                     cmd.Parameters.AddWithValue("@IdAuditoria", idAuditoria);
                     idBeneficio = (Guid)cmd.ExecuteScalar();
                 }
 
+                // Insertar Deducción
                 var insertDeduccionQuery = @"
             INSERT INTO Deduccion (nombre, descripcion, idPersonaJuridica, idBeneficio, idFormula, idAuditoria)
             VALUES (@Nombre, @Descripcion, @IdPersonaJuridica, @IdBeneficio, @IdFormula, @IdAuditoria);";
@@ -141,7 +156,7 @@ namespace back_end.Repositories
                 {
                     cmd.Parameters.AddWithValue("@Nombre", benefit.BenefitName ?? "");
                     cmd.Parameters.AddWithValue("@Descripcion", benefit.BenefitDescription ?? "");
-                    cmd.Parameters.AddWithValue("@IdPersonaJuridica", /* tu lógica aquí */ Guid.Parse("00000000-0000-0000-0000-000000000001")); // <-- CAMBIAR ESTO
+                    cmd.Parameters.AddWithValue("@IdPersonaJuridica", idPersonaJuridica);
                     cmd.Parameters.AddWithValue("@IdBeneficio", idBeneficio);
                     cmd.Parameters.AddWithValue("@IdFormula", idFormula);
                     cmd.Parameters.AddWithValue("@IdAuditoria", idAuditoria);
@@ -149,6 +164,7 @@ namespace back_end.Repositories
                 }
             }
         }
+
 
 
 
