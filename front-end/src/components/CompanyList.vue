@@ -116,90 +116,16 @@ export default {
   },
   data() {
     return {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      companies: [
-        {
-          name: "Cooperativa de Productores de Leche Dos Pinos R.L.",
-          description:
-            "Principal cooperativa láctea de Costa Rica, reconocida por su compromiso con la calidad, innovación y responsabilidad social.",
-          legalId: "3-002-045428",
-          address: "San José, Costa Rica",
-          contactNumber: "+506 2247 2000",
-          creationDate: "1947-01-01",
-        },
-        {
-          name: "BAC Credomatic",
-          description:
-            "Institución financiera líder en servicios bancarios y tecnológicos en Centroamérica, destacada por su innovación y enfoque en el cliente.",
-          legalId: "3-101-011262",
-          address: "San José, Costa Rica",
-          contactNumber: "+506 2295 9797",
-          creationDate: "1952-01-01",
-        },
-        {
-          name: "Florida Ice and Farm Company (FIFCO)",
-          description:
-            "Empresa costarricense de alimentos y bebidas con un fuerte enfoque en sostenibilidad y responsabilidad social empresarial.",
-          legalId: "3-101-007265",
-          address: "Heredia, Costa Rica",
-          contactNumber: "+506 2209 9000",
-          creationDate: "1908-01-01",
-        },
-        {
-          name: "Intel Costa Rica",
-          description:
-            "Subsidiaria de la multinacional tecnológica Intel, especializada en investigación, desarrollo y servicios globales de ingeniería.",
-          legalId: "3-101-234567",
-          address: "Belén, Heredia, Costa Rica",
-          contactNumber: "+506 2209 2000",
-          creationDate: "1997-01-01",
-        },
-        {
-          name: "Grupo Purdy",
-          description:
-            "Empresa líder en el sector automotriz costarricense, representante oficial de marcas como Toyota y Lexus, reconocida por su servicio al cliente.",
-          legalId: "3-101-123456",
-          address: "San José, Costa Rica",
-          contactNumber: "+506 2523 3000",
-          creationDate: "1957-01-01",
-        },
-      ],
-<<<<<<< HEAD
-<<<<<<< HEAD
-      methods: {
-        // getCompanyList() {
-        //   axios
-        //     .get("http://localhost:7175/api/company")
-        //     .then((response) => {
-        //       this.companies = response.data;
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error fetching company list:", error);
-        //     });
-        // }
-      },
-      // onmounted() {
-      //   // this.getCompanyList();
-      // },
-=======
->>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
-=======
->>>>>>> 89066ca (Se crea la vista inicial para la lista de empresas)
-=======
       companies: [],
->>>>>>> 4820c2e (Se implementa el backend y api correcto para traer los datos de bd)
-=======
-      companies: [],
->>>>>>> 4820c2e09a33c6cde474e1ed89b098935cf15c73
     };
   },
   methods: {
     getCompanyList() {
       axios
-        .get("http://localhost:7275/api/Company")
+        .get("https://localhost:7275/api/Company")
         .then((response) => {
           this.companies = response.data;
+          console.log(this.companies);
         })
         .catch((error) => {
           console.error("Error fetching company list:", error);
