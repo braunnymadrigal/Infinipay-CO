@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <footer class="py-5 custom-footer">
     <div class="container">
       <div class="row">
@@ -13,7 +13,7 @@
         </div>
         <div class="col-md-3 mb-3">
           <p class="h5">Empresa y equipo</p>
-          <a href="#">Sobre nosotros</a>
+          <a href="/AboutUs">Sobre nosotros</a>
         </div>
         <div class="col-md-3 mb-3">
           <p class="h5">Recursos</p>
