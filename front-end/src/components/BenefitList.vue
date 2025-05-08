@@ -34,8 +34,8 @@
           <td>{{ benefit.name }}</td>
           <td>{{ truncateString(benefit.description, 150) }}</td>
           <td>{{ benefit.minMonths + " meses" }}</td>
-          <td>{{ benefit.appliesTo.join(", ") }}</td>
-          <td>{{ benefit.formula }}</td>
+          <td>{{ benefit.elegibleEmployees }}</td>
+          <td>{{ benefit.param1 }}</td>
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button
@@ -69,8 +69,9 @@
 <script setup>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
-import { ref } from "vue";
-// import { ref, onMounted } from "vue";
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import cookies from "vue-cookies";
 
 function truncateString(str, maxLength) {
   if (str.length > maxLength) {
@@ -79,44 +80,29 @@ function truncateString(str, maxLength) {
   return str;
 }
 
-// onMounted() {
-//   // Fetch data from the API or perform any other setup tasks here
-//   // For example, you can use axios to fetch data from your backend
-//   // axios.get('/api/benefits').then(response => {
-//   //   benefits.value = response.data;
-//   // });
-// }
+const benefits = ref([]);
 
-// Temporary data for benefits
-const benefits = ref([
-  {
-    id: 1,
-    name: "Asociacion solidarista",
-    description:
-      "Como empresa, valoramos profundamente el bienestar de nuestros colaboradores y reconocemos el papel fundamental que desempeñan en nuestro éxito.",
-    minMonths: 6,
-    appliesTo: ["Quincenal", "Mensual"],
-    formula: "40%",
-  },
-  {
-    id: 2,
-    name: "Gimnasio",
-    description:
-      "En nuestra empresa, creemos firmemente en la importancia del equilibrio...",
-    minMonths: 3,
-    appliesTo: ["Mensual", "Quincenal"],
-    formula: "25 000 CRC",
-  },
-  {
-    id: 3,
-    name: "Plan dental",
-    description:
-      "En nuestra empresa, entendemos que una buena salud bucodental...",
-    minMonths: 12,
-    appliesTo: ["Quincenal", "Mensual", "Semanal"],
-    formula: "60 000 CRC",
-  },
-]);
+function getBenefits() {
+  console.log("Obteniendo beneficios...");
+
+  let jwt = cookies.get("jwt");
+  console.log("JWT:", jwt);
+
+  axios
+    .get("https://localhost:7275/api/Benefit/", {
+      headers: { Authorization: `Bearer ${jwt}` },
+    })
+    .then((response) => {
+      benefits.value = response.data;
+    })
+    .catch((error) => {
+      console.error("Error obteniendo los beneficios:", error);
+    });
+}
+
+onMounted(() => {
+  getBenefits();
+});
 </script>
 
 <style lang="scss" scoped></style>
