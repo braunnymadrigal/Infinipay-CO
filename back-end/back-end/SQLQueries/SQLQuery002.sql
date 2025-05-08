@@ -1,0 +1,7 @@
+﻿CREATE TABLE Auditoria (
+	id UNIQUEIDENTIFIER PRIMARY KEY NOT NULL DEFAULT NEWID(),
+	fechaCreacion DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+	usuarioCreador VARCHAR(100) NOT NULL,
+	ultimaFechaModificacion DATETIME2,
+	ultimoUsuarioModificador VARCHAR(100)
+);

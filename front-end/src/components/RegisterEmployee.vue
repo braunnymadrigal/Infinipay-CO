@@ -1,34 +1,14 @@
 <template>
-  <div class="container my-5">
-    <div class="text-center mb-4">
-      <img
-        src="../assets/images/logo.png"
-        alt="Company logo"
-        class="img-fluid"
-        style="max-width: 350px"
-      />
+  <HeaderCompany rol="profile.Rol" />
+
+  <div v-if="showPopup" @click.stop 
+    class="d-flex justify-content-center my-5 py-5">
+    <div class="display-1 text-danger" style="padding: 150px;">
+      No tienes permisos para registrar empleados.
     </div>
+  </div>
 
-    <header class="mb-5 custom-header">
-      <nav class="navbar navbar-expand-lg rounded custom-navbar">
-        <div class="container-fluid">
-          <div class="d-flex">
-            <router-link
-              to="/EmployerProfile"
-              class="mx-2"
-              style="color: #405d72"
-              >Perfil</router-link
-            >
-            <a href="#" class="mx-2" style="color: #405d72">Empresa</a>
-            <router-link to="/BenefitList" class="mx-2" style="color: #405d72"
-              >Beneficios</router-link
-            >
-            <a href="#" class="mx-2" style="color: #405d72">Empleados</a>
-          </div>
-        </div>
-      </nav>
-    </header>
-
+  <div v-else>
     <div
       class="card p-4 mx-auto"
       style="max-width: 1000px; background-color: #fff8f3; border: none"
@@ -39,6 +19,7 @@
       </h2>
 
       <form @submit.prevent="submitForm">
+
         <div class="row mb-3 justify-content-center" style="margin-top: 30px">
           <div class="col-md-6 col-lg-6">
             <label for="firstName" class="form-label">Primer nombre</label>
@@ -49,8 +30,9 @@
               v-model="firstName"
               id="firstName"
               required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -63,9 +45,9 @@
               style="background-color: #fff8f3"
               v-model="secondName"
               id="secondName"
-              required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -83,8 +65,9 @@
               v-model="firstLastName"
               id="firstLastName"
               required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -100,25 +83,88 @@
               v-model="secondLastName"
               id="secondLastName"
               required
-              maxlength="100"
+              maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
         </div>
 
         <div class="mb-3">
+          <label for="gender" class="form-label">
+            Género</label>
+          <select id="gender" class="form-select"
+           style="background-color: #FFF8F3;" v-model="gender" required>
+            <option disabled value="">Seleccione una opción</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula</label>
           <input
-            type="text"
-            class="form-control"
-            style="background-color: #fff8f3"
-            v-model="idNumber"
-            id="idNumber"
-            required
-            pattern="^\d{9}$"
-            placeholder="9 dígitos, sin guiones"
-          />
+          type="text"
+          class="form-control"
+          style="background-color: #fff8f3"
+          v-model="idNumber"
+          id="idNumber"
+          required
+          pattern="^(?!000000000)[1-79]\d{8}$"
+          placeholder="9 dígitos, sin guiones"
+          title="Debe tener 9 dígitos, empezar con 1-7 o 9 y no ser todo ceros"
+        />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de nacimiento</label>
+          <div class="d-flex gap-2">
+            <select id="birthDay" class="form-select" v-model="birthDay"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Día</option>
+              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              </option>
+            </select>
+            <select id="birthMonth" class="form-select" v-model="birthMonth"
+              style="background-color: #FFF8F3;"  required>
+              <option value="">Mes</option>
+              <option v-for="(month, index)
+                in months" :key="index" :value="index + 1"> {{ month }}
+              </option>
+            </select>
+            <select id="birthYear" class="form-select" v-model="birthYear"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Año</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha de contratación</label>
+          <div class="d-flex gap-2">
+            <select id="hireDay" class="form-select" v-model="hireDay"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Día</option>
+              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              </option>
+            </select>
+            <select id="hireMonth" class="form-select" v-model="hireMonth"
+              style="background-color: #FFF8F3;"  required>
+              <option value="">Mes</option>
+              <option v-for="(month, index)
+                in months" :key="index" :value="index + 1"> {{ month }}
+              </option>
+            </select>
+            <select id="hireYear" class="form-select" v-model="hireYear"
+              style="background-color: #FFF8F3;" required>
+              <option value="">Año</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}</option>
+            </select>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -127,13 +173,14 @@
             id="role"
             class="form-select"
             v-model="role"
-            required
             style="background-color: #fff8f3"
+            required
           >
-            <option disabled value="">Seleccione el rol del empleado</option>
+            <option disabled value="">
+              Seleccione el rol del empleado</option>
+            <option value="sinRol">Sin rol asignado</option>
             <option value="supervisor">Supervisor</option>
-            <option value="employee">Empleado</option>
-            <option value="administrator">Administrador</option>
+            <option value="administrador">Administrador</option>
           </select>
         </div>
 
@@ -146,27 +193,10 @@
             style="background-color: #fff8f3"
             id="username"
             required
-            maxlength="30"
-            pattern="^[a-z_\.]+$"
-            title="ejemplo_usuario"
-            placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label c class="form-label" for="password">Contraseña temporal</label>
-          <input
-            class="form-control"
-            type="password"
-            v-model="password"
-            id="password"
-            required
-            minlength="10"
             maxlength="100"
-            style="background-color: #fff8f3"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,100}$"
-            title="La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"
-            placeholder="Al menos 10 caracteres"
+            pattern="^[a-z_\.]+$"
+            title="Sólo se permiten letras minúsculas, '_' y '.'"
+            placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
           />
         </div>
 
@@ -182,6 +212,7 @@
               id="phoneNumber"
               required
               pattern="\d{8}"
+              title="Formato: 8 dígitos, sin guiones"
               placeholder="8 dígitos, sin guiones"
             />
           </div>
@@ -189,17 +220,88 @@
 
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
-          <input
-            type="email"
-            class="form-control"
-            style="background-color: #fff8f3"
-            v-model="email"
-            id="email"
-            required
-            maxlength="100"
-            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-            placeholder="xxx@xxxx.xxx"
-          />
+          <input type="email" class="form-control"
+            style="background-color: #FFF8F3;" v-model="email" id="email"
+            required maxlength="100" placeholder="xxx@xxxx.xxx"
+          @input="email = $event.target.value.toLowerCase()" 
+          title="Formato: xxx@xxxx.xxx">
+          
+        </div>
+
+        <h5 class="fw-normal mb-3 text-start">Información de contrato</h5>
+        <div class="border p-3 rounded mb-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="reportsHours" class="form-label">
+                ¿Reporta horas?</label>
+              <select
+                id="reportsHours"
+                class="form-select"
+                v-model="reportsHours"
+                required
+                style="background-color: #fff8f3"
+              >
+                <option disabled value="">Seleccione una opción</option>
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="salary" class="form-label">Salario bruto</label>
+              <input type="text" id="salary" class="form-control"
+              style="background-color: #fff8f3" v-model="salary"
+              pattern="^\d{1,8}(\.\d{1,2})?$" required
+              placeholder="Ej: 45000.00" 
+              title =
+              "Formato: Máximo 8 dígitos antes del punto y 2 después"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="typeContract" class="form-label">
+                Tipo de contrato</label>
+              <select
+                id="typeContract"
+                class="form-select"
+                v-model="typeContract"
+                required
+                style="background-color: #fff8f3"
+              >
+                <option disabled value="">Seleccione una opción</option>
+                <option value="semanal">Semanal</option>
+                <option value="quincenal">Quincenal</option>
+                <option value="mensual">Mensual</option>
+                <option value="servicios">Servicios</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">
+                Fecha de creación</label>
+                <div class="d-flex gap-2">
+                  <select id="creationDay" class="form-select"
+                    v-model="creationDay"
+                    style="background-color: #FFF8F3;" required>
+                    <option value="">Día</option>
+                    <option v-for="day in 31" :key="day" :value="day">{{ day }}
+                    </option>
+                  </select>
+                  <select id="creationMonth" class="form-select"
+                    v-model="creationMonth"
+                    style="background-color: #FFF8F3;"  required>
+                    <option value="">Mes</option>
+                    <option v-for="(month, index)
+                      in months" :key="index" :value="index + 1"> {{ month }}
+                    </option>
+                  </select>
+                  <select id="creationYear" class="form-select"
+                    v-model="creationYear"
+                    style="background-color: #FFF8F3;" required>
+                    <option value="">Año</option>
+                    <option v-for="year in years" :key="year" :value="year">
+                      {{ year }}</option>
+                  </select>
+                </div>
+            </div>
+          </div>
         </div>
 
         <h5 class="fw-normal mb-3 text-start">Dirección</h5>
@@ -214,8 +316,10 @@
                 v-model="address.province"
                 id="province"
                 required
-                maxlength="10"
+                maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
+                title="Sólo se permiten letras y acentos del abecedario español"
+                placeholder="Sólo se permiten letras y acentos del abecedario español"
               />
             </div>
             <div class="col-md-6">
@@ -227,7 +331,9 @@
                 v-model="address.canton"
                 id="canton"
                 required
-                maxlength="100"
+                maxlength="50"
+                title="Sólo se permiten letras y acentos del abecedario español"
+                placeholder="Sólo se permiten letras y acentos del abecedario español"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
               />
             </div>
@@ -240,8 +346,10 @@
                 v-model="address.district"
                 id="district"
                 required
-                maxlength="100"
+                maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
+                title="Sólo se permiten letras y acentos del abecedario español"
+                placeholder="Sólo se permiten letras y acentos del abecedario español"
               />
             </div>
             <div class="col-md-6">
@@ -251,10 +359,10 @@
                 style="background-color: #fff8f3; height: 38px"
                 v-model="address.otherSigns"
                 id="otherSigns"
-                required
-                maxlength="300"
+                maxlength="256"
                 pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
                 rows="2"
+                title="Sólo se permiten letras, números y espacios en blanco"
                 placeholder="Sólo se permiten letras, números y espacios en blanco"
               >
               </textarea>
@@ -263,98 +371,134 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <button
-            type="submit"
-            class="btn btn-success"
-            style="background-color: #758694; color: white; border: transparent"
-          >
-            Terminar
+          <button type="submit" class="btn btn-secondary" 
+            style="background-color: #405D72; color: white;
+            border: transparent;">
+            Crear
           </button>
         </div>
       </form>
     </div>
   </div>
-  <footer class="py-5 custom-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
-          <div>
-            <a href="#" class="fa fa-facebook"></a>
-            <a href="#" class="fa fa-linkedin"></a>
-            <a href="#" class="fa fa-youtube"></a>
-            <a href="#" class="fa fa-instagram"></a>
-          </div>
-        </div>
-        <div class="col-md-3 mb-3">
-          <p class="h5">Empresa y equipo</p>
-          <a href="#">Sobre nosotros</a>
-        </div>
-        <div class="col-md-3 mb-3">
-          <p class="h5">Recursos</p>
-          <a href="#">¿Cómo registro mi empresa?</a><br />
-          <a href="#">¿Cómo registro empleados a mi empresa?</a><br />
-          <a href="#">¿Cómo accedo a mi perfil?</a>
-        </div>
-        <div class="col-md-3 mb-3">
-          <p class="h5">Contacto</p>
-          <p>
-            <i class="pi pi-phone" style="color: #405d72"></i> +506 2000-0000
-          </p>
-          <p>
-            <i class="pi pi-home" style="color: #405d72"></i> San José, Montes
-            de Oca, San Pedro
-          </p>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <MainFooter/>
 </template>
 
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
+import HeaderCompany from "./HeaderCompany.vue";
+import MainFooter from "./MainFooter.vue";
+import axios from "axios";
 export default {
-  setup() {
-    const router = useRouter();
-    const firstName = ref("");
-    const secondName = ref("");
-    const firstLastName = ref("");
-    const secondLastName = ref("");
-    const idNumber = ref("");
-    const username = ref("");
-    const password = ref("");
-    const phone = ref("");
-    const email = ref("");
-    const role = ref("");
-
-    const address = ref({
-      province: "",
-      canton: "",
-      district: "",
-      otherSigns: "",
-    });
-    function submitForm() {
-      alert("¡Empleado registrado exitosamente!");
-      router.push("/EmployerProfile");
-    }
-
+  components: {
+    HeaderCompany,
+    MainFooter,
+  },
+  data() {
     return {
-      firstName,
-      secondName,
-      firstLastName,
-      secondLastName,
-      idNumber,
-      username,
-      password,
-      phone,
-      email,
-      address,
-      role,
-      submitForm,
+      showPopup: false,
+      firstName: '',
+      secondName: '',
+      firstLastName: '',
+      secondLastName: '',
+      idNumber: '',
+      username: '',
+      phoneNumber: '',
+      email: '',
+      role: '',
+      gender: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
+      hireDay: '',
+      hireMonth: '',
+      hireYear: '',
+      reportsHours: '',
+      salary: '',
+      typeContract: '',
+      creationDay: '',
+      creationMonth: '',
+      creationYear: '',
+
+      address: {
+        province: '',
+        canton: '',
+        district: '',
+        otherSigns: ''
+      },
+
+      months: [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ],
+      years: this.generateYears()
     };
   },
+  methods: {
+    
+  generateYears() {
+    const current = new Date().getFullYear();
+    const years = [];
+    for (let y = current; y >= 1900; y--) {
+      years.push(y);
+    }
+    return years;
+  },
+
+  submitForm() {
+    let jwtCookie = this.$cookies.get('jwt');
+
+    axios.post(
+      "https://localhost:7275/api/Employee",
+      {
+        firstName: this.firstName,
+        secondName: this.secondName,
+        firstLastName: this.firstLastName,
+        secondLastName: this.secondLastName,
+        idNumber: this.idNumber,
+        username: this.username,
+        phoneNumber: this.phoneNumber,
+        email: this.email,
+        role: this.role,
+        province: this.address.province,
+        canton: this.address.canton,
+        district: this.address.district,
+        otherSigns: this.address.otherSigns,
+        gender: this.gender,
+        birthDay: Number(this.birthDay),
+        birthMonth: Number(this.birthMonth),
+        birthYear: Number(this.birthYear),
+        hireDay: Number(this.hireDay),
+        hireMonth: Number(this.hireMonth),
+        hireYear: Number(this.hireYear),
+        reportsHours: Number(this.reportsHours),
+        salary: Number(this.salary),
+        typeContract: this.typeContract,
+        creationDay: Number(this.creationDay),
+        creationMonth: Number(this.creationMonth),
+        creationYear: Number(this.creationYear),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${jwtCookie}`
+        }
+      }
+    )
+    .then((response) => {
+      this.showPopup = false;
+      console.log("Respuesta del servidor:", response.data);
+      alert("¡Empleado registrado exitosamente!");
+      this.$router.push('MyProfile');
+    })
+    .catch((error) => {
+      this.showPopup = true;
+      console.error("Error:", error);
+      if (error.response) {
+        const message = error.response.data?.message || "Error desconocido";
+        alert(message);
+        this.$router.push('MyProfile');
+      }
+    });
+  }
+},
 };
 </script>
 

@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <footer class="py-5 custom-footer">
     <div class="container">
       <div class="row">
         <div class="col-md-3 mb-3">
-          <p class="h5">Infinipay CO.</p>
+          <p class="h5" style="margin-left: 10px;">Infinipay CO.</p>
           <div>
             <a href="#" class="fa fa-facebook"></a>
             <a href="#" class="fa fa-linkedin"></a>
@@ -13,7 +13,7 @@
         </div>
         <div class="col-md-3 mb-3">
           <p class="h5">Empresa y equipo</p>
-          <a href="#">Sobre nosotros</a>
+          <a href="/AboutUs">Sobre nosotros</a>
         </div>
         <div class="col-md-3 mb-3">
           <p class="h5">Recursos</p>
@@ -36,3 +36,6 @@
   </footer>
 </template>
 <script setup></script>
+<style>
+  @import "../assets/css/HeaderFooter.css";
+</style>
