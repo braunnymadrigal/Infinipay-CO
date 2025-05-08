@@ -143,42 +143,23 @@ WHERE u.nickname = @nickname;;
                 {
                     try
                     {
-                        // 1. Obtener ID del usuario
-                        var getUserIdQuery = @"
-                    SELECT u.id
-                    FROM Usuario u
-                    WHERE u.nickname = @nickname OR u.email = @correo;";
-                        var cmd = new SqlCommand(getUserIdQuery, connection, transaction);
-                        cmd.Parameters.AddWithValue("@nickname", benefit.UserCreator);
-                        cmd.Parameters.AddWithValue("@correo", benefit.UserCreator);
-                        var result = cmd.ExecuteScalar();
+                        
+                        var auditId = insertAudit(benefit.UserNickname, transaction);
 
-                        if (result == null || result == DBNull.Value)
-                            throw new Exception("USUARIO_NO_ENCONTRADO");
-
-                        var userId = (Guid)result;
-
-                        // 2. Insertar Auditoría
-                        var auditId = insertAudit(benefit.UserCreator, transaction);
-
-                        // 3. Insertar Fórmula
                         var formulaId = insertFormula(benefit, transaction);
 
-                        // 4. Obtener PersonaJuridica del usuario
                         var getEmpresaIdQuery = @"
-                    SELECT ej.idPersonaJuridica
+                    SELECT pj.id AS idPersonaJuridica
                     FROM Usuario u
                     JOIN Empleador e ON u.idPersonaFisica = e.idPersonaFisica
-                    JOIN PersonaJuridica ej ON e.idPersonaJuridica = ej.id
-                    WHERE u.idPersonaFisica = @IdPersonaFisica;";
-                        cmd = new SqlCommand(getEmpresaIdQuery, connection, transaction);
-                        cmd.Parameters.AddWithValue("@IdPersonaFisica", userId);
+                    JOIN PersonaJuridica pj ON e.idPersonaJuridica = pj.id
+                    WHERE u.nickname = @nickName;";
+                        SqlCommand cmd = new SqlCommand(getEmpresaIdQuery, connection, transaction);
+                        cmd.Parameters.AddWithValue("@nickName", benefit.UserNickname);
                         var idPersonaJuridica = (Guid)cmd.ExecuteScalar();
 
-                        // 5. Insertar Beneficio
                         var benefitId = insertBenefit(benefit, idPersonaJuridica, auditId, transaction);
 
-                        // 6. Insertar Deducción
                         insertDeduccion(benefit, idPersonaJuridica, benefitId, formulaId, auditId, transaction);
 
                         transaction.Commit();
@@ -197,21 +178,20 @@ WHERE u.nickname = @nickname;;
         private Guid insertAudit(string user, SqlTransaction transaction)
         {
             var cmd = new SqlCommand(@"
-        INSERT INTO Auditoria (usuarioCreador, ultimaFechaModificacion, ultimoUsuarioModificador)
+        INSERT INTO Auditoria (id, usuarioCreador, ultimoUsuarioModificador, ultimaFechaModificacion)
         OUTPUT INSERTED.id
-        VALUES (@UsuarioCreador, SYSDATETIME(), @UsuarioModificador);", transaction.Connection, transaction);
+        VALUES (NEWID(), @userNickName, @userNickName, SYSDATETIME());", transaction.Connection, transaction);
 
-            cmd.Parameters.AddWithValue("@UsuarioCreador", user);
-            cmd.Parameters.AddWithValue("@UsuarioModificador", user);
+            cmd.Parameters.AddWithValue("@userNickName", user);
             return (Guid)cmd.ExecuteScalar();
         }
 
         private Guid insertFormula(BenefitModel benefit, SqlTransaction transaction)
         {
             var cmd = new SqlCommand(@"
-        INSERT INTO Formula (tipoFormula, urlAPI, paramUno, paramDos, paramTres)
+        INSERT INTO Formula (id, tipoFormula, urlAPI, paramUno, paramDos, paramTres)
         OUTPUT INSERTED.id
-        VALUES (@TipoFormula, @UrlAPI, @ParamUno, @ParamDos, @ParamTres);", transaction.Connection, transaction);
+        VALUES (NEWID() ,@TipoFormula, @UrlAPI, @ParamUno, @ParamDos, @ParamTres);", transaction.Connection, transaction);
 
             cmd.Parameters.AddWithValue("@TipoFormula", benefit.FormulaType ?? "");
             cmd.Parameters.AddWithValue("@UrlAPI", (object?)benefit.urlAPI ?? DBNull.Value);
@@ -224,9 +204,9 @@ WHERE u.nickname = @nickname;;
         private Guid insertBenefit(BenefitModel benefit, Guid empresaId, Guid auditId, SqlTransaction transaction)
         {
             var cmd = new SqlCommand(@"
-        INSERT INTO Beneficio (nombre, tiempoMinimo, descripcion, empleadoElegible, idPersonaJuridica, idAuditoria)
+        INSERT INTO Beneficio (id, nombre, tiempoMinimo, descripcion, empleadoElegible, idPersonaJuridica, idAuditoria)
         OUTPUT INSERTED.id
-        VALUES (@Nombre, @TiempoMinimo, @Descripcion, @Elegible, @IdPersonaJuridica, @IdAuditoria);", transaction.Connection, transaction);
+        VALUES (NEWID(), @nombre, @TiempoMinimo, @Descripcion, @Elegible, @IdPersonaJuridica, @IdAuditoria);", transaction.Connection, transaction);
 
             cmd.Parameters.AddWithValue("@Nombre", benefit.BenefitName ?? "");
             cmd.Parameters.AddWithValue("@TiempoMinimo", benefit.BenefitMinTime ?? 0);

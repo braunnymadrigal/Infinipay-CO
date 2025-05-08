@@ -38,26 +38,27 @@ namespace back_end.Controllers
 
         [Authorize(Roles = "empleador,administrador")]
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateBenefit(BenefitModel benefit)
+        public ActionResult<bool> CreateBenefit(BenefitModel benefit)
         {
+            Console.WriteLine(benefit.BenefitDescription);
             try
             {
                 if (benefit == null)
                     return BadRequest(new { message = "Datos inválidos." });
 
-                string userId = "";
+                string nickName = "";
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
 
                 if (identity != null)
                 {
-                    var claims = identity.Claims;
-                    var sid = claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
-                    if (!string.IsNullOrEmpty(sid))
-                        userId = sid;
+                    var userClaims = identity.Claims;
+                    var Nickname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+                    if (Nickname != null)
+                    {
+                        nickName = Nickname;
+                    }
                 }
-
-                benefit.UserCreator = userId;
-
+                benefit.UserNickname = nickName;
                 var result = _benefitRepository.CreateBenefit(benefit);
                 return new JsonResult(result);
             }
