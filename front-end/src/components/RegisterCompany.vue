@@ -39,7 +39,7 @@
             Usuario del empleador</label>
           <input type="text" class="form-control" v-model="employerUsername"
             style="background-color: #FFF8F3;" id="employerUsername" required 
-            maxlength="30" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
+            maxlength="30" pattern="^[a-z_\.]+$" title="Sólo se permiten letras minúsculas, guiones bajos y puntos." 
             placeholder="Escriba el nombre de usuario que acaba de crear."
           />
         </div>
@@ -50,6 +50,7 @@
             style="background-color: #FFF8F3;" v-model="legalName"
             required maxlength="256"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
+            title="Sólo se permiten letras, acentos, espacios y '&'."
             placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
         </div>
 
@@ -59,6 +60,7 @@
           <textarea class="form-control" style="background-color: #FFF8F3;"
             v-model="description" id="description" maxlength="256"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
+            title="Sólo se permiten letras, acentos y espacios."
             placeholder=
             "Sólo se permiten espacios, letras y acentos del abecedario español."
             rows="4"></textarea>
@@ -94,7 +96,7 @@
           <label for="idNumber" class="form-label">Cédula jurídica</label>
           <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="idNumber"
-            id="idNumber" required pattern="^\d{10}$"
+            id="idNumber" required pattern="^\d{10}$" title="10 dígitos, sin guiones."
             placeholder="10 dígitos, sin guiones">
         </div>
 
@@ -104,7 +106,7 @@
             <span class="me-2">+506</span>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="phoneNumber"
-            id="phoneNumber" required pattern="\d{8}"
+            id="phoneNumber" required pattern="\d{8}" title="8 dígitos, sin guiones."
             placeholder="8 dígitos, sin guiones">
           </div>
         </div>
@@ -113,7 +115,7 @@
           <label for="email" class="form-label">Correo electrónico</label>
           <input type="email" class="form-control"
             style="background-color: #FFF8F3;" v-model="email" id="email"
-            required maxlength="100" placeholder="xxx@xxxx.xxx"
+            required maxlength="100" placeholder="xxx@xxxx.xxx" title="Formato: xxx@xxxx.xxx"
           @input="email = $event.target.value.toLowerCase()">
         </div>
 
@@ -124,7 +126,7 @@
               <label for="province" class="form-label">Provincia</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.province"
-              id="province" required maxlength="50"
+              id="province" required maxlength="50" title="Sólo se permiten letras, acentos y espacios."
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
@@ -138,14 +140,14 @@
               <label for="district" class="form-label">Distrito</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.district"
-              id="district" required maxlength="50"
+              id="district" required maxlength="50" title="Sólo se permiten letras, acentos y espacios."
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+              maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$" title="Sólo se permiten letras, números y espacios."
               rows="2" placeholder=
               "Sólo se permiten letras, números y espacios en blanco">
             </textarea>

@@ -42,6 +42,7 @@
             style="background-color: #FFF8F3;" v-model="firstName"
             id="firstName" required maxlength="50"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            placeholder="Sólo se permiten letras y acentos del abecedario español"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
 
@@ -51,6 +52,7 @@
             style="background-color: #FFF8F3;"
             v-model="secondName" id="secondName"
             maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            placeholder="Sólo se permiten letras y acentos del abecedario español"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
@@ -62,7 +64,7 @@
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="firstLastName"
             id="firstLastName" required maxlength="50"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$" placeholder="Sólo se permiten letras y acentos del abecedario español"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
 
@@ -72,7 +74,7 @@
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="secondLastName"
             id="secondLastName" required maxlength="50"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$" placeholder="Sólo se permiten letras y acentos del abecedario español"
             title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
@@ -92,16 +94,24 @@
           <label for="username" class="form-label">Nombre de usuario</label>
           <input type="text" class="form-control" v-model="username"
             style="background-color: #FFF8F3;" id="username" required 
-            maxlength="100" pattern="^[a-z_\.]+$" title="ejemplo_usuario" 
+            maxlength="100" pattern="^[a-z_\.]+$" title="Sólo se permiten letras minúsculas, '_' y '.'" 
             placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
           />
         </div>
 
         <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula física</label>
-          <input type="text" class="form-control"
-          style="background-color: #FFF8F3;" v-model="idNumber" id="idNumber"
-          required pattern="^\d{9}$" placeholder="9 dígitos, sin guiones">
+          <input
+          type="text"
+          class="form-control"
+          style="background-color: #fff8f3"
+          v-model="idNumber"
+          id="idNumber"
+          required
+          pattern="^(?!000000000)[1-79]\d{8}$"
+          placeholder="9 dígitos, sin guiones"
+          title="Debe tener 9 dígitos, empezar con 1-7 o 9 y no ser todo ceros"
+        />
         </div>
 
         <div class="mb-3">
@@ -135,7 +145,7 @@
             <span class="me-2">+506</span>
             <input type="text" class="form-control"
             style="background-color: #FFF8F3;" v-model="phoneNumber"
-            id="phoneNumber" required pattern="\d{8}"
+            id="phoneNumber" required pattern="\d{8}" title="8 dígitos, sin guiones"
             placeholder="8 dígitos, sin guiones">
           </div>
         </div>
@@ -144,7 +154,7 @@
           <label for="email" class="form-label">Correo electrónico</label>
           <input type="email" class="form-control"
             style="background-color: #FFF8F3;" v-model="email" id="email"
-            required maxlength="100" placeholder="xxx@xxxx.xxx"
+            required maxlength="100" placeholder="xxx@xxxx.xxx" title="Formato: xxx@xxxx.xxx"
           @input="email = $event.target.value.toLowerCase()">
         </div>
 
@@ -155,21 +165,24 @@
               <label for="province" class="form-label">Provincia</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.province"
-              id="province" required maxlength="50"
+              id="province" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="canton" class="form-label">Cantón</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.canton"
-              id="canton" required maxlength="50"
+              id="canton" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="district" class="form-label">Distrito</label>
               <input type="text" class="form-control"
               style="background-color: #FFF8F3;" v-model="address.district"
-              id="district" required maxlength="50"
+              id="district" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
@@ -177,7 +190,8 @@
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
               maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
-              rows="2" placeholder=
+              rows="2" title="Sólo se permiten letras, números y espacios en blanco"
+              placeholder=
               "Sólo se permiten letras, números y espacios en blanco">
             </textarea>
             </div>
