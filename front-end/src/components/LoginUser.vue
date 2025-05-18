@@ -131,7 +131,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import MainFooter from "./MainFooter.vue";
 export default {
   components: {
@@ -148,11 +147,10 @@ export default {
     startLogin() {
       this.showWrongPassword = false;
       this.showLoginForbidden = false;
-      axios
-        .post("https://localhost:7275/api/Login/Login", {
-          NicknameOrEmail:
-            this.user.userId, Password: this.user.userPassword
-        })
+      this.$api.login({
+        userId: this.user.userId,
+        userPassword: this.user.userPassword
+      })
         .then(
           response => {
             this.$cookies.set('jwt', response.data);

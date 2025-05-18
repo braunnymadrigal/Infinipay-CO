@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container my-5">
     <div class="text-center mb-4">
       <img src="../assets/images/logo.png" alt="Company logo" class="img-fluid"
@@ -39,51 +39,53 @@
           <div class="col-md-6 col-lg-6">
             <label for="firstName" class="form-label">Primer nombre</label>
             <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="firstName"
-            id="firstName" required maxlength="50"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
-            placeholder="Sólo se permiten letras y acentos del abecedario español"
-            title="Sólo se permiten letras y acentos del abecedario español">
+                   style="background-color: #FFF8F3;" v-model="firstName"
+                   id="firstName" required maxlength="50"
+                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+                   placeholder="Sólo se permiten letras y acentos del abecedario español"
+                   title="Sólo se permiten letras y acentos del abecedario español">
           </div>
 
           <div class="col-md-6 col-lg-6">
             <label for="secondName" class="form-label">Segundo nombre</label>
             <input type="text" class="form-control"
-            style="background-color: #FFF8F3;"
-            v-model="secondName" id="secondName"
-            maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
-            placeholder="Sólo se permiten letras y acentos del abecedario español"
-            title="Sólo se permiten letras y acentos del abecedario español">
+                   style="background-color: #FFF8F3;"
+                   v-model="secondName" id="secondName"
+                   maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+                   placeholder="Sólo se permiten letras y acentos del abecedario español"
+                   title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
 
         <div class="row mb-3 justify-content-center">
           <div class="col-md-6 col-lg-6">
             <label for="firstLastName" class="form-label">
-              Primer apellido</label>
+              Primer apellido
+            </label>
             <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="firstLastName"
-            id="firstLastName" required maxlength="50"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$" placeholder="Sólo se permiten letras y acentos del abecedario español"
-            title="Sólo se permiten letras y acentos del abecedario español">
+                   style="background-color: #FFF8F3;" v-model="firstLastName"
+                   id="firstLastName" required maxlength="50"
+                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$" placeholder="Sólo se permiten letras y acentos del abecedario español"
+                   title="Sólo se permiten letras y acentos del abecedario español">
           </div>
 
           <div class="col-md-6 col-lg-6">
             <label for="secondLastName" class="form-label">
-              Segundo apellido</label>
+              Segundo apellido
+            </label>
             <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="secondLastName"
-            id="secondLastName" required maxlength="50"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$" placeholder="Sólo se permiten letras y acentos del abecedario español"
-            title="Sólo se permiten letras y acentos del abecedario español">
+                   style="background-color: #FFF8F3;" v-model="secondLastName"
+                   id="secondLastName" required maxlength="50"
+                   pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$" placeholder="Sólo se permiten letras y acentos del abecedario español"
+                   title="Sólo se permiten letras y acentos del abecedario español">
           </div>
         </div>
 
         <div class="mb-3">
           <label for="gender" class="form-label">Género</label>
           <select id="gender" class="form-select"
-            style="background-color: #FFF8F3;" v-model="gender"
-            required>
+                  style="background-color: #FFF8F3;" v-model="gender"
+                  required>
             <option disabled value="">Seleccione una opción</option>
             <option value="masculino">Masculino</option>
             <option value="femenino">Femenino</option>
@@ -93,48 +95,48 @@
         <div class="mb-3">
           <label for="username" class="form-label">Nombre de usuario</label>
           <input type="text" class="form-control" v-model="username"
-            style="background-color: #FFF8F3;" id="username" required 
-            maxlength="100" pattern="^[a-z_\.]+$" title="Sólo se permiten letras minúsculas, '_' y '.'" 
-            placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
-          />
+                 style="background-color: #FFF8F3;" id="username" required
+                 maxlength="100" pattern="^[a-z_\.]+$" title="Sólo se permiten letras minúsculas, '_' y '.'"
+                 placeholder="Sólo se permiten letras minúsculas, '_' y '.'" />
         </div>
 
         <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula física</label>
-          <input
-          type="text"
-          class="form-control"
-          style="background-color: #fff8f3"
-          v-model="idNumber"
-          id="idNumber"
-          required
-          pattern="^(?!000000000)[1-79]\d{8}$"
-          placeholder="9 dígitos, sin guiones"
-          title="Debe tener 9 dígitos, empezar con 1-7 o 9 y no ser todo ceros"
-        />
+          <input type="text"
+                 class="form-control"
+                 style="background-color: #fff8f3"
+                 v-model="idNumber"
+                 id="idNumber"
+                 required
+                 pattern="^(?!000000000)[1-79]\d{8}$"
+                 placeholder="9 dígitos, sin guiones"
+                 title="Debe tener 9 dígitos, empezar con 1-7 o 9 y no ser todo ceros" />
         </div>
 
         <div class="mb-3">
           <label class="form-label">Fecha de nacimiento</label>
           <div class="d-flex gap-2">
             <select id="birthDay" class="form-select" v-model="birthDay"
-              style="background-color: #FFF8F3;" required>
+                    style="background-color: #FFF8F3;" required>
               <option value="">Día</option>
-              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              <option v-for="day in 31" :key="day" :value="day">
+                {{ day }}
               </option>
             </select>
             <select id="birthMonth" class="form-select" v-model="birthMonth"
-              style="background-color: #FFF8F3;"  required>
+                    style="background-color: #FFF8F3;" required>
               <option value="">Mes</option>
               <option v-for="(month, index)
-                in months" :key="index" :value="index + 1"> {{ month }}
+                in months" :key="index" :value="index + 1">
+                {{ month }}
               </option>
             </select>
             <select id="birthYear" class="form-select" v-model="birthYear"
-              style="background-color: #FFF8F3;" required>
+                    style="background-color: #FFF8F3;" required>
               <option value="">Año</option>
               <option v-for="year in years" :key="year" :value="year">
-                {{ year }}</option>
+                {{ year }}
+              </option>
             </select>
           </div>
         </div>
@@ -144,18 +146,18 @@
           <div class="d-flex align-items-center mb-2">
             <span class="me-2">+506</span>
             <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="phoneNumber"
-            id="phoneNumber" required pattern="\d{8}" title="8 dígitos, sin guiones"
-            placeholder="8 dígitos, sin guiones">
+                   style="background-color: #FFF8F3;" v-model="phoneNumber"
+                   id="phoneNumber" required pattern="\d{8}" title="8 dígitos, sin guiones"
+                   placeholder="8 dígitos, sin guiones">
           </div>
         </div>
 
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
           <input type="email" class="form-control"
-            style="background-color: #FFF8F3;" v-model="email" id="email"
-            required maxlength="100" placeholder="xxx@xxxx.xxx" title="Formato: xxx@xxxx.xxx"
-          @input="email = $event.target.value.toLowerCase()">
+                 style="background-color: #FFF8F3;" v-model="email" id="email"
+                 required maxlength="100" placeholder="xxx@xxxx.xxx" title="Formato: xxx@xxxx.xxx"
+                 @input="email = $event.target.value.toLowerCase()">
         </div>
 
         <h5 class="fw-normal mb-3 text-start">Dirección</h5>
@@ -164,43 +166,49 @@
             <div class="col-md-6">
               <label for="province" class="form-label">Provincia</label>
               <input type="text" class="form-control"
-              style="background-color: #FFF8F3;" v-model="address.province"
-              id="province" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
-              placeholder="Sólo se permiten letras y acentos del abecedario español"
-              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+                     style="background-color: #FFF8F3;" v-model="address.province"
+                     id="province" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
+                     placeholder="Sólo se permiten letras y acentos del abecedario español"
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="canton" class="form-label">Cantón</label>
               <input type="text" class="form-control"
-              style="background-color: #FFF8F3;" v-model="address.canton"
-              id="canton" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
-              placeholder="Sólo se permiten letras y acentos del abecedario español"
-              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+                     style="background-color: #FFF8F3;" v-model="address.canton"
+                     id="canton" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
+                     placeholder="Sólo se permiten letras y acentos del abecedario español"
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="district" class="form-label">Distrito</label>
               <input type="text" class="form-control"
-              style="background-color: #FFF8F3;" v-model="address.district"
-              id="district" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
-              placeholder="Sólo se permiten letras y acentos del abecedario español"
-              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+                     style="background-color: #FFF8F3;" v-model="address.district"
+                     id="district" required maxlength="50" title="Sólo se permiten letras y acentos del abecedario español"
+                     placeholder="Sólo se permiten letras y acentos del abecedario español"
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
-              rows="2" title="Sólo se permiten letras, números y espacios en blanco"
-              placeholder=
-              "Sólo se permiten letras, números y espacios en blanco">
+                        maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
+                        rows="2" title="Sólo se permiten letras, números y espacios en blanco"
+                        placeholder="Sólo se permiten letras, números y espacios en blanco">
             </textarea>
             </div>
           </div>
         </div>
 
+        <div v-if="showError"
+             class="alert alert-danger alert-dismissable fade show">
+          {{errorMessage}}
+          <button type="button" class="btn-close" @click="showError = false">
+          </button>
+        </div>
+
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-secondary" 
-            style="background-color: #405D72; color: white;
+          <button type="submit" class="btn btn-secondary"
+                  style="background-color: #405D72; color: white;
             border: transparent;">
             Continuar
           </button>
@@ -213,7 +221,6 @@
 
 <script>
 import MainFooter from "./MainFooter.vue";
-import axios from "axios";
 export default {
   components: {
     MainFooter
@@ -242,7 +249,9 @@ export default {
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
       ],
-      years: this.generateYears()
+      years: this.generateYears(),
+      showError: true,
+      errorMessage: '',
     };
   },
   methods: {
@@ -254,8 +263,8 @@ export default {
       }
       return years;
     },
-    submitForm: function() {
-      axios.post("https://localhost:7275/api/Employer", {
+    submitForm: function () {
+      const employerData = {
         idNumber: this.idNumber,
         phoneNumber: this.phoneNumber,
         email: this.email,
@@ -272,22 +281,23 @@ export default {
         birthDay: this.birthDay,
         birthMonth: this.birthMonth,
         birthYear: this.birthYear,
-      })
-      .then(function(response) {
-        console.log("Respuesta del servidor:", response.data);
+      };
+
+      this.$api.registerEmployer(employerData)
+      .then((response) => {
         if (response.data === true) {
           this.$router.push('/RegisterCompany');
         } else {
-          alert(
-            "No se pudo registrar el empleador. Verifica los datos ingresados."
-          );
+          this.errorMessage = "No se pudo registrar el empleador. \
+            Verifica los datos ingresados.";
+          this.showError = true;
         }
-      }.bind(this))
-      .catch(function(error) {
-        console.error("Error:", error);
+      })
+      .catch((error) => {
         if (error.response) {
-          const message = error.response.data?.message || "Error desconocido";
-          alert(message);
+          this.errorMessage = error.response.data?.message ||
+            "Error desconocido";
+          this.showError = true;
         }
       });
     }
