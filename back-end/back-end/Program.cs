@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: MyAllowSpecificOrigins,
                     policy =>
                     {
-                      policy.WithOrigins("http://localhost:8080")
+                      policy.WithOrigins("http://localhost:8081", "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });

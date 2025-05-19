@@ -8,12 +8,14 @@
         <p><strong>Deducción:</strong> {{ benefit.formattedDeduction }}</p>
         <div class="d-flex flex-column align-items-center"
              style="border: none">
-          <p style="font-size: 15px">Creado por <a :href="'/'">
-            {{'@' + benefit.userCreator}}</a>
+          <p style="font-size: 15px">Creado por 
+          <a :href="'/AssignedBenefitList'">
+            {{'@' + benefit.userCreator}}
+          </a>
             el {{formatDate(benefit.creationDate)}}</p>
-          <p style="font-size: 15px" v-if="benefit.modificationUser">
+          <p style="font-size: 15px" v-if="benefit.userModifier">
             Modificado por
-            <a :href="'/'">
+            <a :href="'/AssignedBenefitList'">
               {{'@' + benefit.userModifier}}
             </a> el {{formatDate(benefit.modifiedDate)}}
           </p>

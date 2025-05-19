@@ -32,6 +32,7 @@
               required
               maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -46,6 +47,7 @@
               id="secondName"
               maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -65,6 +67,7 @@
               required
               maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -82,6 +85,7 @@
               required
               maxlength="50"
               pattern="^[a-zA-ZáéíóúÁÉÍÓÚ]+$"
+              placeholder="Sólo se permiten letras y acentos del abecedario español"
               title="Sólo se permiten letras y acentos del abecedario español"
             />
           </div>
@@ -101,15 +105,16 @@
         <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula</label>
           <input
-            type="text"
-            class="form-control"
-            style="background-color: #fff8f3"
-            v-model="idNumber"
-            id="idNumber"
-            required
-            pattern="^\d{9}$"
-            placeholder="9 dígitos, sin guiones"
-          />
+          type="text"
+          class="form-control"
+          style="background-color: #fff8f3"
+          v-model="idNumber"
+          id="idNumber"
+          required
+          pattern="^(?!000000000)[1-79]\d{8}$"
+          placeholder="9 dígitos, sin guiones"
+          title="Debe tener 9 dígitos, empezar con 1-7 o 9 y no ser todo ceros"
+        />
         </div>
 
         <div class="mb-3">
@@ -175,7 +180,7 @@
               Seleccione el rol del empleado</option>
             <option value="sinRol">Sin rol asignado</option>
             <option value="supervisor">Supervisor</option>
-            <option value="administrator">Administrador</option>
+            <option value="administrador">Administrador</option>
           </select>
         </div>
 
@@ -190,7 +195,7 @@
             required
             maxlength="100"
             pattern="^[a-z_\.]+$"
-            title="ejemplo_usuario"
+            title="Sólo se permiten letras minúsculas, '_' y '.'"
             placeholder="Sólo se permiten letras minúsculas, '_' y '.'"
           />
         </div>
@@ -207,6 +212,7 @@
               id="phoneNumber"
               required
               pattern="\d{8}"
+              title="Formato: 8 dígitos, sin guiones"
               placeholder="8 dígitos, sin guiones"
             />
           </div>
@@ -217,7 +223,9 @@
           <input type="email" class="form-control"
             style="background-color: #FFF8F3;" v-model="email" id="email"
             required maxlength="100" placeholder="xxx@xxxx.xxx"
-          @input="email = $event.target.value.toLowerCase()">
+          @input="email = $event.target.value.toLowerCase()" 
+          title="Formato: xxx@xxxx.xxx">
+          
         </div>
 
         <h5 class="fw-normal mb-3 text-start">Información de contrato</h5>
@@ -310,6 +318,8 @@
                 required
                 maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
+                title="Sólo se permiten letras y acentos del abecedario español"
+                placeholder="Sólo se permiten letras y acentos del abecedario español"
               />
             </div>
             <div class="col-md-6">
@@ -322,6 +332,8 @@
                 id="canton"
                 required
                 maxlength="50"
+                title="Sólo se permiten letras y acentos del abecedario español"
+                placeholder="Sólo se permiten letras y acentos del abecedario español"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
               />
             </div>
@@ -336,6 +348,8 @@
                 required
                 maxlength="50"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$"
+                title="Sólo se permiten letras y acentos del abecedario español"
+                placeholder="Sólo se permiten letras y acentos del abecedario español"
               />
             </div>
             <div class="col-md-6">
@@ -348,6 +362,7 @@
                 maxlength="256"
                 pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$"
                 rows="2"
+                title="Sólo se permiten letras, números y espacios en blanco"
                 placeholder="Sólo se permiten letras, números y espacios en blanco"
               >
               </textarea>
@@ -418,6 +433,7 @@ export default {
     };
   },
   methods: {
+    
   generateYears() {
     const current = new Date().getFullYear();
     const years = [];

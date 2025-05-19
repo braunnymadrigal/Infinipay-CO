@@ -38,7 +38,8 @@
               <td>
                 <div class="d-flex justify-content-center gap-2">
                   <button class="btn btn-success btn-sm"
-                          :disabled="numAssignedBenefits === maxBenefitsPerEmployee"
+                          :disabled="numAssignedBenefits === 
+                            maxBenefitsPerEmployee"
                           style="width: 70px;
                   border: transparent;
                   width: 70px"
@@ -107,7 +108,7 @@
           if (error.response) {
             const message = error.response.data?.message || "Error desconocido";
             alert(message);
-            this.$router.push('MyProfile');
+            this.$router.push('AssignedBenefitList');
           }
         }
       }

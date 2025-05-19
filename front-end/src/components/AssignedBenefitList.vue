@@ -136,7 +136,7 @@
           return benefit.formulaParamUno + " CRC";
         } else if (benefit.formulaType === 'porcentaje') {
           return benefit.formulaParamUno;
-        } else if (benefit.formulaType === 'API') {
+        } else if (benefit.formulaType === 'api') {
           try {
             const response = await axios.get(benefit.urlAPI, {
               params: {
@@ -146,10 +146,10 @@
               }
             });
 
-            return response.data.resultado ?? "Result not available";
+            return response.data.resultado ?? "Resultado no habilitado.";
           } catch (error) {
             console.error("API call error:", error);
-            return "Result not available.";
+            return "Resultado no habilitado.";
           }
         }
       },

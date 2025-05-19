@@ -118,7 +118,7 @@
         <div class="col-md-3 mb-4">
           <div class="card text-center" style="min-height: 182px; display: flex;
              flex-direction: column; justify-content: space-between;">
-            <img src="../assets/images/HomePage/Reviews/sylveon_review.jpg"
+            <img src="../assets/images/AboutUs/TeamMembers/mafer.jpg"
               alt="Persona 2" class="card-img-top rounded-circle mx-auto mt-3"
               style="width: 80px; height: 80px; object-fit: cover;">
             <div class="card-body">
