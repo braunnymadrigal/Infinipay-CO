@@ -57,7 +57,6 @@
 </template>
 
 <script>
-  import axios from "axios";
   export default {
     name: "AddAssignedBenefitListModal",
     props: {
@@ -85,19 +84,9 @@
     methods: {
       async assignBenefit(selectedAddBenefit) {
         try {
-          let jwtCookie = this.$cookies.get("jwt");
+          const response = await this.$api.assignBenefit(
+            selectedAddBenefit.benefitId);
 
-          const response = await axios.post(
-            "https://localhost:7275/api/AssignedBenefitList/AssignBenefit",
-            {
-              benefitId: selectedAddBenefit.benefitId
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${jwtCookie}`
-              }
-            }
-          );
           this.showPopup = false;
           console.log(response);
           window.location.href = "/AssignedBenefitList";

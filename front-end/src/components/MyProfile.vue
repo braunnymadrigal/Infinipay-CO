@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <CompanyHeader/>
 
   <div v-if="!showPopup" @click.stop 
@@ -286,7 +286,6 @@
 <script>
 import MainFooter from "./MainFooter.vue";
 import CompanyHeader from "./HeaderCompany.vue";
-import axios from "axios";
 export default {
   components: {
     MainFooter,
@@ -331,9 +330,7 @@ export default {
     },
 
     getProfile() {
-      let jwtCookie = this.$cookies.get('jwt');
-      axios.get("https://localhost:7275/api/Profile", 
-      { headers: {"Authorization" : `Bearer ${jwtCookie}`} })
+      this.$api.getProfile()
         .then(
           response => {
             this.showPopup = false;

@@ -74,7 +74,7 @@ namespace back_end.Controllers
     }
 
     [Authorize(Roles = "supervisor, administrador, sinRol")]
-    [HttpPost("AssignBenefit")]
+    [HttpPost]
     public async Task<ActionResult<bool>>
         AssignBenefit([FromBody] AssignBenefitRequest request)
     {

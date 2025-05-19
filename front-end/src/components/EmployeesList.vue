@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <HeaderCompany/>
 
   <div v-if="showPopup" @click.stop 
@@ -115,7 +115,6 @@
 <script>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
-import axios from "axios";
 
 export default {
   components: {
@@ -133,10 +132,8 @@ export default {
     };
   },
   methods: {
-    fetchEmployees() {
-      let jwtCookie = this.$cookies.get('jwt');
-      axios.get("https://localhost:7275/api/EmployeeList", 
-      { headers: { "Authorization" :  `Bearer ${jwtCookie}` }})
+    getEmployees() {
+      this.$api.getEmployees()
       .then(response => {
         this.showPopup = false;
         this.employees = response.data;
@@ -157,7 +154,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchEmployees();
+    this.getEmployees();
   }
 };
 </script>

@@ -115,7 +115,7 @@
       };
     },
     created() {
-      this.getBenefits();
+      this.getAssignedBenefits();
     },
     methods: {
       truncateString(str, maxLength) {
@@ -154,14 +154,9 @@
         }
       },
 
-      async getBenefits() {
+      async getAssignedBenefits() {
         try {
-          let jwtCookie = this.$cookies.get('jwt');
-
-          const benefitsUser =
-            await axios.get("https://localhost:7275/api/AssignedBenefitList", {
-              headers: { "Authorization": `Bearer ${jwtCookie}` }
-            });
+          const benefitsUser = await this.$api.getAssignedBenefits()
           this.showPopup = false;
           this.allBenefits = await Promise.all(
             benefitsUser.data.map(async (benefit) => {
@@ -188,5 +183,5 @@
   };
 </script>
 
-<style scoped>
+<style>
 </style>

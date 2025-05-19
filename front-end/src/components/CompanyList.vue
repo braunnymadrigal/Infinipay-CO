@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <HeaderCompany />
 
     <div class="container mt-5 mb-5">
@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import MainFooter from "./MainFooter.vue";
 import HeaderCompany from "./HeaderCompany.vue";
 
@@ -76,15 +75,15 @@ export default {
   },
   methods: {
     getCompanyList() {
-      axios
-        .get("https://localhost:7275/api/Company")
-        .then((response) => {
-          this.companies = response.data;
-          console.log(this.companies);
-        })
-        .catch((error) => {
-          console.error("Error fetching company list:", error);
-        });
+
+    this.$api.getCompanyList()
+    .then((response) => {
+      this.companies = response.data;
+      console.log(this.companies);
+    })
+    .catch((error) => {
+      console.error("Error fetching company list:", error);
+    });
     },
     truncateString(str, maxLength) {
       if (str.length > maxLength) {

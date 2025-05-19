@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container my-5">
     <div class="text-center mb-4">
       <img src="../assets/images/logo.png" alt="Company logo" class="img-fluid"
@@ -224,7 +224,6 @@
 </template> 
 
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
@@ -262,7 +261,7 @@ export default {
       return years;
     },
     submitForm() {
-      axios.post("https://localhost:7275/api/Company", {
+      const companyData = {
         legalName: this.legalName,
         description: this.description,
         idNumber: this.idNumber,
@@ -278,7 +277,9 @@ export default {
         creationDay: this.creationDay,
         creationMonth: this.creationMonth,
         creationYear: this.creationYear,
-      })
+      }
+
+      this.$api.registerCompany(companyData)
       .then(function(response) {
         console.log("Respuesta del servidor:", response.data);
         if (response.data === true) {

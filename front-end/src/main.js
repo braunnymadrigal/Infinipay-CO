@@ -1,4 +1,5 @@
-import { createApp } from "vue";
+﻿import { createApp } from "vue";
+import ApiPlugin from './plugins/api';
 import App from "./App.vue";
 import "primeicons/primeicons.css";
 
@@ -70,4 +71,8 @@ const router = createRouter({
   ],
 });
 
-createApp(App).use(router).use(VueCookies, { expires: "7d" }).mount("#app");
+const app = createApp(App);
+app.use(router);
+app.use(VueCookies, { expires: "7d" });
+app.use(ApiPlugin);
+app.mount('#app');

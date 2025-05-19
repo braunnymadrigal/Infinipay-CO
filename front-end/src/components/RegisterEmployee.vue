@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <HeaderCompany rol="profile.Rol" />
 
   <div v-if="showPopup" @click.stop 
@@ -386,7 +386,6 @@
 <script>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
-import axios from "axios";
 export default {
   components: {
     HeaderCompany,
@@ -443,12 +442,8 @@ export default {
     return years;
   },
 
-  submitForm() {
-    let jwtCookie = this.$cookies.get('jwt');
-
-    axios.post(
-      "https://localhost:7275/api/Employee",
-      {
+    submitForm() {
+     const employeeData = {
         firstName: this.firstName,
         secondName: this.secondName,
         firstLastName: this.firstLastName,
@@ -475,13 +470,9 @@ export default {
         creationDay: Number(this.creationDay),
         creationMonth: Number(this.creationMonth),
         creationYear: Number(this.creationYear),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${jwtCookie}`
-        }
-      }
-    )
+      };
+
+    this.$api.registerEmployee(employeeData)
     .then((response) => {
       this.showPopup = false;
       console.log("Respuesta del servidor:", response.data);
