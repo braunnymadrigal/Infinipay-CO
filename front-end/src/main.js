@@ -10,7 +10,6 @@ import HomePage from "./components/HomePage.vue";
 import AboutUs from "./components/AboutUs.vue";
 import RegisterEmployer from "./components/RegisterEmployer.vue";
 import RegisterCompany from "./components/RegisterCompany.vue";
-import EmployerProfile from "./components/EmployerProfile.vue";
 import RegisterEmployee from "./components/RegisterEmployee.vue";
 import LoginUser from "./components/LoginUser.vue";
 import RegisterBenefit from "./components/RegisterBenefit.vue";
