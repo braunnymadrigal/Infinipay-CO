@@ -38,11 +38,6 @@ const router = createRouter({
       component: RegisterCompany,
     },
     {
-      path: "/EmployerProfile",
-      name: "EmployerProfile",
-      component: EmployerProfile,
-    },
-    {
       path: "/RegisterEmployee",
       name: "RegisterEmployee",
       component: RegisterEmployee,
