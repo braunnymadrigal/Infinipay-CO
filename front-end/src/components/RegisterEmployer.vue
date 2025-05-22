@@ -261,7 +261,7 @@ export default {
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
       ],
       years: this.generateYears(),
-      showError: true,
+      showError: false,
       errorMessage: '',
     };
   },
