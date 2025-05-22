@@ -8,7 +8,7 @@ namespace back_end.Models
   {
     [Required]
     public string idNumber { get; set; }
-    
+
     [Required]
     public string phoneNumber { get; set; }
 
@@ -51,5 +51,8 @@ namespace back_end.Models
 
     [Required]
     public int birthYear { get; set; }
+    
+    [Required]
+    public string password { get; set; }
   }
 }

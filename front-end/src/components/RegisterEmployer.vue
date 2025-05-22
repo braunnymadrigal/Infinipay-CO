@@ -101,6 +101,16 @@
         </div>
 
         <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" v-model="password"
+                style="background-color: #FFF8F3;" id="password" required
+                maxlength="100"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&*!?])[A-Za-z\d@#$%&*!?]{10,100}$"
+                title="Debe tener mínino 10 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial (@#$%&*!?)."
+                placeholder="Debe tener mínino 10 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial (@#$%&*!?)." />
+        </div>
+
+        <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula física</label>
           <input type="text"
                  class="form-control"
@@ -235,6 +245,7 @@ export default {
       firstLastName: '',
       secondLastName: '',
       username: '',
+      password: '',
       address: {
         province: '',
         canton: '',
@@ -273,6 +284,7 @@ export default {
         firstLastName: this.firstLastName,
         secondLastName: this.secondLastName,
         username: this.username,
+        password: this.password,
         province: this.address.province,
         canton: this.address.canton,
         district: this.address.district,

@@ -168,10 +168,6 @@ namespace back_end.Repositories
     private void insertUser(EmployerModel employer, Guid personId
       , SqlTransaction transaction)
     {
-      var birthDate = new DateTime(employer.birthYear, employer.birthMonth
-        , employer.birthDay);
-      var rawPassword = employer.firstLastName + birthDate.ToString("ddMMyyyy")
-        + "!";
       var cmd = new SqlCommand(@"
         INSERT INTO [dbo].[Usuario]
         ([idPersonaFisica], [nickname], [contrasena])
@@ -180,7 +176,7 @@ namespace back_end.Repositories
       _connection, transaction);
       cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
       cmd.Parameters.AddWithValue("@nickname", employer.username);
-      cmd.Parameters.AddWithValue("@contrasena", rawPassword);
+      cmd.Parameters.AddWithValue("@contrasena", employer.password);
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: Usuario.");
     }
