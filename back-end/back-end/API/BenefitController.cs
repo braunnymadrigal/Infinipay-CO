@@ -4,7 +4,7 @@ using back_end.Domain;
 using back_end.Infraestructure;
 using System.Security.Cryptography.X509Certificates;
 
-namespace back_end.Controllers
+namespace back_end.API
 {
     [Route("api/[controller]")]
     [ApiController]

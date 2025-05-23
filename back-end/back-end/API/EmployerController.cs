@@ -3,7 +3,7 @@ using back_end.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace back_end.Controllers
+namespace back_end.API
 {
   public class ErrorResponse
   {
