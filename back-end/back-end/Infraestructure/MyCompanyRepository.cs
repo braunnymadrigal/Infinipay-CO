@@ -1,10 +1,10 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System;
 
-namespace back_end.Repositories
+namespace back_end.Infraestructure
 {
     public class MyCompanyRepository
     {

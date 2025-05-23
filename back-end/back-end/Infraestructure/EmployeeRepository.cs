@@ -1,10 +1,10 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 
-namespace back_end.Repositories
+namespace back_end.Infraestructure
 {
   public class EmployeeRepository
   {

@@ -1,5 +1,5 @@
-﻿using back_end.Repositories;
-using back_end.Models;
+﻿using back_end.Infraestructure;
+using back_end.Domain;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;

@@ -1,8 +1,8 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using Microsoft.Data.SqlClient;
-namespace back_end.Repositories
+namespace back_end.Infraestructure
 {
     public class BenefitRepository
     {

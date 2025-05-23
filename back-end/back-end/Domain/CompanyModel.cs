@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace back_end.Models
+namespace back_end.Domain
 {
   public class CompanyModel
   {

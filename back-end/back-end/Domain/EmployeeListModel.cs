@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-namespace back_end.Models
+namespace back_end.Domain
 {
   public class EmployeeListModel
   {

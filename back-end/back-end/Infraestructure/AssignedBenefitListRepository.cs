@@ -1,4 +1,4 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace back_end.Repositories
+namespace back_end.Infraestructure
 {
   public class AssignedBenefitListRepository
   {

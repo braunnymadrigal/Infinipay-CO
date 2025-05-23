@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using back_end.Models;
-using back_end.Repositories;
+using back_end.Domain;
+using back_end.Infraestructure;
 using System.Security.Cryptography.X509Certificates;
 
 namespace back_end.Controllers

@@ -1,4 +1,4 @@
-﻿using back_end.Models;
+﻿using back_end.Domain;
 
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,7 +9,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
 
-namespace back_end.Repositories
+namespace back_end.Infraestructure
 {
     public class LoginRepository
     {
