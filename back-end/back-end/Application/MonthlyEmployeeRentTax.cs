@@ -2,40 +2,49 @@
 {
   public class MonthlyEmployeeRentTax : IRentTax
   {
-    public decimal CalculateRentTax(decimal salary)
+    private const decimal TIER_1_LIMIT = 922_000m;
+    private const decimal TIER_2_LIMIT = 1_352_000m;
+    private const decimal TIER_3_LIMIT = 2_373_000m;
+    private const decimal TIER_4_LIMIT = 4_745_000m;
+
+    private const decimal TIER_2_RATE = 0.10m;
+    private const decimal TIER_3_RATE = 0.15m;
+    private const decimal TIER_4_RATE = 0.20m;
+    private const decimal TIER_5_RATE = 0.25m;
+
+    public decimal CalculateRentTax(decimal grossSalary)
     {
-      decimal tax = 0;
+      decimal calculatedTax;
 
-      switch (salary)
+      switch (grossSalary)
       {
-        case <= 922_000:
-          tax = 0;
+        case <= TIER_1_LIMIT:
+          calculatedTax = 0;
           break;
 
-        case <= 1_352_000:
-          tax = (salary - 922_000m) * 0.10m;
+        case <= TIER_2_LIMIT:
+          calculatedTax = (grossSalary - TIER_1_LIMIT) * TIER_2_RATE;
           break;
 
-        case <= 2_373_000:
-          tax = (1_352_000m - 922_000m) * 0.10m +
-                (salary - 1_352_000m) * 0.15m;
+        case <= TIER_3_LIMIT:
+          calculatedTax = (TIER_2_LIMIT - TIER_1_LIMIT) * TIER_2_RATE +
+                (grossSalary - TIER_2_LIMIT) * TIER_3_RATE;
           break;
 
-        case <= 4_745_000:
-          tax = (1_352_000m - 922_000m) * 0.10m +
-                (2_373_000m - 1_352_000m) * 0.15m +
-                (salary - 2_373_000m) * 0.20m;
+        case <= TIER_4_LIMIT:
+          calculatedTax = (TIER_2_LIMIT - TIER_1_LIMIT) * TIER_2_RATE +
+                (TIER_3_LIMIT - TIER_2_LIMIT) * TIER_3_RATE +
+                (grossSalary - TIER_3_LIMIT) * TIER_4_RATE;
           break;
 
         default:
-          tax = (1_352_000m - 922_000m) * 0.10m +
-                (2_373_000m - 1_352_000m) * 0.15m +
-                (4_745_000m - 2_373_000m) * 0.20m +
-                (salary - 4_745_000m) * 0.25m;
+          calculatedTax = (TIER_2_LIMIT - TIER_1_LIMIT) * TIER_2_RATE +
+                (TIER_3_LIMIT - TIER_2_LIMIT) * TIER_3_RATE +
+                (TIER_4_LIMIT - TIER_3_LIMIT) * TIER_4_RATE +
+                (grossSalary - TIER_4_LIMIT) * TIER_5_RATE;
           break;
       }
-
-      return Math.Round(tax, 2);
+      return Math.Round(calculatedTax, 2);
     }
   }
 }
