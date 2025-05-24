@@ -20,6 +20,7 @@ import AssignedBenefitList from "./components/AssignedBenefitList.vue";
 import EmployeesList from "./components/EmployeesList.vue";
 import CompanyList from "./components/CompanyList.vue";
 import BenefitDetails from "./components/BenefitDetails.vue";
+import ShowPayrollResults from "./components/ShowPayrollResults.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -62,6 +63,8 @@ const router = createRouter({
     },
     { path: "/EmployeesList", name: "EmployeesList", component: EmployeesList },
     { path: "/CompanyList", name: "CompanyList", component: CompanyList },
+    { path: "/ShowPayrollResults", name: "ShowPayrollResults"
+      , component: ShowPayrollResults },
   ],
 });
 
