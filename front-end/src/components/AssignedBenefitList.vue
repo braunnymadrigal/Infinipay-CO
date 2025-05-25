@@ -46,9 +46,9 @@
             <td colspan="5" class="text-center">No hay beneficios asignados.</td>
           </tr>
           <tr v-else v-for="benefit in assignedBenefits" :key="benefit.name">
-            <td>{{ benefit.benefitName }}</td>
-            <td>{{ truncateString(benefit.benefitDescription, 150) }}</td>
-            <td>{{ benefit.benefitMinTime + " meses" }}</td>
+            <td>{{ benefit.benefit.name }}</td>
+            <td>{{ truncateString(benefit.benefit.description, 150) }}</td>
+            <td>{{ benefit.benefit.minEmployeeTime + " meses" }}</td>
             <td>{{ benefit.formattedDeduction }}</td>
             <td>
               <div class="d-flex justify-content-center gap-2">
@@ -78,10 +78,17 @@
                               @close="showAssignedBenefitListModal = false" />
 
     <AddAssignedBenefitListModal v-if="showAddAssignedBenefitListModal"
-                                 :availableBenefits="availableBenefits"
-                                 :maxBenefitsPerEmployee="maxBenefitsPerEmployee"
-                                 :numAssignedBenefits="assignedBenefits.length"
-                                 @close="showAddAssignedBenefitListModal = false" />
+                                 :availableBenefits =
+                                  "availableBenefits"
+
+                                 :maxBenefitsPerEmployee =
+                                  "maxBenefitsPerEmployee"
+
+                                 :numAssignedBenefits =
+                                  "assignedBenefits.length"
+
+                                 @close="showAddAssignedBenefitListModal
+                                  = false" />
   </div>
   <MainFooter />
 
@@ -124,25 +131,28 @@
         }
         return str;
       },
+
       openAssignedBenefitListModal(benefit) {
         this.selectedBenefit = benefit;
         this.showAssignedBenefitListModal = true;
       },
+
       openAddAssignedBenefitListModal() {
         this.showAddAssignedBenefitListModal = true;
       },
+
       async formulaFormat(benefit) {
-        if (benefit.formulaType === 'montoFijo') {
-          return benefit.formulaParamUno + " CRC";
-        } else if (benefit.formulaType === 'porcentaje') {
-          return benefit.formulaParamUno;
-        } else if (benefit.formulaType === 'api') {
+        if (benefit.benefit.deductionType === 'montoFijo') {
+          return benefit.benefit.paramOneAPI + " CRC";
+        } else if (benefit.benefit.deductionType === 'porcentaje') {
+          return benefit.benefit.paramOneAPI;
+        } else if (benefit.benefit.deductionType === 'api') {
           try {
-            const response = await axios.get(benefit.urlAPI, {
+            const response = await axios.get(benefit.benefit.urlAPI, {
               params: {
-                param1: benefit.formulaParamUno,
-                param2: benefit.formulaParamDos,
-                param3: benefit.formulaParamTres
+                param1: benefit.benefit.formulaParamUno,
+                param2: benefit.benefit.formulaParamDos,
+                param3: benefit.benefit.formulaParamTres
               }
             });
 
@@ -156,7 +166,7 @@
 
       async getAssignedBenefits() {
         try {
-          const benefitsUser = await this.$api.getAssignedBenefits()
+          const benefitsUser = await this.$api.getAssignedBenefits();
           this.showPopup = false;
           this.allBenefits = await Promise.all(
             benefitsUser.data.map(async (benefit) => {
@@ -165,10 +175,10 @@
             })
           );
 
-          this.assignedBenefits = this.allBenefits.filter(b => b.asignado);
-          this.availableBenefits = this.allBenefits.filter(b => !b.asignado);
+          this.assignedBenefits = this.allBenefits.filter(b => b.assigned);
+          this.availableBenefits = this.allBenefits.filter(b => !b.assigned);
           this.maxBenefitsPerEmployee =
-            this.allBenefits[0].beneficiosPorEmpleado;
+            this.allBenefits[0].benefit.benefitsPerEmployee;
 
         } catch (error) {
           this.showPopup = true;

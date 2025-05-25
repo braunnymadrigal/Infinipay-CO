@@ -57,13 +57,13 @@ export default {
 			},
 
 			getAssignedBenefits() {
-				return axios.get(`${apiBaseURL}/AssignedBenefitList`, authHeader());
+				return axios.get(`${apiBaseURL}/EmployeeBenefit`, authHeader());
 			},
 
 			assignBenefit(benefitId) {
-				return axios.post(`${apiBaseURL}/AssignedBenefitList`,
+				return axios.post(`${apiBaseURL}/EmployeeBenefit`,
 					{
-						benefitId: benefitId
+						id: benefitId
 					},
 					authHeader()
 				);
