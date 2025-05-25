@@ -31,9 +31,9 @@
               </td>
             </tr>
             <tr v-else v-for="benefit in availableBenefits" :key="benefit.name">
-              <td>{{ benefit.benefitName }}</td>
-              <td>{{ benefit.benefitDescription }}</td>
-              <td>{{ benefit.benefitMinTime + " meses" }}</td>
+              <td>{{ benefit.benefit.name }}</td>
+              <td>{{ benefit.benefit.description }}</td>
+              <td>{{ benefit.benefit.minEmployeeTime + " meses" }}</td>
               <td>{{ benefit.formattedDeduction }}</td>
               <td>
                 <div class="d-flex justify-content-center gap-2">
@@ -84,13 +84,13 @@
     methods: {
       async assignBenefit(selectedAddBenefit) {
         try {
-          const response = await this.$api.assignBenefit(
-            selectedAddBenefit.benefitId);
+          await this.$api.assignBenefit(
+            selectedAddBenefit.benefit.id);
 
           this.showPopup = false;
-          console.log(response);
-          window.location.href = "/AssignedBenefitList";
-
+          console.log("Assigned 1");
+          this.$router.go(0);
+          console.log("Assigned 2");
         } catch (error) {
           this.showPopup = true;
           console.error("Error:", error);
