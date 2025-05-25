@@ -42,7 +42,7 @@ export default {
 			},
 
 			login(userCredential) {
-				return axios.post(`${apiBaseURL}/Login/Login`, {
+				return axios.post(`${apiBaseURL}/Login`, {
 					NicknameOrEmail: userCredential.userId,
 					Password: userCredential.userPassword
 				});
