@@ -1,23 +1,23 @@
 ﻿<template>
   <div class="modal-backdrop" @click.self="$emit('close')">
       <div class="modal-content" v-if="benefit">
-        <h3>{{ benefit.benefitName }}</h3>
-        <p>{{ benefit.benefitDescription }}</p>
-        <p><strong>Tiempo mínimo:</strong> {{ benefit.benefitMinTime }} 
+        <h3>{{ benefit.benefit.name }}</h3>
+        <p>{{ benefit.benefit.description }}</p>
+        <p><strong>Tiempo mínimo:</strong> {{ benefit.benefit.minEmployeeTime }} 
           meses</p>
         <p><strong>Deducción:</strong> {{ benefit.formattedDeduction }}</p>
         <div class="d-flex flex-column align-items-center"
              style="border: none">
           <p style="font-size: 15px">Creado por 
           <a :href="'/AssignedBenefitList'">
-            {{'@' + benefit.userCreator}}
+            {{'@' + benefit.benefit.userCreator}}
           </a>
-            el {{formatDate(benefit.creationDate)}}</p>
+            el {{formatDate(benefit.benefit.creationDate)}}</p>
           <p style="font-size: 15px" v-if="benefit.userModifier">
             Modificado por
             <a :href="'/AssignedBenefitList'">
-              {{'@' + benefit.userModifier}}
-            </a> el {{formatDate(benefit.modifiedDate)}}
+              {{'@' + benefit.benefit.userModifier}}
+            </a> el {{formatDate(benefit.benefit.modifiedDate)}}
           </p>
         </div>
       <button class="btn btn-secondary mt-3" @click="$emit('close')">
