@@ -15,12 +15,12 @@ namespace back_end.API
             {
                 var userClaims = identity.Claims;
                 var Nickname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-                var PersonaId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+                var PersonId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
                 var Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value;
-                if (Nickname != null && PersonaId != null && Role != null)
+                if (Nickname != null && PersonId != null && Role != null)
                 {
                     userModel.Nickname = Nickname;
-                    userModel.PersonaId = PersonaId;
+                    userModel.PersonId = PersonId;
                     userModel.Role = Role;
                 }
             }

@@ -1,4 +1,4 @@
-﻿using back_end.Infraestructure;
+﻿using back_end.Application;
 using back_end.Domain;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,22 +11,22 @@ namespace back_end.API
     public class LoginController : GeneralController
     {
         private readonly IConfiguration config;
-        private readonly LoginRepository loginRepository;
+        private readonly Login login;
 
         public LoginController(IConfiguration config)
         {
             this.config = config;
-            loginRepository = new LoginRepository(this.config);
+            login = new Login(this.config);
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromBody] LoginUserModel loginUserModel)
         {
-            IActionResult iActionResult = BadRequest("UNKNOWN ERROR");
+            IActionResult iActionResult = BadRequest("Uknown error.");
             try
             {
-                var token = loginRepository.Login(loginUserModel);
+                var token = login.LogUser(loginUserModel);
                 iActionResult = Ok(token);
             } catch (Exception e)
             {

@@ -160,7 +160,7 @@ export default {
         .catch(
           error => {
             if (error.response) {
-              if (error.response.data == "LOGIN IS FORBIDDEN TO YOU") {
+              if (error.response.data == "Too many failed attempts.") {
                 this.showLoginForbidden = true;
               } else {
                 this.showWrongPassword = true;

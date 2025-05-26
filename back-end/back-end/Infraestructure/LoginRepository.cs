@@ -1,238 +1,153 @@
-﻿using back_end.Domain;
+﻿using System.Data;
+using back_end.Domain;
 
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Infraestructure
 {
-    public class LoginRepository
+    public class LoginRepository : GeneralRepository
     {
-        private readonly IConfiguration _config;
-        private readonly SqlConnection _connection;
-        private readonly string? _pathConnection;
+        public LoginRepository() : base() { }
 
-        public LoginRepository(IConfiguration config)
+        public UserModel GetUserByNickname(string nickname)
         {
-            var builder = WebApplication.CreateBuilder();
-            _pathConnection = builder.Configuration.GetConnectionString("InfinipayDBContext");
-            _connection = new SqlConnection(_pathConnection);
-            _config = config;
+            var command = CreateUserByNicknameCommand(nickname);
+            var dataTable = ExecuteQuery(command);
+            var user = TransformDataTableIntoUserModel(dataTable);
+            return user;
         }
 
-        public string Login(LoginUserModel loginUserModel)
+        public UserModel GetUserByEmail(string email)
         {
-            UserModel userModel = Authenticate(loginUserModel);
-            return ( Generate(userModel) ); 
+            var command = CreateUserByEmailCommand(email);
+            var dataTable = ExecuteQuery(command);
+            var user = TransformDataTableIntoUserModel(dataTable);
+            return user;
         }
 
-        private string Generate(UserModel userModel)
+        public void UpdateExactBlockDateInUser(string personId)
         {
-            var jwtConfigKey = _config["JwtConfig:Key"];
-            if (jwtConfigKey == null)
+            var statement = "UPDATE [Usuario] SET [fechaExactaBloqueo] = SYSDATETIME() WHERE [idPersonaFisica] = @personaId;";
+            var command = new SqlCommand(statement, connection);
+            command.Parameters.AddWithValue("@personaId", personId);
+            ExecuteCommand(command);
+        }
+
+        public void UpdateNumAttemptsInUser(string personId, int numAttempts)
+        {
+            var statement = "UPDATE [Usuario] SET [numIntentos] = @numAttempts WHERE [idPersonaFisica] = @personaId;";
+            var command = new SqlCommand(statement, connection);
+            command.Parameters.AddWithValue("@personaId", personId);
+            command.Parameters.AddWithValue("@numAttempts", numAttempts);
+            ExecuteCommand(command);
+        }
+
+        private UserModel TransformDataTableIntoUserModel(DataTable dataTable)
+        {
+            if (dataTable.Rows.Count <= 0)
             {
-                throw new Exception("'JwtConfig:Key' IS MISSING");
+                throw new Exception("User not found.");
             }
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
-            var claims = new[]
-            {
-            new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
-            new Claim(ClaimTypes.Sid, userModel.PersonaId),
-            new Claim(ClaimTypes.Role, userModel.Role),
-            };
-            var token = new JwtSecurityToken
-            (
-                _config["JwtConfig:Issuer"],
-                _config["JwtConfig:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials
-            );
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+            var dataRow = dataTable.Rows[0];
+            var personId = Convert.ToString(dataRow["personaId"]);
+            var nickname = Convert.ToString(dataRow["usuarioNickname"]);
+            var password = (byte[])(dataRow["usuarioContrasena"]);
+            var numAttempts = Convert.ToString(dataRow["usuarioNumIntentos"]);
+            var lastBlock = Convert.ToString(dataRow["usuarioFechaExactaBloqueo"]);
+            var empleadoId = Convert.ToString(dataRow["empleadoId"]);
+            var role = Convert.ToString(dataRow["empleadoRol"]);
+            var empleadorId = Convert.ToString(dataRow["empleadorId"]);
 
-        private UserModel Authenticate(LoginUserModel loginUserModel)
-        {
-            UserModel userModel = new UserModel();
-            var nicknameOrEmail = (loginUserModel.NicknameOrEmail).ToLower();
-            var inputBytes = Encoding.UTF8.GetBytes(loginUserModel.Password);
-            var password = SHA512.HashData(inputBytes);
-            string consulta = "";
-            bool okPassword = false;
-            if (nicknameOrEmail.Contains("@"))
+            if (personId == null || nickname == null || password == null
+                || numAttempts == null || lastBlock == null || empleadoId == null 
+                || role == null || empleadorId == null)
             {
-                consulta = $"SELECT [id], [correoElectronico] FROM [Persona] WHERE [correoElectronico] = '{nicknameOrEmail}';";
-                userModel = ObtenerTablaPersona(userModel, consulta);
-                if (userModel.Nickname == "")
+                throw new Exception("User not found or uncomplete.");
+            }
+            var userModel = new UserModel();
+            userModel.Nickname = nickname;
+            userModel.Password = password;
+            userModel.PersonId = personId;
+            userModel.Role = role;
+            if (numAttempts != "")
+            {
+                userModel.NumAttempts = Int32.Parse(numAttempts);
+            }
+            if (lastBlock != "")
+            {
+                userModel.LastBlock = DateTime.Parse(lastBlock);
+            }
+            if (role == "")
+            {
+                if (empleadoId == "")
                 {
-                    throw new Exception("USER NOT FOUND BY EMAIL");
-                }
-                consulta = $"SELECT * FROM [Usuario] WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
-            }
-            else
-            {
-                consulta = $"SELECT * FROM [Usuario] WHERE [nickname]='{nicknameOrEmail}';";
-            }
-            userModel = ObtenerTablaUsuario(userModel, consulta);
-            if (userModel.Nickname == "" || userModel.Password == null)
-            {
-                throw new Exception("USER NOT FOUND BY NICKNAME");
-            }
-            bool isItPossibleToLogin = IsItPossibleToLogin(userModel);
-            if (!isItPossibleToLogin)
-            {
-                throw new Exception("LOGIN IS FORBIDDEN TO YOU");
-            }
-            okPassword = password.SequenceEqual(userModel.Password);
-            if (!okPassword)
-            {
-                userModel = DoInCaseNotOkPassword(userModel);
-                throw new Exception("WRONG PASSWORD");
-            }
-            userModel = DoInCaseOkPassword(userModel);
-            return userModel;
-        }
-
-        private UserModel DoInCaseOkPassword(UserModel userModel)
-        {
-            string query = $"SELECT [rol] FROM [Empleado] WHERE [idPersonaFisica]='{userModel.PersonaId}';";
-            userModel = ObtenerRol(userModel, query);
-            query = $"UPDATE [Usuario] SET [numIntentos] = 0 WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
-            MakeAnUpdate(query);
-            return userModel;
-        }
-
-        private UserModel DoInCaseNotOkPassword(UserModel userModel)
-        {
-            userModel.Nickname = "";
-            int numAttempts = userModel.NumAttempts + 1;
-            string query = $"UPDATE [Usuario] SET [numIntentos] = {numAttempts} WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
-            MakeAnUpdate(query);
-            if (numAttempts >= 5)
-            {
-                query = $"UPDATE [Usuario] SET [fechaExactaBloqueo] = SYSDATETIME() WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
-                MakeAnUpdate(query);
-            }
-            return userModel;
-        }
-
-        private bool IsItPossibleToLogin(UserModel userModel)
-        {
-            bool isPossible = true;
-            if (userModel.NumAttempts >= 5)
-            {
-                if (userModel.LastBlock == DateTime.MinValue)
-                {
-                    string query = $"UPDATE [Usuario] SET [fechaExactaBloqueo] = SYSDATETIME() WHERE [idPersonaFisica] = '{userModel.PersonaId}';";
-                    MakeAnUpdate(query);
-                    isPossible = false;
+                    if (empleadorId == "")
+                    {
+                        userModel.Role = "superAdmin";
+                    }
+                    else
+                    {
+                        userModel.Role = "empleador";
+                    }
                 }
                 else
                 {
-                    DateTime currentDateTime = DateTime.Now;
-                    DateTime lastBlockPlusTen = (userModel.LastBlock).AddMinutes(10);
-                    int resultOfDateTimeComparison = DateTime.Compare(lastBlockPlusTen, currentDateTime);
-                    if (resultOfDateTimeComparison >= 0)
-                    {
-                        isPossible = false;
-                    }
-                }
-            }
-            return isPossible;
-        }
-
-        private void MakeAnUpdate(string query)
-        {
-            SqlCommand command = new SqlCommand(query, _connection);
-            _connection.Open();
-            bool success = command.ExecuteNonQuery() >= 1;
-            _connection.Close();
-            if (!success)
-            {
-                throw new Exception("AN SQL UPDATE WAS NOT POSSIBLE");
-            }
-        }
-
-        private UserModel ObtenerRol(UserModel userModel, string consulta)
-        {
-            userModel.Role = "empleador";
-            DataTable tablaResultado = CrearTablaConsulta(consulta);
-            if (tablaResultado.Rows.Count > 0)
-            {
-                userModel.Role = "empleado";
-                DataRow filaResultado = tablaResultado.Rows[0];
-                var tableRole = Convert.ToString(filaResultado["rol"]);
-                if (tableRole != null && tableRole != "")
-                {
-                    userModel.Role = tableRole;
+                    userModel.Role = "empleado";
                 }
             }
             return userModel;
         }
 
-        private UserModel ObtenerTablaUsuario(UserModel userModel, string consulta)
+        private SqlCommand CreateUserByNicknameCommand(string nickname)
         {
-            DataTable tablaResultado = CrearTablaConsulta(consulta);
-            if (tablaResultado.Rows.Count > 0)
-            {
-                DataRow filaResultado = tablaResultado.Rows[0];
-                var nickname = Convert.ToString(filaResultado["nickname"]);
-                var password = (byte[])(filaResultado["contrasena"]);
-                var personaId = Convert.ToString(filaResultado["idPersonaFisica"]);
-                var numAttempts = Convert.ToString(filaResultado["numIntentos"]);
-                var lastBlock = Convert.ToString(filaResultado["fechaExactaBloqueo"]);
-                if (nickname != null && password != null && personaId != null 
-                    && numAttempts != null && lastBlock != null)
-                {
-                    userModel.Nickname = nickname;
-                    userModel.Password = password;
-                    userModel.PersonaId = personaId;
-                    if (numAttempts != "")
-                    {
-                        userModel.NumAttempts= Int32.Parse(numAttempts);
-                    }
-                    if (lastBlock != "")
-                    {
-                        userModel.LastBlock = DateTime.Parse(lastBlock);
-                    }
-                    
-                }
-            }
-            return userModel;
+            var query = CreateUserByNicknameQuery();
+            var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@nickname", nickname);
+            return command;
         }
 
-        private UserModel ObtenerTablaPersona(UserModel userModel, string consulta)
+        private SqlCommand CreateUserByEmailCommand(string email)
         {
-            DataTable tablaResultado = CrearTablaConsulta(consulta);
-            if (tablaResultado.Rows.Count > 0)
-            {
-                DataRow filaResultado = tablaResultado.Rows[0];
-                var email = Convert.ToString(filaResultado["correoElectronico"]);
-                var id = Convert.ToString(filaResultado["id"]);
-                if (email != null && id != null)
-                {
-                    userModel.Nickname = email;
-                    userModel.PersonaId = id;
-                }
-            }
-            return userModel;
+            var query = CreateUserByEmailQuery();
+            var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@email", email);
+            return command;
         }
 
-        private DataTable CrearTablaConsulta(string consulta)
+        private string CreateUserByNicknameQuery()
         {
-            SqlCommand comandoParaConsulta = new SqlCommand(consulta, _connection);
-            SqlDataAdapter adaptadorParaTabla = new SqlDataAdapter(comandoParaConsulta);
-            DataTable consultaFormatoTabla = new DataTable();
-            _connection.Open();
-            adaptadorParaTabla.Fill(consultaFormatoTabla);
-            _connection.Close();
-            return consultaFormatoTabla;
+            var query = "SELECT p.id as personaId, "
+	                    + "u.nickname as usuarioNickname, "
+	                    + "u.contrasena as usuarioContrasena, "
+	                    + "u.numIntentos as usuarioNumIntentos, "
+	                    + "u.fechaExactaBloqueo as usuarioFechaExactaBloqueo, "
+	                    + "e.idPersonaFisica as empleadoId, "
+	                    + "e.rol as empleadoRol,"
+	                    + "o.idPersonaFisica as empleadorId "
+                        + "FROM [Persona] p "
+                        + "FULL OUTER JOIN [Usuario] u on u.idPersonaFisica = p.id "
+                        + "FULL OUTER JOIN [Empleado] e on e.idPersonaFisica = p.id "
+                        + "FULL OUTER JOIN [Empleador] o on o.idPersonaFisica = p.id "
+                        + "WHERE u.nickname = @nickname;";
+            return query;
+        }
+
+        private string CreateUserByEmailQuery()
+        {
+            var query = "SELECT p.id as personaId, "
+                        + "u.nickname as usuarioNickname, "
+                        + "u.contrasena as usuarioContrasena, "
+                        + "u.numIntentos as usuarioNumIntentos, "
+                        + "u.fechaExactaBloqueo as usuarioFechaExactaBloqueo, "
+                        + "e.idPersonaFisica as empleadoId, "
+                        + "e.rol as empleadoRol, "
+                        + "o.idPersonaFisica as empleadorId "
+                        + "FROM [Persona] p "
+                        + "FULL OUTER JOIN [Usuario] u on u.idPersonaFisica = p.id "
+                        + "FULL OUTER JOIN [Empleado] e on e.idPersonaFisica = p.id "
+                        + "FULL OUTER JOIN [Empleador] o on o.idPersonaFisica = p.id "
+                        + "WHERE p.correoElectronico = @email; ";
+            return query;
         }
     }
 }

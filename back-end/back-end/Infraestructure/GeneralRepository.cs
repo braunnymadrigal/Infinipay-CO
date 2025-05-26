@@ -1,13 +1,11 @@
 ﻿using System.Data;
-using System.Data.Common;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 
 namespace back_end.Infraestructure
 {
     public abstract class GeneralRepository
     {
-        private readonly SqlConnection connection;
+        protected readonly SqlConnection connection;
         private readonly string? connectionString;
 
         protected GeneralRepository()
@@ -17,19 +15,18 @@ namespace back_end.Infraestructure
             connection = new SqlConnection(connectionString);
         }
 
-        protected DataTable ExecuteQuery(string statement)
+        protected DataTable ExecuteQuery(SqlCommand command)
         {
-            using var command = new SqlCommand(statement, connection);
             var adapter = new SqlDataAdapter(command);
             var table = new DataTable();
             connection.Open();
             adapter.Fill(table);
+            connection.Close();
             return table;
         }
 
-        protected void ExecuteCommand(string statement)
+        protected void ExecuteCommand(SqlCommand command)
         {
-            using var command = new SqlCommand(statement, connection);
             connection.Open();
             bool success = command.ExecuteNonQuery() >= 1;
             connection.Close();
