@@ -165,7 +165,6 @@
         </fieldset>
 
         <div class="d-flex justify-content-between mt-4">
-          <!-- <router-link to="/BenefitList"> -->
           <button
             type="submit"
             class="btn btn-success"
@@ -173,7 +172,6 @@
           >
             Guardar
           </button>
-          <!-- </router-link> -->
 
           <router-link to="/BenefitList" class="btn btn-danger">
             Cancelar</router-link
