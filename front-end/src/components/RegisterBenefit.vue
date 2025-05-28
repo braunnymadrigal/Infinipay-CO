@@ -16,7 +16,7 @@
             class="form-control"
             id="BenefitName"
             style="background-color: #fff8f3"
-            v-model="newBenefit.name"
+            v-model="newBenefitForm.name"
             required
             maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
@@ -31,7 +31,7 @@
           <textarea
             class="form-control"
             style="background-color: #fff8f3"
-            v-model="newBenefit.description"
+            v-model="newBenefitForm.description"
             id="BenefitDescription"
             maxlength="300"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
@@ -43,44 +43,19 @@
           <label for="BenefitAppliesTo" class="form-label"
             >Empleados elegibles</label
           >
-          <div>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                class="me-2"
-                :checked="isAllSelected"
-                @change="toggleAll"
-              />
-              Todos
-            </label>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                value="Semanal"
-                v-model="newBenefit.appliesTo"
-                class="me-2"
-              />
-              Semanal
-            </label>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                value="Quincenal"
-                v-model="newBenefit.appliesTo"
-                class="me-2"
-              />
-              Quincenal
-            </label>
-            <label class="d-block">
-              <input
-                type="checkbox"
-                value="Mensual"
-                v-model="newBenefit.appliesTo"
-                class="me-2"
-              />
-              Mensual
-            </label>
-          </div>
+          <select
+            id="BenefitAppliesTo"
+            class="form-select"
+            style="background-color: #fff8f3"
+            v-model="newBenefitForm.elegibleEmployees"
+            required
+          >
+            <option disabled value="">Seleccione una opción</option>
+            <option value="todos">Todos</option>
+            <option value="semanal">Semanal</option>
+            <option value="quincenal">Quincenal</option>
+            <option value="mensual">Mensual</option>
+          </select>
         </div>
 
         <div class="mb-3">
@@ -92,9 +67,10 @@
             class="form-control"
             id="BenefitMinMonths"
             style="background-color: #fff8f3"
-            v-model.number="newBenefit.minMonths"
+            v-model.number="newBenefitForm.minEmployeeTime"
             required
             min="0"
+            step="0.01"
           />
         </div>
 
@@ -114,7 +90,7 @@
               id="BenefitTypeFormula"
               class="form-select"
               style="background-color: #fff8f3"
-              v-model="newBenefit.typeFormula"
+              v-model="newBenefitForm.deductionType"
               required
             >
               <option value="Porcentaje">Porcentaje</option>
@@ -122,21 +98,72 @@
             </select>
           </div>
 
-          <div class="mb-3">
-            <label for="BenefitFormula" class="form-label">Fórmula</label>
+          <div
+            v-if="
+              newBenefitForm.deductionType === 'Porcentaje' ||
+              newBenefitForm.deductionType === 'Monto fijo'
+            "
+            class="mb-3"
+          >
+            <label for="BenefitFormula" class="form-label">Deducción</label>
             <input
               type="number"
               class="form-control"
               id="BenefitFormula"
               style="background-color: #fff8f3"
-              v-model="newBenefit.formula"
+              v-model="newBenefitForm.paramOneAPI"
               required
               min="0"
+            />
+          </div>
+
+          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+            <label for="ApiURL" class="form-label">URL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="ApiURL"
+              style="background-color: #fff8f3"
+              v-model="newBenefitForm.urlAPI"
+            />
+          </div>
+
+          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+            <label for="Parameter1" class="form-label">Parametro 1</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Parameter1"
+              style="background-color: #fff8f3"
+              v-model="newBenefitForm.paramOneAPI"
+            />
+          </div>
+
+          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+            <label for="Parameter2" class="form-label">Parametro 2</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Parameter2"
+              style="background-color: #fff8f3"
+              v-model="newBenefitForm.paramTwoAPI"
+            />
+          </div>
+
+          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+            <label for="Parameter3" class="form-label">Parametro 3</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Parameter3"
+              style="background-color: #fff8f3"
+              v-model="newBenefitForm.paramThreeAPI"
             />
           </div>
         </fieldset>
 
         <div class="d-flex justify-content-between mt-4">
+          <!-- <router-link to="/BenefitList"> -->
           <button
             type="submit"
             class="btn btn-success"
@@ -144,6 +171,7 @@
           >
             Guardar
           </button>
+          <!-- </router-link> -->
 
           <router-link to="/BenefitList" class="btn btn-danger">
             Cancelar</router-link
@@ -156,74 +184,76 @@
   <MainFooter />
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
 
-const newBenefit = ref({
-  name: "",
-  description: "",
-  appliesTo: [],
-  minMonths: 0,
-  formula: 0,
-  typeFormula: "",
-});
+export default {
+  components: {
+    HeaderCompany,
+    MainFooter,
+  },
+  data() {
+    return {
+      newBenefitForm: {
+        name: "",
+        description: "",
+        elegibleEmployees: "",
+        minEmployeeTime: 0,
+        deductionType: "",
+        paramOneAPI: 0,
+        paramTwoAPI: null,
+        paramThreeAPI: null,
+        urlAPI: "",
+      },
+    };
+  },
+  methods: {
+    submitForm() {
+      const form = this.newBenefitForm;
 
-function submitForm() {
-  if (
-    newBenefit.value.name === "" ||
-    newBenefit.value.description === "" ||
-    newBenefit.value.appliesTo.length === 0 ||
-    newBenefit.value.minMonths <= 0 ||
-    newBenefit.value.formula <= 0 ||
-    newBenefit.value.typeFormula === ""
-  ) {
-    alert("Por favor, completa todos los campos requeridos.");
-    return;
-  }
+      if (
+        form.name.trim() === "" ||
+        form.description.trim() === "" ||
+        form.elegibleEmployees === "" ||
+        form.deductionType === "" ||
+        form.paramOneAPI === null
+      ) {
+        alert("Por favor, completa todos los campos requeridos.");
+        return;
+      }
 
-  console.table(
-    "Formulario enviado:",
-    JSON.parse(JSON.stringify(newBenefit.value))
-  );
-
-  newBenefit.value.name = "";
-  newBenefit.value.description = "";
-  newBenefit.value.appliesTo = [];
-  newBenefit.value.minMonths = 0;
-  newBenefit.value.formula = 0;
-  newBenefit.value.typeFormula = "";
-
-  // createBenefit(newBenefit.value);
-}
-
-const allOptions = ["Semanal", "Quincenal", "Mensual"];
-
-const isAllSelected = computed(() =>
-  allOptions.every((opt) => newBenefit.value.appliesTo.includes(opt))
-);
-
-function toggleAll(event) {
-  if (event.target.checked) {
-    newBenefit.value.appliesTo = [...allOptions];
-  } else {
-    newBenefit.value.appliesTo = [];
-  }
-}
-
-// function createBenefit(benefit) {
-//   axios
-//     .post("http://localhost:7271/api/benefits", benefit)
-//     .then((response) => {
-//       console.log("Beneficio creado:", response.data);
-//       alert("Beneficio creado exitosamente.");
-//     })
-//     .catch((error) => {
-//       console.error("Error al crear el beneficio:", error);
-//       alert("Error al crear el beneficio. Inténtalo de nuevo.");
-//     });
-// }
+      const newBenefit = {
+        benefit: {
+          name: form.name,
+          description: form.description,
+          elegibleEmployees: form.elegibleEmployees,
+          minEmployeeTime: form.minEmployeeTime,
+          deductionType: form.deductionType,
+          urlAPI: form.urlAPI ? String(form.urlAPI) : null,
+          paramOneAPI: String(form.paramOneAPI),
+          paramTwoAPI:
+            form.paramTwoAPI !== null ? String(form.paramTwoAPI) : null,
+          paramThreeAPI:
+            form.paramThreeAPI !== null ? String(form.paramThreeAPI) : null,
+        },
+      };
+      console.log("Nuevo beneficio:", newBenefit);
+      this.$api
+        .createCompanyBenefit(newBenefit)
+        .then(() => {
+          alert("Beneficio creado exitosamente.");
+          this.$router.push("/BenefitList");
+        })
+        .catch((error) => {
+          console.error("Error al crear el beneficio:", error);
+          alert(
+            "Hubo un error al crear el beneficio. Por favor, inténtalo de nuevo."
+          );
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

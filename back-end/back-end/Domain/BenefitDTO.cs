@@ -4,7 +4,6 @@ namespace back_end.Models
 {
   public class BenefitDTO
   {
-    [Required]
     public Guid id { get; set; }
     [Required]
     public string name { get; set; }
@@ -21,14 +20,11 @@ namespace back_end.Models
     [Required]
     public string deductionType { get; set; }
 
-    [Required]
-    public string userCreator { get; set; }
-
-    [Required]
     public DateTime creationDate { get; set; }
 
-    [Required]
     public short benefitsPerEmployee {  get; set; }
+
+    public string? userCreator { get; set; }
 
     public string? userModifier { get; set; }
 
