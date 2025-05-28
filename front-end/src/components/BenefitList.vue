@@ -30,17 +30,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(benefit, index) of benefits" :key="index">
-          <td>{{ benefit.name }}</td>
-          <td>{{ truncateString(benefit.description, 150) }}</td>
-          <td>{{ benefit.minMonths + " meses" }}</td>
-          <td>{{ benefit.appliesTo.join(", ") }}</td>
-          <td>{{ benefit.formula }}</td>
+        <tr v-for="(benefit, index) in benefits" :key="index">
+          <td>{{ benefit.benefit.name }}</td>
+          <td>{{ truncateString(benefit.benefit.description, 150) }}</td>
+          <td>{{ benefit.benefit.minEmployeeTime + " meses" }}</td>
+          <td>{{ benefit.benefit.elegibleEmployees }}</td>
+          <td>{{ benefit.benefit.paramOneAPI }}</td>
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button
                 class="btn btn-danger btn-sm"
-                style="width: 70px; border: transparent; width: 70px"
+                style="width: 70px; border: transparent"
               >
                 Eliminar
               </button>
@@ -66,57 +66,42 @@
   <MainFooter />
 </template>
 
-<script setup>
+<script>
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
-import { ref } from "vue";
-// import { ref, onMounted } from "vue";
 
-function truncateString(str, maxLength) {
-  if (str.length > maxLength) {
-    return str.substring(0, maxLength) + "...";
-  }
-  return str;
-}
-
-// onMounted() {
-//   // Fetch data from the API or perform any other setup tasks here
-//   // For example, you can use axios to fetch data from your backend
-//   // axios.get('/api/benefits').then(response => {
-//   //   benefits.value = response.data;
-//   // });
-// }
-
-// Temporary data for benefits
-const benefits = ref([
-  {
-    id: 1,
-    name: "Asociacion solidarista",
-    description:
-      "Como empresa, valoramos profundamente el bienestar de nuestros colaboradores y reconocemos el papel fundamental que desempeñan en nuestro éxito.",
-    minMonths: 6,
-    appliesTo: ["Quincenal", "Mensual"],
-    formula: "40%",
+export default {
+  name: "BenefitList",
+  components: {
+    HeaderCompany,
+    MainFooter,
   },
-  {
-    id: 2,
-    name: "Gimnasio",
-    description:
-      "En nuestra empresa, creemos firmemente en la importancia del equilibrio...",
-    minMonths: 3,
-    appliesTo: ["Mensual", "Quincenal"],
-    formula: "25 000 CRC",
+  data() {
+    return {
+      benefits: [],
+    };
   },
-  {
-    id: 3,
-    name: "Plan dental",
-    description:
-      "En nuestra empresa, entendemos que una buena salud bucodental...",
-    minMonths: 12,
-    appliesTo: ["Quincenal", "Mensual", "Semanal"],
-    formula: "60 000 CRC",
+  methods: {
+    truncateString(str, maxLength) {
+      if (!str) return "";
+      if (str.length > maxLength) {
+        return str.substring(0, maxLength) + "...";
+      }
+      return str;
+    },
+    async getBenefits() {
+      try {
+        const response = await this.$api.getCompanyBenefits();
+        this.benefits = response.data;
+      } catch (error) {
+        console.error("Error obteniendo los beneficios:", error);
+      }
+    },
   },
-]);
+  mounted() {
+    this.getBenefits();
+  },
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped lang="scss"></style>
