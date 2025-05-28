@@ -93,15 +93,16 @@
               v-model="newBenefitForm.deductionType"
               required
             >
-              <option value="Porcentaje">Porcentaje</option>
-              <option value="Monto fijo">Monto fijo</option>
+              <option value="porcentaje">Porcentaje</option>
+              <option value="montoFijo">Monto fijo</option>
+              <option value="api">API</option>
             </select>
           </div>
 
           <div
             v-if="
-              newBenefitForm.deductionType === 'Porcentaje' ||
-              newBenefitForm.deductionType === 'Monto fijo'
+              newBenefitForm.deductionType === 'porcentaje' ||
+              newBenefitForm.deductionType === 'montoFijo'
             "
             class="mb-3"
           >
@@ -117,7 +118,7 @@
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
             <label for="ApiURL" class="form-label">URL</label>
             <input
               type="text"
@@ -128,7 +129,7 @@
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
             <label for="Parameter1" class="form-label">Parametro 1</label>
             <input
               type="text"
@@ -139,7 +140,7 @@
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
             <label for="Parameter2" class="form-label">Parametro 2</label>
             <input
               type="text"
@@ -150,7 +151,7 @@
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'Api'" class="mb-3">
+          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
             <label for="Parameter3" class="form-label">Parametro 3</label>
             <input
               type="text"
@@ -163,7 +164,6 @@
         </fieldset>
 
         <div class="d-flex justify-content-between mt-4">
-          <!-- <router-link to="/BenefitList"> -->
           <button
             type="submit"
             class="btn btn-success"
@@ -171,7 +171,6 @@
           >
             Guardar
           </button>
-          <!-- </router-link> -->
 
           <router-link to="/BenefitList" class="btn btn-danger">
             Cancelar</router-link
