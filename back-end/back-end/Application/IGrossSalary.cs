@@ -4,5 +4,6 @@
     {
         void SetDateRange(DateOnly startDate, DateOnly endDate);
         void CheckDateRangeCorrectness();
+        void SetNumberOfWorkedDays();
     }
 }

@@ -24,9 +24,7 @@ namespace back_end.API
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var id = GetUser().PersonId;
-                grossSalary.SetDateRange(startDate, endDate);
-                grossSalary.CheckDateRangeCorrectness();
+                CallGrossSalaryMethods(startDate, endDate);
                 iActionResult = Ok();
             }
             catch (Exception e)
@@ -34,6 +32,14 @@ namespace back_end.API
                 iActionResult = NotFound(e.Message);
             }
             return iActionResult;
+        }
+
+        private void CallGrossSalaryMethods(DateOnly startDate, DateOnly endDate)
+        {
+            var id = GetUser().PersonId;
+            grossSalary.SetDateRange(startDate, endDate);
+            grossSalary.CheckDateRangeCorrectness();
+            grossSalary.SetNumberOfWorkedDays();
         }
     }
 }
