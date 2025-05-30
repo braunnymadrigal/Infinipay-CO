@@ -5,7 +5,7 @@ namespace back_end.Infraestructure
 {
     public abstract class AbstractConnectionRepository
     {
-        protected readonly SqlConnection connection;
+        public readonly SqlConnection connection;
         protected readonly string connectionString;
 
         protected AbstractConnectionRepository()
