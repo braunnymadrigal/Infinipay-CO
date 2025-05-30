@@ -7,6 +7,10 @@ namespace back_end.Infraestructure
 {
     public class LoginRepository : ILoginRepository
     {
+        private const string ROLE_FOR_EMPLOYEE = "empleado";
+        private const string ROLE_FOR_EMPLOYER = "empleador";
+        private const string ROLE_FOR_SYSTEM_ADMINISTRATOR = "superAdmin";
+
         private readonly AbstractConnectionRepository connectionRepository;
         private readonly IUtilityRepository utilityRepository;
 
@@ -63,22 +67,22 @@ namespace back_end.Infraestructure
             userModel.Role = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadoRol"]);
             var numAttempts = utilityRepository.ConvertDatabaseValueToString(dataRow["usuarioNumIntentos"]);
             var lastBlock = utilityRepository.ConvertDatabaseValueToString(dataRow["usuarioFechaExactaBloqueo"]);
-            var empleadoId = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadoId"]);
-            var empleadorId = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadorId"]);
+            var employeeId = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadoId"]);
+            var employerId = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadorId"]);
             userModel = SaveNumAttemptsToUserModel(numAttempts, userModel);
             userModel = SaveLastBlockToUserModel(lastBlock, userModel);
-            userModel = SaveRoleToUserModel(userModel, empleadoId, empleadorId);
+            userModel = SaveRoleToUserModel(userModel, employeeId, employerId);
             return userModel;
         }
 
-        private UserModel SaveRoleToUserModel(UserModel userModel, string empleadoId, string empleadorId)
+        private UserModel SaveRoleToUserModel(UserModel userModel, string employeeId, string employerId)
         {
             if (userModel.Role == "")
             {
-                userModel.Role = "empleado";
-                if (empleadoId == "")
+                userModel.Role = ROLE_FOR_EMPLOYEE;
+                if (employeeId == "")
                 {
-                    userModel.Role = empleadorId == "" ? "superAdmin" : "empleador";
+                    userModel.Role = employerId == "" ? ROLE_FOR_SYSTEM_ADMINISTRATOR : ROLE_FOR_EMPLOYER;
                 }
             }
             return userModel;
@@ -93,7 +97,7 @@ namespace back_end.Infraestructure
             return userModel;
         }
 
-        private UserModel SaveLastBlockToUserModel (string  lastBlock, UserModel userModel)
+        private UserModel SaveLastBlockToUserModel (string lastBlock, UserModel userModel)
         {
             if (lastBlock != "")
             {
