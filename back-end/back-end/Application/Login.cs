@@ -38,9 +38,9 @@ namespace back_end.Application
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
-            new Claim(ClaimTypes.Sid, userModel.PersonId),
-            new Claim(ClaimTypes.Role, userModel.Role),
+                new Claim(ClaimTypes.NameIdentifier, userModel.Nickname),
+                new Claim(ClaimTypes.Sid, userModel.PersonId),
+                new Claim(ClaimTypes.Role, userModel.Role),
             };
             var token = new JwtSecurityToken
             (

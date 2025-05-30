@@ -69,8 +69,8 @@ namespace back_end.Infraestructure
             var lastBlock = utilityRepository.ConvertDatabaseValueToString(dataRow["usuarioFechaExactaBloqueo"]);
             var employeeId = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadoId"]);
             var employerId = utilityRepository.ConvertDatabaseValueToString(dataRow["empleadorId"]);
-            userModel = SaveNumAttemptsToUserModel(numAttempts, userModel);
-            userModel = SaveLastBlockToUserModel(lastBlock, userModel);
+            userModel.NumAttempts = numAttempts != "" ? Int32.Parse(numAttempts) : 0;
+            userModel.LastBlock = lastBlock != "" ? DateTime.Parse(lastBlock) : DateTime.MinValue;
             userModel = SaveRoleToUserModel(userModel, employeeId, employerId);
             return userModel;
         }
@@ -84,24 +84,6 @@ namespace back_end.Infraestructure
                 {
                     userModel.Role = employerId == "" ? ROLE_FOR_SYSTEM_ADMINISTRATOR : ROLE_FOR_EMPLOYER;
                 }
-            }
-            return userModel;
-        }
-
-        private UserModel SaveNumAttemptsToUserModel(string numAttempts, UserModel userModel)
-        {
-            if (numAttempts != "")
-            {
-                userModel.NumAttempts = Int32.Parse(numAttempts);
-            }
-            return userModel;
-        }
-
-        private UserModel SaveLastBlockToUserModel (string lastBlock, UserModel userModel)
-        {
-            if (lastBlock != "")
-            {
-                userModel.LastBlock = DateTime.Parse(lastBlock);
             }
             return userModel;
         }
