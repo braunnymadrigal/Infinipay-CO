@@ -6,6 +6,8 @@ namespace back_end.Application
     {
         private const int MAXIMUM_NUMBER_OF_DAYS_A_DATE_RANGE_CAN_REPRESENT = 31;
 
+        private DateOnly startDate;
+        private DateOnly endDate;
         private readonly IGrossSalaryRepository grossSalaryRepository;
 
         public GrossSalary()
@@ -13,7 +15,13 @@ namespace back_end.Application
             grossSalaryRepository = new GrossSalaryRepository();
         }
 
-        public bool CheckDateRangeCorrectness(DateOnly startDate, DateOnly endDate)
+        public void SetDateRange(DateOnly startDate, DateOnly endDate)
+        {
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+
+        public void CheckDateRangeCorrectness()
         {
             if (startDate == DateOnly.MinValue || endDate == DateOnly.MaxValue)
             {
@@ -27,7 +35,6 @@ namespace back_end.Application
             {
                 throw new Exception("The range of date shall not represent more than one month");
             }
-            return true;
         }
     }
 }

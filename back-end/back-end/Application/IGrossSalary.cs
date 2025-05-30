@@ -2,6 +2,7 @@
 {
     public interface IGrossSalary
     {
-        bool CheckDateRangeCorrectness(DateOnly startDate, DateOnly endDate);
+        void SetDateRange(DateOnly startDate, DateOnly endDate);
+        void CheckDateRangeCorrectness();
     }
 }

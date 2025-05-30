@@ -25,7 +25,8 @@ namespace back_end.API
             try
             {
                 var id = GetUser().PersonId;
-                grossSalary.CheckDateRangeCorrectness(startDate, endDate);
+                grossSalary.SetDateRange(startDate, endDate);
+                grossSalary.CheckDateRangeCorrectness();
                 iActionResult = Ok();
             }
             catch (Exception e)
