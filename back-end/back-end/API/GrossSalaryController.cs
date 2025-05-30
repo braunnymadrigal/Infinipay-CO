@@ -10,11 +10,11 @@ namespace back_end.API
     [ApiController]
     public class GrossSalaryController : GeneralController
     {
-        //private readonly IGrossSalary grossSalary;
+        private readonly IGrossSalary grossSalary;
 
         public GrossSalaryController()
         {
-            //grossSalary = new GrossSalary();
+            grossSalary = new GrossSalary();
         }
 
         [Authorize(Roles = "empleador")]
@@ -25,8 +25,8 @@ namespace back_end.API
             try
             {
                 var id = GetUser().PersonId;
-                //iActionResult = Ok(token);
-                iActionResult = Ok(id);
+                grossSalary.CheckDateRangeCorrectness(startDate, endDate);
+                iActionResult = Ok();
             }
             catch (Exception e)
             {
