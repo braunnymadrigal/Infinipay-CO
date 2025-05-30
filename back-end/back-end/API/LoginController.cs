@@ -11,7 +11,7 @@ namespace back_end.API
     public class LoginController : GeneralController
     {
         private readonly IConfiguration config;
-        private readonly Login login;
+        private readonly ILogin login;
 
         public LoginController(IConfiguration config)
         {

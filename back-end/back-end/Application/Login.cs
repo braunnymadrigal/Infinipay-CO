@@ -13,7 +13,7 @@ namespace back_end.Application
     public class Login : ILogin
     {
         private readonly IConfiguration iConfiguration;
-        private readonly LoginRepository loginRepository;
+        private readonly ILoginRepository loginRepository;
 
         public Login(IConfiguration iConfiguration)
         {
