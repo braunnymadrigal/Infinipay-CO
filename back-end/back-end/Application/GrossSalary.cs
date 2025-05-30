@@ -1,4 +1,5 @@
-﻿using back_end.Infraestructure;
+﻿using back_end.Domain;
+using back_end.Infraestructure;
 
 namespace back_end.Application
 {
@@ -57,6 +58,33 @@ namespace back_end.Application
         public void SetIdEmployer(string id)
         {
             idEmployer = id;
+        }
+
+        public void ComputeAllGrossSalaries()
+        {
+            List<GrossSalaryModel> grossSalaries;
+            grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer);
+            PrintGrossSalaryModelList(grossSalaries);
+        }
+
+        private void PrintGrossSalaryModelList(List<GrossSalaryModel> grossSalaryModels)
+        {
+            foreach (var grossSalaryModel in grossSalaryModels)
+            {
+                Console.WriteLine("------------------------------------------------------");
+                PrintGrossSalaryModel(grossSalaryModel);
+                Console.WriteLine("------------------------------------------------------");
+            }
+        }
+
+        private void PrintGrossSalaryModel(GrossSalaryModel grossSalaryModel)
+        {
+            Console.WriteLine("\tEmployeeId: " + grossSalaryModel.EmployeeId);
+            Console.WriteLine("\tHiringDate: " + grossSalaryModel.HiringDate);
+            Console.WriteLine("\tGrossSalary: " + grossSalaryModel.GrossSalary);
+            Console.WriteLine("\tHiringType: " + grossSalaryModel.HiringType);
+            Console.WriteLine("\tHoursDate: " + grossSalaryModel.HoursDate);
+            Console.WriteLine("\tHoursWorked: " + grossSalaryModel.HoursWorked);
         }
     }
 }

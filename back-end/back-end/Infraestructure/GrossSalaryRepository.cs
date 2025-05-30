@@ -1,4 +1,8 @@
-﻿namespace back_end.Infraestructure
+﻿using System.Data;
+using back_end.Domain;
+using Microsoft.Data.SqlClient;
+
+namespace back_end.Infraestructure
 {
     public class GrossSalaryRepository : IGrossSalaryRepository
     {
@@ -9,6 +13,71 @@
         {
             connectionRepository = new ConnectionRepository();
             utilityRepository = new UtilityRepository();
+        }
+
+        public List<GrossSalaryModel> GetGrossSalaries(string employerId)
+        {
+            var command = CreateGrossSalaryTableCommand(employerId);
+            var dataTable = connectionRepository.ExecuteQuery(command);
+            var grossSalaries = TransformDataTableInGrossSalaryList(dataTable);
+            return grossSalaries;
+        }
+
+        private List<GrossSalaryModel> TransformDataTableInGrossSalaryList(DataTable dataTable)
+        {
+            if (dataTable.Rows.Count <= 0)
+            {
+                throw new Exception("Gross salary table could not be extracted.");
+            }
+            List<GrossSalaryModel> grossSalaryModels = new List<GrossSalaryModel>();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                var currentGrossSalaryModel = TransformDataRowInGrossSalaryModel(dataRow);
+                grossSalaryModels.Add(currentGrossSalaryModel);
+            }
+            return grossSalaryModels;
+        }
+
+        private GrossSalaryModel TransformDataRowInGrossSalaryModel(DataRow dataRow)
+        {
+            var employeeId = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
+            var hiringDate = utilityRepository.ConvertDatabaseValueToString(dataRow["fechaContratacion"]);
+            var grossSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["salarioBruto"]);
+            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["tipoContrato"]);
+            var hoursDate = utilityRepository.ConvertDatabaseValueToString(dataRow["fechaHoras"]);
+            var hoursWorked = utilityRepository.ConvertDatabaseValueToString(dataRow["horasTrabajadas"]);
+            var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
+            var actualHoursWorked = hoursWorked != "" ? Convert.ToInt32(hoursWorked) : 0;
+            return new GrossSalaryModel {
+                EmployeeId = employeeId, HiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
+                GrossSalary = Convert.ToDouble(grossSalary), HiringType = hiringType,
+                HoursDate = actualHoursDate, HoursWorked = actualHoursWorked,
+            };
+        }
+
+        private SqlCommand CreateGrossSalaryTableCommand(string employerId)
+        {
+            var query = CreateGrossSalaryTableQuery();
+            var command = new SqlCommand(query, connectionRepository.connection);
+            command.Parameters.AddWithValue("@employerId", employerId);
+            return command;
+        }
+
+        private string CreateGrossSalaryTableQuery()
+        {
+            var query = "SELECT "
+            + "e.[idPersonaFisica] as id, e.[fechaContratacion] as fechaContratacion, "
+            + "c.[salarioBruto] as salarioBruto, c.[tipoContrato] as tipoContrato, "
+            + "h.[fecha] as fechaHoras, h.[horasTrabajadas] as horasTrabajadas "
+            + "FROM [Empleado] as e "
+            + "FULL OUTER JOIN [Contrato] as c on c.[idEmpleado] = e.[idPersonaFisica] "
+            + "FULL OUTER JOIN [Horas] as h on h.[idEmpleado] = e.[idPersonaFisica] and "
+            + "h.[fecha] = ("
+            + "SELECT fechaHoras "
+            + "FROM function_getEmployeeCurrentHours(e.[idPersonaFisica])"
+            + ") "
+            + "WHERE e.[idEmpleadorContratador] = @employerId and e.[fechaDespido] is null;";
+            return query;
         }
     }
 }

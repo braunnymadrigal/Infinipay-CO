@@ -6,5 +6,6 @@
         void CheckDateRangeCorrectness();
         void SetNumberOfWorkedDays();
         void SetIdEmployer(string id);
+        void ComputeAllGrossSalaries();
     }
 }

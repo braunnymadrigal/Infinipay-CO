@@ -40,6 +40,7 @@ namespace back_end.API
             grossSalary.SetDateRange(startDate, endDate);
             grossSalary.CheckDateRangeCorrectness();
             grossSalary.SetNumberOfWorkedDays();
+            grossSalary.ComputeAllGrossSalaries();
         }
     }
 }
