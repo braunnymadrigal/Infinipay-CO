@@ -23,7 +23,7 @@ namespace back_end.API
         [HttpPost]
         public IActionResult Login([FromBody] LoginUserModel loginUserModel)
         {
-            IActionResult iActionResult = BadRequest("Uknown error.");
+            IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
                 var token = login.LogUser(loginUserModel);
