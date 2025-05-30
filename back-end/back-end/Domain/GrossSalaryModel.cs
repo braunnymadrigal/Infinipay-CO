@@ -2,7 +2,7 @@
 {
     public class GrossSalaryModel
     {
-        public required string Id { get; set; }
+        public required string EmployeeId { get; set; }
         public required DateOnly HiringDate { get; set; }
         public required double GrossSalary { get; set; }
         public required string HiringType { get; set; }

@@ -12,11 +12,13 @@ namespace back_end.Application
         private DateOnly startDate;
         private DateOnly endDate;
         private int numberOfWorkedDays;
+        private string idEmployer;
         private readonly IGrossSalaryRepository grossSalaryRepository;
 
         public GrossSalary()
         {
             grossSalaryRepository = new GrossSalaryRepository();
+            idEmployer = "";
         }
 
         public void SetDateRange(DateOnly startDate, DateOnly endDate)
@@ -50,6 +52,11 @@ namespace back_end.Application
             {
                 numberOfWorkedDays = WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK;
             }
+        }
+
+        public void SetIdEmployer(string id)
+        {
+            idEmployer = id;
         }
     }
 }

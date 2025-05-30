@@ -36,7 +36,7 @@ namespace back_end.API
 
         private void CallGrossSalaryMethods(DateOnly startDate, DateOnly endDate)
         {
-            var id = GetUser().PersonId;
+            grossSalary.SetIdEmployer(GetUser().PersonId);
             grossSalary.SetDateRange(startDate, endDate);
             grossSalary.CheckDateRangeCorrectness();
             grossSalary.SetNumberOfWorkedDays();
