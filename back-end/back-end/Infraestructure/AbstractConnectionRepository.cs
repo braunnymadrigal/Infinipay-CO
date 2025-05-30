@@ -14,7 +14,7 @@ namespace back_end.Infraestructure
             connection = new SqlConnection(connectionString);
         }
 
-        protected DataTable ExecuteQuery(SqlCommand command)
+        public DataTable ExecuteQuery(SqlCommand command)
         {
             var adapter = new SqlDataAdapter(command);
             var table = new DataTable();
@@ -24,7 +24,7 @@ namespace back_end.Infraestructure
             return table;
         }
 
-        protected void ExecuteCommand(SqlCommand command)
+        public void ExecuteCommand(SqlCommand command)
         {
             connection.Open();
             var success = command.ExecuteNonQuery() >= 1;
