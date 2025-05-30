@@ -1,14 +1,12 @@
-﻿using System.Data;
-using back_end.Domain;
+﻿using back_end.Domain;
 
+using System.Data;
 using Microsoft.Data.SqlClient;
 
 namespace back_end.Infraestructure
 {
-    public class LoginRepository : GeneralRepository
+    public class LoginRepository : ILoginRepository
     {
-        public LoginRepository() : base() { }
-
         public UserModel GetUserByNickname(string nickname)
         {
             var command = CreateUserByNicknameCommand(nickname);
