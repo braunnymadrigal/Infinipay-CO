@@ -15,7 +15,7 @@ export default {
 
 			return {
 				headers: {
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'
 				}
 			};
 		}
@@ -67,6 +67,10 @@ export default {
 					},
 					authHeader()
 				);
+			},
+			generateEmployeePayroll(payload = {}) {
+				return axios.post(`${apiBaseURL}/PayrollOrchestrator`
+					, payload, authHeader());
 			}
 		};
 	}
