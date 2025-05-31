@@ -11,9 +11,9 @@ namespace back_end.API
     public class TaxCCSSController : GeneralController
     {
         private readonly ITaxCCSS taxCCSS;
-        public TaxCCSSController(ITaxCCSS taxCCSS)
+        public TaxCCSSController()
         {
-            this.taxCCSS = taxCCSS;
+            taxCCSS = new TaxCCSS();
         }
 
         [Authorize(Roles = "empleador")]

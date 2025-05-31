@@ -8,9 +8,9 @@ namespace back_end.Application
         private const int GROSS_SALARIES_MINIMUM_SIZE = 1;
         private const int GROSS_SALARIES_MAXIMUM_SIZE = 1000;
 
-        private const int P_VALUE_ON_DECIMAL_SQL_TYPE = 11;
-        private const int S_VALUE_ON_DECIMAL_SQL_TYPE = 2;
-        private const int EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE = 10;
+        private const double P_VALUE_ON_DECIMAL_SQL_TYPE = 11.0;
+        private const double S_VALUE_ON_DECIMAL_SQL_TYPE = 2.0;
+        private const double EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE = 10.0;
 
         private const string HIRING_TYPE_EXCLUDED_FROM_TAXES = "servicios";
 
@@ -49,11 +49,13 @@ namespace back_end.Application
 
         private void ValidateComputedGrossSalarySize(double computedGrossSalary)
         {
-            var maxSize = (double)(
-                EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE ^ 
-                (P_VALUE_ON_DECIMAL_SQL_TYPE - S_VALUE_ON_DECIMAL_SQL_TYPE)
-                ) - (EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE ^ -S_VALUE_ON_DECIMAL_SQL_TYPE
-            );
+            var maxSize = 
+                (Math.Pow(
+                    EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE,
+                    (P_VALUE_ON_DECIMAL_SQL_TYPE - S_VALUE_ON_DECIMAL_SQL_TYPE)
+                    )
+                ) - 
+                (Math.Pow(EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE, -S_VALUE_ON_DECIMAL_SQL_TYPE));
             if (computedGrossSalary > maxSize)
             {
                 throw new Exception("The computed gross salary can not exceed the database limitations");
