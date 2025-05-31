@@ -24,8 +24,8 @@ namespace back_end.API
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                CallGrossSalaryMethods(startDate, endDate);
-                iActionResult = Ok();
+                var grossSalaries = CallGrossSalaryMethods(startDate, endDate);
+                iActionResult = Ok(grossSalaries);
             }
             catch (Exception e)
             {
@@ -34,13 +34,13 @@ namespace back_end.API
             return iActionResult;
         }
 
-        private void CallGrossSalaryMethods(DateOnly startDate, DateOnly endDate)
+        private List<GrossSalaryModel> CallGrossSalaryMethods(DateOnly startDate, DateOnly endDate)
         {
             grossSalary.SetIdEmployer(GetUser().PersonId);
             grossSalary.SetDateRange(startDate, endDate);
             grossSalary.CheckDateRangeCorrectness();
             grossSalary.SetNumberOfWorkedDays();
-            grossSalary.ComputeAllGrossSalaries();
+            return grossSalary.ComputeAllGrossSalaries();
         }
     }
 }

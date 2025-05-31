@@ -63,13 +63,13 @@ namespace back_end.Application
             idEmployer = id;
         }
 
-        public void ComputeAllGrossSalaries()
+        public List<GrossSalaryModel> ComputeAllGrossSalaries()
         {
             var grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer, startDate, endDate);
             grossSalaries = RemoveEmployeesThatShouldNotBeOnPayroll(grossSalaries);
             SetProperContextGrossSalaryComputation();
             grossSalaries = contextGrossSalaryComputation.ComputeGrossSalary(grossSalaries);
-            PrintGrossSalaryModelList(grossSalaries);
+            return grossSalaries;
         }
 
         private List<GrossSalaryModel> RemoveEmployeesThatShouldNotBeOnPayroll(List<GrossSalaryModel> grossSalaries)

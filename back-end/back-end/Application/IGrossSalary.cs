@@ -1,4 +1,6 @@
-﻿namespace back_end.Application
+﻿using back_end.Domain;
+
+namespace back_end.Application
 {
     public interface IGrossSalary
     {
@@ -6,6 +8,6 @@
         void CheckDateRangeCorrectness();
         void SetNumberOfWorkedDays();
         void SetIdEmployer(string id);
-        void ComputeAllGrossSalaries();
+        List<GrossSalaryModel> ComputeAllGrossSalaries();
     }
 }
