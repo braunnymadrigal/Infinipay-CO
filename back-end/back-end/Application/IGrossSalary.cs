@@ -4,7 +4,7 @@ namespace back_end.Application
 {
     public interface IGrossSalary
     {
-        void SetDateRange(DateOnly startDate, DateOnly endDate);
+        void SetDateRange(string startDate, string endDate);
         void SetNumberOfWorkedDays();
         void SetIdEmployer(string id);
         List<GrossSalaryModel> ComputeAllGrossSalaries();

@@ -40,8 +40,9 @@ namespace back_end.API
         private List<GrossSalaryModel> CallGrossSalaryMethods(DateOnly startDate, DateOnly endDate)
         {
             grossSalary.SetIdEmployer(GetUser().PersonId);
-            grossSalary.SetDateRange(startDate, endDate);
-            grossSalary.SetNumberOfWorkedDays();
+            grossSalary.SetDateRange(startDate.ToString("yyyy-MM-dd")
+              , endDate.ToString("yyyy-MM-dd"));
+             grossSalary.SetNumberOfWorkedDays();
             return grossSalary.ComputeAllGrossSalaries();
         }
     }
