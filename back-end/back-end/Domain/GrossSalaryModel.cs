@@ -3,6 +3,7 @@
     public class GrossSalaryModel
     {
         public required string EmployeeId { get; set; }
+        public string EmployeeName { get; set; }
         public required DateOnly HiringDate { get; set; }
         public required double ComputedGrossSalary { get; set; }
         public required double GrossSalary { get; set; }
