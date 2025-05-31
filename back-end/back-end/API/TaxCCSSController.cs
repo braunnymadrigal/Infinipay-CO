@@ -10,10 +10,10 @@ namespace back_end.API
     [ApiController]
     public class TaxCCSSController : GeneralController
     {
-        //private readonly ITaxCCSS taxCCSS;
-        public TaxCCSSController()
+        private readonly ITaxCCSS taxCCSS;
+        public TaxCCSSController(ITaxCCSS taxCCSS)
         {
-            //taxCCSS = new TaxCCSS(); 
+            this.taxCCSS = taxCCSS;
         }
 
         [Authorize(Roles = "empleador")]
@@ -23,19 +23,14 @@ namespace back_end.API
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var taxesCCSS = CallTaxCCSSMethods(grossSalaries);
-                iActionResult = Ok();
+                var taxesCCSS = taxCCSS.ComputeTaxesCCSS(grossSalaries);
+                iActionResult = Ok(taxesCCSS);
             }
             catch (Exception e)
             {
                 iActionResult = NotFound(e.Message);
             }
             return iActionResult;
-        }
-
-        private List<TaxCCSSModel> CallTaxCCSSMethods(List<GrossSalaryModel> grossSalaries)
-        {
-            return new List<TaxCCSSModel>();
         }
     }
 }
