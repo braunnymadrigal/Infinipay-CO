@@ -6,18 +6,11 @@ namespace back_end.Application
     {
         public List<GrossSalaryModel> ComputeGrossSalary(List<GrossSalaryModel> grossSalaries, DateOnly startDate, DateOnly endDate)
         {
-            for (int i = 0; i < grossSalaries.Count; ++i)
+            foreach (var grossSalary in grossSalaries)
             {
-                if (grossSalaries[i].HiringDate > endDate)
-                {
-                    grossSalaries[i].EmployeeId = "";
-                }
-                else
-                {
-                    grossSalaries[i].GrossSalary = grossSalaries[i].GrossSalary * grossSalaries[i].HoursWorked;
-                }
+                grossSalary.GrossSalary = grossSalary.GrossSalary * grossSalary.HoursWorked;
             }
             return grossSalaries;
         }
-}
+    }
 }

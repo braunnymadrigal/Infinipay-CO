@@ -1,4 +1,5 @@
-﻿using back_end.Domain;
+﻿using System.Collections.Generic;
+using back_end.Domain;
 using back_end.Infraestructure;
 
 namespace back_end.Application
@@ -64,12 +65,23 @@ namespace back_end.Application
 
         public void ComputeAllGrossSalaries()
         {
-            List<GrossSalaryModel> grossSalaries;
-            grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer, startDate, endDate);
-            PrintGrossSalaryModelList(grossSalaries);
+            var grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer, startDate, endDate);
+            grossSalaries = RemoveEmployeesThatShouldNotBeOnPayroll(grossSalaries);
             SetProperContextGrossSalaryComputation();
-            contextGrossSalaryComputation.ComputeGrossSalary(grossSalaries);
+            grossSalaries = contextGrossSalaryComputation.ComputeGrossSalary(grossSalaries);
             PrintGrossSalaryModelList(grossSalaries);
+        }
+
+        private List<GrossSalaryModel> RemoveEmployeesThatShouldNotBeOnPayroll(List<GrossSalaryModel> grossSalaries)
+        {
+            for (int i = grossSalaries.Count - 1; i >= 0; --i)
+            {
+                if (grossSalaries[i].HiringDate > endDate)
+                {
+                    grossSalaries.RemoveAt(i);
+                }
+            }
+            return grossSalaries;
         }
 
         private void SetProperContextGrossSalaryComputation()

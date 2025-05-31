@@ -8,21 +8,14 @@ namespace back_end.Application
 
         public List<GrossSalaryModel> ComputeGrossSalary(List<GrossSalaryModel> grossSalaries, DateOnly startDate, DateOnly endDate)
         {
-            for (int i = 0; i < grossSalaries.Count; ++i)
+            foreach (var grossSalary in grossSalaries)
             {
-                grossSalaries[i].GrossSalary = grossSalaries[i].GrossSalary / 2;
-                if (grossSalaries[i].HiringDate > endDate)
+                grossSalary.GrossSalary = grossSalary.GrossSalary / 2;
+                if (grossSalary.HiringDate > startDate)
                 {
-                    grossSalaries[i].EmployeeId = "";
-                }
-                else
-                {
-                    if (grossSalaries[i].HiringDate > startDate)
-                    {
-                        var numberOfWorkedDays = (endDate.Day - grossSalaries[i].HiringDate.Day) + 1;
-                        var newGrossSalary = (grossSalaries[i].GrossSalary / MAXIMUM_DAYS_OF_WORK) * numberOfWorkedDays;
-                        grossSalaries[i].GrossSalary = newGrossSalary;
-                    }
+                    var numberOfWorkedDays = (endDate.Day - grossSalary.HiringDate.Day) + 1;
+                    var newGrossSalary = (grossSalary.GrossSalary / MAXIMUM_DAYS_OF_WORK) * numberOfWorkedDays;
+                    grossSalary.GrossSalary = newGrossSalary;
                 }
             }
             return grossSalaries;
