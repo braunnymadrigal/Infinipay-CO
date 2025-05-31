@@ -15,9 +15,9 @@ namespace back_end.Infraestructure
             utilityRepository = new UtilityRepository();
         }
 
-        public List<GrossSalaryModel> GetGrossSalaries(string employerId)
+        public List<GrossSalaryModel> GetGrossSalaries(string employerId, DateOnly startDate, DateOnly endDate)
         {
-            var command = CreateGrossSalaryTableCommand(employerId);
+            var command = CreateGrossSalaryTableCommand(employerId, startDate, endDate);
             var dataTable = connectionRepository.ExecuteQuery(command);
             var grossSalaries = TransformDataTableInGrossSalaryList(dataTable);
             return grossSalaries;
@@ -55,11 +55,13 @@ namespace back_end.Infraestructure
             };
         }
 
-        private SqlCommand CreateGrossSalaryTableCommand(string employerId)
+        private SqlCommand CreateGrossSalaryTableCommand(string employerId, DateOnly startDate, DateOnly endDate)
         {
             var query = CreateGrossSalaryTableQuery();
             var command = new SqlCommand(query, connectionRepository.connection);
             command.Parameters.AddWithValue("@employerId", employerId);
+            command.Parameters.AddWithValue("@startDate", startDate);
+            command.Parameters.AddWithValue("@endDate", endDate);
             return command;
         }
 
@@ -74,7 +76,7 @@ namespace back_end.Infraestructure
             + "FULL OUTER JOIN [Horas] as h on h.[idEmpleado] = e.[idPersonaFisica] and "
             + "h.[fecha] = ("
             + "SELECT fechaHoras "
-            + "FROM function_getEmployeeCurrentHours(e.[idPersonaFisica])"
+            + "FROM function_getEmployeeCurrentHours(e.[idPersonaFisica], @startDate, @endDate)"
             + ") "
             + "WHERE e.[idEmpleadorContratador] = @employerId and e.[fechaDespido] is null;";
             return query;

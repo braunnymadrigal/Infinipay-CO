@@ -4,6 +4,6 @@ namespace back_end.Infraestructure
 {
     public interface IGrossSalaryRepository
     {
-        List<GrossSalaryModel> GetGrossSalaries(string employerId);
+        List<GrossSalaryModel> GetGrossSalaries(string employerId, DateOnly startDate, DateOnly endDate);
     }
 }

@@ -63,7 +63,7 @@ namespace back_end.Application
         public void ComputeAllGrossSalaries()
         {
             List<GrossSalaryModel> grossSalaries;
-            grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer);
+            grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer, startDate, endDate);
             PrintGrossSalaryModelList(grossSalaries);
             if (numberOfWorkedDays == WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
             {
