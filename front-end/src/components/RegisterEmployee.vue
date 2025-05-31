@@ -267,10 +267,9 @@
                 style="background-color: #fff8f3"
               >
                 <option disabled value="">Seleccione una opción</option>
-                <option value="semanal">Semanal</option>
-                <option value="quincenal">Quincenal</option>
-                <option value="mensual">Mensual</option>
-                <option value="servicios">Servicios</option>
+                <option value="tiempoCompleto">Tiempo completo</option>
+                <option value="medioTiempo">Medio tiempo</option>
+                <option value="servicios">Servicios profesionales</option>
               </select>
             </div>
             <div class="col-md-6">
