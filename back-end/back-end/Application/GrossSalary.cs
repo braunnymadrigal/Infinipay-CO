@@ -15,10 +15,12 @@ namespace back_end.Application
         private int numberOfWorkedDays;
         private string idEmployer;
         private readonly IGrossSalaryRepository grossSalaryRepository;
+        private IContextGrossSalaryComputation contextGrossSalaryComputation;
 
-        public GrossSalary()
+        public GrossSalary(IGrossSalaryRepository grossSalaryRepository, IContextGrossSalaryComputation contextGrossSalaryComputation)
         {
-            grossSalaryRepository = new GrossSalaryRepository();
+            this.grossSalaryRepository = grossSalaryRepository;
+            this.contextGrossSalaryComputation = contextGrossSalaryComputation;
             idEmployer = "";
         }
 
@@ -65,78 +67,26 @@ namespace back_end.Application
             List<GrossSalaryModel> grossSalaries;
             grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer, startDate, endDate);
             PrintGrossSalaryModelList(grossSalaries);
-            if (numberOfWorkedDays == WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
-            {
-                grossSalaries = ComputeWeeklySalaries(grossSalaries);
-            }
-            if (numberOfWorkedDays == BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
-            {
-                grossSalaries = ComputeBiweeklySalaries(grossSalaries);
-            }
-            if (numberOfWorkedDays == MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
-            {
-                grossSalaries = ComputeMonthlySalaries(grossSalaries);
-            }
+            SetProperContextGrossSalaryComputation();
+            contextGrossSalaryComputation.ComputeGrossSalary(grossSalaries);
             PrintGrossSalaryModelList(grossSalaries);
         }
 
-        private List<GrossSalaryModel> ComputeWeeklySalaries(List<GrossSalaryModel> grossSalaries)
+        private void SetProperContextGrossSalaryComputation()
         {
-            for (int i = 0; i < grossSalaries.Count; ++i)
+            contextGrossSalaryComputation.SetRangeOfDates(startDate, endDate);
+            if (numberOfWorkedDays == WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
             {
-                if (grossSalaries[i].HiringDate > endDate)
-                {
-                    grossSalaries[i].EmployeeId = "";
-                }
-                else
-                {
-                    grossSalaries[i].GrossSalary = grossSalaries[i].GrossSalary * grossSalaries[i].HoursWorked;
-                }
+                contextGrossSalaryComputation.SetStrategy(new WeeklyGrossSalaryComputation());
             }
-            return grossSalaries;
-        }
-
-        private List<GrossSalaryModel> ComputeBiweeklySalaries(List<GrossSalaryModel> grossSalaries)
-        {
-            for (int i = 0; i < grossSalaries.Count; ++i)
+            if (numberOfWorkedDays == BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
             {
-                grossSalaries[i].GrossSalary = grossSalaries[i].GrossSalary / 2;
-                if (grossSalaries[i].HiringDate > endDate)
-                {
-                    grossSalaries[i].EmployeeId = "";
-                }
-                else
-                {
-                    if (grossSalaries[i].HiringDate > startDate)
-                    {
-                        var numberOfWorkedDays = (endDate.Day - grossSalaries[i].HiringDate.Day) + 1;
-                        var newGrossSalary = (grossSalaries[i].GrossSalary / BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK) * numberOfWorkedDays;
-                        grossSalaries[i].GrossSalary = newGrossSalary;
-                    }
-                }
+                contextGrossSalaryComputation.SetStrategy(new BiweeklyGrossSalaryComputation());
             }
-            return grossSalaries;
-        }
-
-        private List<GrossSalaryModel> ComputeMonthlySalaries(List<GrossSalaryModel> grossSalaries)
-        {
-            for (int i = 0; i < grossSalaries.Count; ++i)
+            if (numberOfWorkedDays == MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
             {
-                if (grossSalaries[i].HiringDate > endDate)
-                {
-                    grossSalaries[i].EmployeeId = "";
-                }
-                else
-                {
-                    if (grossSalaries[i].HiringDate > startDate)
-                    {
-                        var numberOfWorkedDays = (endDate.Day - grossSalaries[i].HiringDate.Day) + 1;
-                        var newGrossSalary = (grossSalaries[i].GrossSalary / MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK) * numberOfWorkedDays;
-                        grossSalaries[i].GrossSalary = newGrossSalary;
-                    }
-                }
+                contextGrossSalaryComputation.SetStrategy(new MonthlyGrossSalaryComputation());
             }
-            return grossSalaries;
         }
 
         private void PrintGrossSalaryModelList(List<GrossSalaryModel> grossSalaryModels)

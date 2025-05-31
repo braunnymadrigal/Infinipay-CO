@@ -1,6 +1,6 @@
 ﻿using back_end.Application;
 using back_end.Domain;
-
+using back_end.Infraestructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +14,7 @@ namespace back_end.API
 
         public GrossSalaryController()
         {
-            grossSalary = new GrossSalary();
+            grossSalary = new GrossSalary(new GrossSalaryRepository(), new ContextGrossSalaryComputation());
         }
 
         [Authorize(Roles = "empleador")]
