@@ -9,10 +9,11 @@ namespace back_end.Infraestructure
         private readonly AbstractConnectionRepository connectionRepository;
         private readonly IUtilityRepository utilityRepository;
 
-        public GrossSalaryRepository()
+        public GrossSalaryRepository(AbstractConnectionRepository connectionRepository
+            , IUtilityRepository utilityRepository)
         {
-            connectionRepository = new ConnectionRepository();
-            utilityRepository = new UtilityRepository();
+            this.connectionRepository = connectionRepository;
+            this.utilityRepository = utilityRepository;
         }
 
         public List<GrossSalaryModel> GetGrossSalaries(string employerId, DateOnly startDate, DateOnly endDate)
@@ -48,9 +49,10 @@ namespace back_end.Infraestructure
             var hoursWorked = utilityRepository.ConvertDatabaseValueToString(dataRow["horasTrabajadas"]);
             var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
             var actualHoursWorked = hoursWorked != "" ? Convert.ToInt32(hoursWorked) : 0;
+            var actualGrossSalary = Convert.ToDouble(grossSalary);
             return new GrossSalaryModel {
                 EmployeeId = employeeId, HiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
-                GrossSalary = Convert.ToDouble(grossSalary), HiringType = hiringType,
+                ComputedGrossSalary = actualGrossSalary, GrossSalary = actualGrossSalary, HiringType = hiringType,
                 HoursDate = actualHoursDate, HoursWorked = actualHoursWorked,
             };
         }

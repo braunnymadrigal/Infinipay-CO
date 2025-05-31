@@ -14,7 +14,7 @@ namespace back_end.Application
                 {
                     var numberOfWorkedDays = (endDate.Day - grossSalary.HiringDate.Day) + 1;
                     var newGrossSalary = (grossSalary.GrossSalary / MAXIMUM_DAYS_OF_WORK) * numberOfWorkedDays;
-                    grossSalary.GrossSalary = newGrossSalary;
+                    grossSalary.ComputedGrossSalary = newGrossSalary;
                 }
             }
             return grossSalaries;

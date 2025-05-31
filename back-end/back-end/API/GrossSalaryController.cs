@@ -14,7 +14,10 @@ namespace back_end.API
 
         public GrossSalaryController()
         {
-            grossSalary = new GrossSalary(new GrossSalaryRepository(), new ContextGrossSalaryComputation());
+            grossSalary = new GrossSalary (
+                new GrossSalaryRepository( new ConnectionRepository(), new UtilityRepository() ), 
+                new ContextGrossSalaryComputation()
+            );
         }
 
         [Authorize(Roles = "empleador")]
@@ -38,7 +41,6 @@ namespace back_end.API
         {
             grossSalary.SetIdEmployer(GetUser().PersonId);
             grossSalary.SetDateRange(startDate, endDate);
-            grossSalary.CheckDateRangeCorrectness();
             grossSalary.SetNumberOfWorkedDays();
             return grossSalary.ComputeAllGrossSalaries();
         }

@@ -29,22 +29,7 @@ namespace back_end.Application
         {
             this.startDate = startDate;
             this.endDate = endDate;
-        }
-
-        public void CheckDateRangeCorrectness()
-        {
-            if (startDate == DateOnly.MinValue || endDate == DateOnly.MaxValue)
-            {
-                throw new Exception("Date values are not coherent.");
-            }
-            if (startDate >= endDate)
-            {
-                throw new Exception("The start date shall not surpass the end date.");
-            }
-            if (startDate.AddDays(MAXIMUM_NUMBER_OF_DAYS_A_DATE_RANGE_CAN_REPRESENT) < endDate)
-            {
-                throw new Exception("The range of date shall not represent more than one month");
-            }
+            CheckDateRangeCorrectness();
         }
 
         public void SetNumberOfWorkedDays()
@@ -67,8 +52,7 @@ namespace back_end.Application
         {
             var grossSalaries = grossSalaryRepository.GetGrossSalaries(idEmployer, startDate, endDate);
             grossSalaries = RemoveEmployeesThatShouldNotBeOnPayroll(grossSalaries);
-            SetProperContextGrossSalaryComputation();
-            grossSalaries = contextGrossSalaryComputation.ComputeGrossSalary(grossSalaries);
+            grossSalaries = ComputeGrossSalariesBasedOnContext(grossSalaries);
             return grossSalaries;
         }
 
@@ -81,6 +65,13 @@ namespace back_end.Application
                     grossSalaries.RemoveAt(i);
                 }
             }
+            return grossSalaries;
+        }
+
+        private List<GrossSalaryModel> ComputeGrossSalariesBasedOnContext(List<GrossSalaryModel> grossSalaries)
+        {
+            SetProperContextGrossSalaryComputation();
+            grossSalaries = contextGrossSalaryComputation.ComputeGrossSalary(grossSalaries);
             return grossSalaries;
         }
 
@@ -101,28 +92,20 @@ namespace back_end.Application
             }
         }
 
-        private void PrintGrossSalaryModelList(List<GrossSalaryModel> grossSalaryModels)
+        private void CheckDateRangeCorrectness()
         {
-            foreach (var grossSalaryModel in grossSalaryModels)
+            if (startDate == DateOnly.MinValue || endDate == DateOnly.MaxValue)
             {
-                Console.WriteLine("------------------------------------------------------");
-                PrintGrossSalaryModel(grossSalaryModel);
-                Console.WriteLine("------------------------------------------------------");
+                throw new Exception("Date values are not coherent.");
             }
-            Console.WriteLine("------------------------------------------------------");
-            Console.WriteLine("------------------------------------------------------");
-            Console.WriteLine("------------------------------------------------------");
-            Console.WriteLine("------------------------------------------------------");
-        }
-
-        private void PrintGrossSalaryModel(GrossSalaryModel grossSalaryModel)
-        {
-            Console.WriteLine("\tEmployeeId: " + grossSalaryModel.EmployeeId);
-            Console.WriteLine("\tHiringDate: " + grossSalaryModel.HiringDate);
-            Console.WriteLine("\tGrossSalary: " + grossSalaryModel.GrossSalary);
-            Console.WriteLine("\tHiringType: " + grossSalaryModel.HiringType);
-            Console.WriteLine("\tHoursDate: " + grossSalaryModel.HoursDate);
-            Console.WriteLine("\tHoursWorked: " + grossSalaryModel.HoursWorked);
+            if (startDate >= endDate)
+            {
+                throw new Exception("The start date shall not surpass the end date.");
+            }
+            if (startDate.AddDays(MAXIMUM_NUMBER_OF_DAYS_A_DATE_RANGE_CAN_REPRESENT) < endDate)
+            {
+                throw new Exception("The range of date shall not represent more than one month");
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace back_end.Application
         {
             foreach (var grossSalary in grossSalaries)
             {
-                grossSalary.GrossSalary = grossSalary.GrossSalary * grossSalary.HoursWorked;
+                grossSalary.ComputedGrossSalary = grossSalary.GrossSalary * grossSalary.HoursWorked;
             }
             return grossSalaries;
         }
