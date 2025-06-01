@@ -74,7 +74,7 @@ namespace back_end.Infraestructure
             var query = "SELECT * FROM "
             + "( "
             + "SELECT "
-            + "p.id id, p.correoElectronico email, p.fechaNacimiento birthDate, "
+            + "p.id id, p.fechaNacimiento birthDate, "
             + "pf.genero gender, "
             + "e.fechaContratacion hiringDate, "
             + "c.salarioBruto salary, c.tipoContrato hiringType, "
@@ -110,7 +110,7 @@ namespace back_end.Infraestructure
             + ") payroll "
             + "WHERE(payroll.payrollState = 'completado' or payroll.payrollState is NULL) AND "
             + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) "
-            + "ORDER BY payroll.email, payroll.apiUrl, payroll.payrollStartDate";
+            + "ORDER BY payroll.id, payroll.apiUrl, payroll.payrollStartDate";
             return query;
         }
     }
