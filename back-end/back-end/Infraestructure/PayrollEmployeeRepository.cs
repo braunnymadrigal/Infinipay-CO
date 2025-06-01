@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using back_end.Application;
 using back_end.Domain;
 using Microsoft.Data.SqlClient;
 
@@ -7,6 +8,7 @@ namespace back_end.Infraestructure
     public class PayrollEmployeeRepository : IPayrollEmployeeRepository
     {
         private const int MONTHS_TO_SUBSTRACT = -1;
+        private const int PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX = -1;
 
         private readonly AbstractConnectionRepository connectionRepository;
         private readonly IUtilityRepository utilityRepository;
@@ -30,33 +32,121 @@ namespace back_end.Infraestructure
         {
             checkDataTableCorrectness(dataTable);
             List<PayrollEmployeeModel> payrollEmployees = new List<PayrollEmployeeModel>();
-
+            int payrollEmployeesIndex = PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX;
             var previousId = "";
             var previousDeductionId = "";
-            //var previousPayrollStartDate = "";
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
                 var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
-                //var payrollStartDate = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollStartDate"]);
-
                 if (previousId != id)
                 {
-                    // addPayrollEmployeeModel(payrollEmployees, dataRow);
+                    addPayrollEmployeeModel(payrollEmployees, payrollEmployeesIndex, dataRow);
+                    previousId = id;
+                    previousDeductionId = deductionId;
+                    ++payrollEmployeesIndex;
                 }
                 else
                 {
-                    if (deductionId != previousDeductionId)
+                    if (previousDeductionId != deductionId)
                     {
-                        // ddPayrollDeductionModel(payrollEmployees[i], dataRow);
-                    }
-                    else
+                        addPayrollDeductionModel(payrollEmployees, payrollEmployeesIndex, dataRow);
+                        previousDeductionId = deductionId;
+                    } 
+                    else 
                     {
-                        // AddPreviousComputedGrossSalary(payrollEmployess[i], dataRow);
+                        payrollEmployees = addPreviousComputedSalary(payrollEmployees, payrollEmployeesIndex, dataRow);
                     }
                 }
-                //var currentPayrollEmployee = transformDataRowInPayrollEmployeeModel(dataRow);
-                //payrollEmployees.Add(currentPayrollEmployee);
+            }
+            return payrollEmployees;
+        }
+
+        private List<PayrollEmployeeModel> addPayrollEmployeeModel(List<PayrollEmployeeModel> payrollEmployees
+            , int payrollEmployeesIndex, DataRow dataRow)
+        {
+            var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
+            var birthDate = utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
+            var gender = utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
+            var salary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
+            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
+            var hiringDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringDate"]);
+            var hoursDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursDate"]);
+            var hoursNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursNumber"]);
+            var companyAssociaton = utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
+            var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
+            var actualHoursNumber = hoursNumber != "" ? Convert.ToInt32(hoursNumber) : 0;
+            var newPayrollEmployee = new PayrollEmployeeModel
+            {
+                id = id,
+                birthDate = DateOnly.FromDateTime(Convert.ToDateTime(birthDate)),
+                gender = gender,
+                rawGrossSalary = Convert.ToDouble(salary),
+                computedGrossSalary = 0,
+                ccssEmployeeDeduction = 0,
+                ccssEmployerDeduction = 0,
+                hiringType = hiringType,
+                hiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
+                hoursDate = actualHoursDate,
+                hoursNumber = actualHoursNumber,
+                companyAssociation = companyAssociaton,
+                deductions = new List<PayrollDeductionModel>(),
+                previousComputedGrossSalaries = new List<double>()
+            };
+            payrollEmployees.Add(newPayrollEmployee);
+            payrollEmployees = addPayrollDeductionModel(payrollEmployees, payrollEmployeesIndex, dataRow);
+            return payrollEmployees;
+        }
+
+        private List<PayrollEmployeeModel> addPayrollDeductionModel(List<PayrollEmployeeModel> payrollEmployees
+            , int payrollEmployeesIndex, DataRow dataRow)
+        {
+            var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
+            if (deductionId != "")
+            {
+                var dependantNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["dependantNumber"]);
+                var formulaType = utilityRepository.ConvertDatabaseValueToString(dataRow["formulaType"]);
+                var apiUrl = utilityRepository.ConvertDatabaseValueToString(dataRow["apiUrl"]);
+                var apiMethod = utilityRepository.ConvertDatabaseValueToString(dataRow["apiMethod"]);
+                var param1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Value"]);
+                var param2Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Value"]);
+                var param3Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Value"]);
+                var param1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Key"]);
+                var param2Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Key"]);
+                var param3Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Key"]);
+                var header1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Value"]);
+                var header1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Key"]);
+                var newDeduction = new PayrollDeductionModel
+                {
+                    id = deductionId,
+                    dependantNumber = Convert.ToInt32(dependantNumber),
+                    formulaType = formulaType,
+                    apiUrl = apiUrl,
+                    apiMethod = apiMethod,
+                    param1Value = param1Value,
+                    param2Value = param2Value,
+                    param3Value = param3Value,
+                    param1Key = param1Key,
+                    param2Key = param2Key,
+                    param3Key = param3Key,
+                    header1Value = header1Value,
+                    header1Key = header1Key
+                };
+                payrollEmployees[payrollEmployeesIndex].deductions.Add(newDeduction);
+            }
+            payrollEmployees = addPreviousComputedSalary(payrollEmployees, payrollEmployeesIndex, dataRow);
+            return payrollEmployees;
+        }
+
+        private List<PayrollEmployeeModel> addPreviousComputedSalary(List<PayrollEmployeeModel> payrollEmployees
+            , int payrollEmployeesIndex, DataRow dataRow)
+        {
+            var previousComputedSalary = 
+                utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
+            if (previousComputedSalary != "")
+            {
+                payrollEmployees[payrollEmployeesIndex]
+                    .previousComputedGrossSalaries.Add(Convert.ToDouble(previousComputedSalary));
             }
             return payrollEmployees;
         }
@@ -69,56 +159,6 @@ namespace back_end.Infraestructure
                 throw new Exception("Payroll employee table could not be extracted.");
             }
         }
-
-        private PayrollEmployeeModel transformDataRowInPayrollEmployeeModel(DataRow dataRow)
-        {
-            var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
-            var birthDate = utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
-            var gender = utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
-            var salary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
-            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
-            var hoursDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursDate"]);
-            var hoursNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursNumber"]);
-            var companyAssociaton = utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
-
-            var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
-            var payrollStartDate = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollStartDate"]);
-            
-            var benefitDependantNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["benefitDependantNumber"]);
-            var formulaType = utilityRepository.ConvertDatabaseValueToString(dataRow["formulaType"]);
-            var apiUrl = utilityRepository.ConvertDatabaseValueToString(dataRow["apiUrl"]);
-            var apiMethod = utilityRepository.ConvertDatabaseValueToString(dataRow["apiMethod"]);
-            var param1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Value"]);
-            var param2Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Value"]);
-            var param3Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Value"]);
-            var param1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Key"]);
-            var param2Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Key"]);
-            var param3Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Key"]);
-            var header1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Value"]);
-            var header1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Key"]);
-
-            var previousComputedGrossSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
-
-            //var hiringDate = utilityRepository.ConvertDatabaseValueToString(dataRow["fechaContratacion"]);
-            //var grossSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["salarioBruto"]);
-            //var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["tipoContrato"]);
-            //var hoursDate = utilityRepository.ConvertDatabaseValueToString(dataRow["fechaHoras"]);
-            //var hoursWorked = utilityRepository.ConvertDatabaseValueToString(dataRow["horasTrabajadas"]);
-            //var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
-            //var actualHoursWorked = hoursWorked != "" ? Convert.ToInt32(hoursWorked) : 0;
-            //var actualGrossSalary = Convert.ToDouble(grossSalary);
-            //return new GrossSalaryModel
-            //{
-            //    EmployeeId = employeeId,
-            //    HiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
-            //    ComputedGrossSalary = actualGrossSalary,
-            //    GrossSalary = actualGrossSalary,
-            //    HiringType = hiringType,
-            //    HoursDate = actualHoursDate,
-            //    HoursWorked = actualHoursWorked,
-            //};
-        }
-
         private SqlCommand createPayrollEmployeeTableCommand(string employerId, DateOnly startDate, DateOnly endDate)
         {
             var query = createPayrollTableQuery();
@@ -141,7 +181,7 @@ namespace back_end.Infraestructure
             + "c.salarioBruto salary, c.tipoContrato hiringType, "
             + "h.fecha hoursDate, h.horasTrabajadas hoursNumber, "
             + "j.nombreAsociacion companyAssociation, "
-            + "bp.cantidadDependientes benefitDependantNumber, "
+            + "bp.cantidadDependientes dependantNumber, "
             + "d.id deductionId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, "
             + "f.paramDos param2Value, f.paramTres param3Value, "
             + "a.paramUnoClave param1Key, a.paramDosClave param2Key, "
