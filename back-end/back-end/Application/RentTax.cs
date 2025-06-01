@@ -42,38 +42,39 @@ namespace back_end.Application
 
     public double calculateRentTax(double grossSalary)
     {
-      double calculatedTax;
+      if (grossSalary <= TIER_1_LIMIT)
+        return 0;
 
-      switch (grossSalary)
-      {
-        case <= TIER_1_LIMIT:
-          calculatedTax = 0;
-          break;
+      double totalTax = 0;
 
-        case <= TIER_2_LIMIT:
-          calculatedTax = (grossSalary - TIER_1_LIMIT) * TIER_2_RATE;
-          break;
+      totalTax += CalculateTierTax(grossSalary, TIER_1_LIMIT, TIER_2_LIMIT
+        , TIER_2_RATE);
+      totalTax += CalculateTierTax(grossSalary, TIER_2_LIMIT, TIER_3_LIMIT
+        , TIER_3_RATE);
+      totalTax += CalculateTierTax(grossSalary, TIER_3_LIMIT, TIER_4_LIMIT
+        , TIER_4_RATE);
+      totalTax += CalculateExcessTax(grossSalary, TIER_4_LIMIT, TIER_5_RATE);
 
-        case <= TIER_3_LIMIT:
-          calculatedTax = (TIER_2_LIMIT - TIER_1_LIMIT) * TIER_2_RATE +
-                          (grossSalary - TIER_2_LIMIT) * TIER_3_RATE;
-          break;
+      return totalTax;
+    }
 
-        case <= TIER_4_LIMIT:
-          calculatedTax = (TIER_2_LIMIT - TIER_1_LIMIT) * TIER_2_RATE +
-                          (TIER_3_LIMIT - TIER_2_LIMIT) * TIER_3_RATE +
-                          (grossSalary - TIER_3_LIMIT) * TIER_4_RATE;
-          break;
+    private double CalculateTierTax(double salary, double lowerLimit
+      , double upperLimit, double rate)
+    {
+      if (salary <= lowerLimit)
+        return 0;
 
-        default:
-          calculatedTax = (TIER_2_LIMIT - TIER_1_LIMIT) * TIER_2_RATE +
-                          (TIER_3_LIMIT - TIER_2_LIMIT) * TIER_3_RATE +
-                          (TIER_4_LIMIT - TIER_3_LIMIT) * TIER_4_RATE +
-                          (grossSalary - TIER_4_LIMIT) * TIER_5_RATE;
-          break;
-      }
+      double taxableAmount = Math.Min(salary, upperLimit) - lowerLimit;
+      return taxableAmount * rate;
+    }
 
-      return calculatedTax;
+    private double CalculateExcessTax(double salary, double lowerLimit
+      , double rate)
+    {
+      if (salary <= lowerLimit)
+        return 0;
+
+      return (salary - lowerLimit) * rate;
     }
   }
 }
