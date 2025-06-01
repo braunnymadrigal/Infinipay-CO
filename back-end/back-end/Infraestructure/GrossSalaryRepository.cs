@@ -81,7 +81,7 @@ namespace back_end.Infraestructure
             + "h.fecha hoursDate, h.horasTrabajadas hoursNumber, "
             + "j.nombreAsociacion companyAssociation, "
             + "bp.cantidadDependientes benefitDependantNumber, "
-            + "f.id formulaId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, "
+            + "d.id deductionId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, "
             + "f.paramDos param2Value, f.paramTres param3Value, "
             + "a.paramUnoClave param1Key, a.paramDosClave param2Key, "
             + "a.paramTresClave param3Key, a.metodo apiMethod, "
@@ -110,7 +110,7 @@ namespace back_end.Infraestructure
             + ") payroll "
             + "WHERE(payroll.payrollState = 'completado' or payroll.payrollState is NULL) AND "
             + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) "
-            + "ORDER BY payroll.id, payroll.formulaId, payroll.payrollStartDate";
+            + "ORDER BY payroll.id, payroll.deductionId, payroll.payrollStartDate";
             return query;
         }
     }
