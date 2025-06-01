@@ -1,6 +1,4 @@
 ﻿using System.Data;
-using System.Diagnostics.Contracts;
-using System.Reflection;
 using back_end.Domain;
 using Microsoft.Data.SqlClient;
 
@@ -52,10 +50,15 @@ namespace back_end.Infraestructure
             var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
             var actualHoursWorked = hoursWorked != "" ? Convert.ToInt32(hoursWorked) : 0;
             var actualGrossSalary = Convert.ToDouble(grossSalary);
-            return new GrossSalaryModel {
-                EmployeeId = employeeId, HiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
-                ComputedGrossSalary = actualGrossSalary, GrossSalary = actualGrossSalary, HiringType = hiringType,
-                HoursDate = actualHoursDate, HoursWorked = actualHoursWorked,
+            return new GrossSalaryModel
+            {
+                EmployeeId = employeeId,
+                HiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
+                ComputedGrossSalary = actualGrossSalary,
+                GrossSalary = actualGrossSalary,
+                HiringType = hiringType,
+                HoursDate = actualHoursDate,
+                HoursWorked = actualHoursWorked,
             };
         }
 
@@ -69,48 +72,20 @@ namespace back_end.Infraestructure
             return command;
         }
 
-        private string CreatePayrollTableQuery()
+        private string CreateGrossSalaryTableQuery()
         {
-            var query = "SELECT * FROM "
-            + "( "
-            + "SELECT "
-            + "p.id id, p.fechaNacimiento birthDate, "
-            + "pf.genero gender, "
-            + "e.fechaContratacion hiringDate, "
-            + "c.salarioBruto salary, c.tipoContrato hiringType, "
-            + "h.fecha hoursDate, h.horasTrabajadas hoursNumber, "
-            + "j.nombreAsociacion companyAssociation, "
-            + "bp.cantidadDependientes benefitDependantNumber, "
-            + "d.id deductionId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, "
-            + "f.paramDos param2Value, f.paramTres param3Value, "
-            + "a.paramUnoClave param1Key, a.paramDosClave param2Key, "
-            + "a.paramTresClave param3Key, a.metodo apiMethod, "
-            + "a.headerUnoValor header1Value, a.headerUnoValor header1Key, "
-            + "dp.salarioBruto previousComputedGrossSalary, "
-            + "pla.estado payrollState, pla.fechaInicio payrollStartDate "
-            + "FROM Persona p "
-            + "INNER JOIN Empleado e on e.idPersonaFisica = p.id "
-            + "INNER JOIN PersonaFisica pf on pf.id = p.id "
-            + "INNER JOIN Contrato as c on c.idEmpleado = e.idPersonaFisica "
-            + "LEFT JOIN Horas as h on h.idEmpleado = e.idPersonaFisica "
-            + "and h.[fecha] = ( "
-            + "     SELECT fechaHoras "
-            + "     FROM function_getEmployeeCurrentHours(e.[idPersonaFisica], @startDate, @endDate) "
-            + "     ) "
-            + "INNER JOIN Empleador o on o.idPersonaFisica = e.idEmpleadorContratador "
-            + "INNER JOIN PersonaJuridica j on j.id = o.idPersonaJuridica "
-            + "LEFT JOIN BeneficioPorEmpleado bp on bp.idEmpleado = p.id "
-            + "LEFT JOIN Beneficio b on b.id = bp.idBeneficio "
-            + "LEFT JOIN Deduccion d on d.idBeneficio = b.id "
-            + "LEFT JOIN Formula f on f.id = d.idFormula "
-            + "LEFT JOIN ApiExterna a on a.idFormula = f.id "
-            + "LEFT JOIN DetallePago dp on dp.idEmpleado = e.idPersonaFisica "
-            + "LEFT JOIN Planilla pla on pla.id = dp.idPlanilla "
-            + "WHERE e.idEmpleadorContratador = @employerId and e.fechaDespido is null "
-            + ") payroll "
-            + "WHERE(payroll.payrollState = 'completado' or payroll.payrollState is NULL) AND "
-            + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) "
-            + "ORDER BY payroll.id, payroll.deductionId, payroll.payrollStartDate";
+            var query = "SELECT "
+            + "e.[idPersonaFisica] as id, e.[fechaContratacion] as fechaContratacion, "
+            + "c.[salarioBruto] as salarioBruto, c.[tipoContrato] as tipoContrato, "
+            + "h.[fecha] as fechaHoras, h.[horasTrabajadas] as horasTrabajadas "
+            + "FROM [Empleado] as e "
+            + "FULL OUTER JOIN [Contrato] as c on c.[idEmpleado] = e.[idPersonaFisica] "
+            + "FULL OUTER JOIN [Horas] as h on h.[idEmpleado] = e.[idPersonaFisica] and "
+            + "h.[fecha] = ("
+            + "SELECT fechaHoras "
+            + "FROM function_getEmployeeCurrentHours(e.[idPersonaFisica], @startDate, @endDate)"
+            + ") "
+            + "WHERE e.[idEmpleadorContratador] = @employerId and e.[fechaDespido] is null;";
             return query;
         }
     }
