@@ -1,6 +1,8 @@
 ﻿using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using back_end.Infraestructure;
+using back_end.Application;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,8 @@ builder.Services.AddCors(options =>
                     {
                       policy.WithOrigins("http://localhost:8081", "http://localhost:8080")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                     });
 });
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -70,6 +73,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+
+// Dependency inyection here
+builder.Services.AddScoped<IEmployeeHoursRepository, EmployeeHoursRepository>();
+builder.Services.AddScoped<IEmployeeHoursQuery, EmployeeHoursQuery>();
+builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
 
 var app = builder.Build();
 
