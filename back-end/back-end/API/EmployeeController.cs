@@ -14,11 +14,13 @@ namespace back_end.API
   {
     private readonly EmployeeRepository _employeeRepository;
     private readonly IEmployeeCommand _employeeCommand;
+    private readonly IEmployeeQuery _employeeQuery;
 
     public EmployeeController()
     {
       _employeeRepository = new EmployeeRepository();
       _employeeCommand = new EmployeeCommand();
+      _employeeQuery = new EmployeeQuery();
     }
 
     [Authorize(Roles = "empleador,administrador")]
@@ -85,6 +87,27 @@ namespace back_end.API
         }
         return StatusCode(StatusCodes.Status500InternalServerError
           , new { message = "Error creando empleado", details = ex.Message });
+      }
+    }
+
+    [Authorize(Roles = "empleador,administrador")]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EmployeeModel>> GetEmployee(Guid id)
+    {
+      try
+      {
+
+        var employee = _employeeQuery.GetEmployee(id);
+        if (employee == null)
+        {
+          return NotFound(new { message = "Empleado no encontrado" });
+        }
+        return Ok(employee);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError
+          , new { message = "Error obteniendo empleado", details = ex.Message });
       }
     }
 
