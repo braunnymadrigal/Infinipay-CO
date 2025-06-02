@@ -11,6 +11,7 @@ namespace back_end.Domain
     public string firstLastName { get; set; }
     public string secondLastName { get; set; }
     public string identification { get; set; }
+    public string nickname { get; set; }
     public string email { get; set; }
     public string phoneNumber { get; set; }
     public string role { get; set; }

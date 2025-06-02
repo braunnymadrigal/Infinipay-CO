@@ -1,5 +1,6 @@
 ﻿using back_end.Infraestructure;
 using back_end.Domain;
+using back_end.Application;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -12,10 +13,12 @@ namespace back_end.API
   public class EmployeeController : ControllerBase
   {
     private readonly EmployeeRepository _employeeRepository;
+    private readonly IEmployeeCommand _employeeCommand;
 
     public EmployeeController()
     {
       _employeeRepository = new EmployeeRepository();
+      _employeeCommand = new EmployeeCommand();
     }
 
     [Authorize(Roles = "empleador,administrador")]
@@ -82,6 +85,26 @@ namespace back_end.API
         }
         return StatusCode(StatusCodes.Status500InternalServerError
           , new { message = "Error creando empleado", details = ex.Message });
+      }
+    }
+
+    [Authorize(Roles = "empleador,administrador")]
+    [HttpPut("{id}")]
+    public async Task<ActionResult<bool>> UpdateEmployee(Guid id, EmployeeModel employee)
+    {
+      try
+      {
+        if (employee == null)
+        {
+          return BadRequest();
+        }
+        _employeeCommand.UpdateEmployeeData(employee, id);
+        return Ok(true);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError
+          , new { message = "Error actualizando empleado", details = ex.Message });
       }
     }
   }
