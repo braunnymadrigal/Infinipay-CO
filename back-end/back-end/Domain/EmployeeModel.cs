@@ -16,7 +16,7 @@ namespace back_end.Domain
     [Required]
     public string firstName { get; set; }
 
-    public string secondName { get; set; }
+    public string? secondName { get; set; }
 
     [Required]
     public string firstLastName { get; set; }
@@ -37,6 +37,8 @@ namespace back_end.Domain
 
     [Required]
     public string username { get; set; }
+
+    public string? password { get; set; }
 
     [Required]
     public string gender { get; set; }
