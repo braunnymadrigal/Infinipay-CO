@@ -4,6 +4,7 @@ namespace back_end.Application
 {
     public interface ITaxCCSS
     {
-        List<TaxCCSSModel> ComputeTaxesCCSS(List<GrossSalaryModel> grossSalaries);
+        List<PayrollEmployeeModel> computeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees, 
+            DateOnly endDate);
     }
 }

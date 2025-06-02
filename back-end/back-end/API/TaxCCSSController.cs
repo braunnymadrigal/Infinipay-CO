@@ -1,6 +1,5 @@
 ﻿using back_end.Application;
 using back_end.Domain;
-using back_end.Infraestructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,15 +15,17 @@ namespace back_end.API
             taxCCSS = new TaxCCSS();
         }
 
-        [Authorize(Roles = "empleador")]
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult ComputeTaxesCCSS(List<GrossSalaryModel> grossSalaries)
+        public IActionResult ComputeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees, 
+            DateOnly endDate)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var taxesCCSS = taxCCSS.ComputeTaxesCCSS(grossSalaries);
-                iActionResult = Ok(taxesCCSS);
+                payrollEmployees = taxCCSS.computeTaxesCCSS(payrollEmployees, 
+                    endDate);
+                iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)
             {
