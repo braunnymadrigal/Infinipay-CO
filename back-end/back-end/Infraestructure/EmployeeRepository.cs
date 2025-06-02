@@ -66,6 +66,180 @@ namespace back_end.Infraestructure
       throw new Exception("No se encontró un usuario con ese ID.");
     }
 
+    private EmployeeModel mapEmployee(SqlDataReader reader)
+    {
+      var fechaNacimiento = reader.GetDateTime(reader.GetOrdinal("fechaNacimiento"));
+      var fechaContratacion = reader.GetDateTime(reader.GetOrdinal("fechaContratacion"));
+      var fechaCreacion = reader.GetDateTime(reader.GetOrdinal("fechaCreacion"));
+
+      return new EmployeeModel
+      {
+          email = reader["correoElectronico"].ToString(),
+          idNumber = reader["identificacion"].ToString(),
+          phoneNumber = reader["numeroTelefono"].ToString(),
+          firstName = reader["primerNombre"].ToString(),
+          secondName = reader["segundoNombre"] as string,
+          firstLastName = reader["primerApellido"].ToString(),
+          secondLastName = reader["segundoApellido"].ToString(),
+          gender = reader["genero"].ToString(),
+          province = reader["provincia"].ToString(),
+          canton = reader["canton"].ToString(),
+          district = reader["distrito"].ToString(),
+          otherSigns = reader["otrasSenas"].ToString(),
+          role = reader["rol"].ToString(),
+          username = reader["nickname"].ToString(),
+          password = reader["contrasena"]?.ToString(),
+          birthDay = fechaNacimiento.Day,
+          birthMonth = fechaNacimiento.Month,
+          birthYear = fechaNacimiento.Year,
+          hireDay = fechaContratacion.Day,
+          hireMonth = fechaContratacion.Month,
+          hireYear = fechaContratacion.Year,
+          creationDay = fechaCreacion.Day,
+          creationMonth = fechaCreacion.Month,
+          creationYear = fechaCreacion.Year,
+          salary = Convert.ToInt32(reader["salarioBruto"]),
+          reportsHours = Convert.ToInt32(reader["reportaHoras"]),
+          typeContract = reader["tipoContrato"].ToString()
+      };
+    }
+
+
+    public EmployeeModel GetEmployeeById(Guid id)
+    {
+      using (var connection = GetConnection())
+      {
+        connection.Open();
+        Console.WriteLine("Se crea el query...");
+        var query = @"
+              SELECT p.correoElectronico, p.identificacion, 
+             p.numeroTelefono, p.fechaNacimiento,
+             pf.primerNombre, pf.segundoNombre, 
+             pf.primerApellido, pf.segundoApellido, 
+             pf.genero, d.provincia, d.canton, d.distrito, 
+             d.otrasSenas, e.rol, e.fechaContratacion, u.nickname,
+             u.contrasena, c.fechaCreacion, c.reportaHoras, c.salarioBruto, 
+             c.tipoContrato 
+            FROM Empleado e 
+            JOIN Persona p ON p.id = e.idPersonaFisica
+            JOIN PersonaFisica pf ON pf.id = e.idPersonaFisica 
+            JOIN Direccion d ON d.idPersona = p.id
+            JOIN Usuario u ON u.idPersonaFisica = pf.id 
+            JOIN Contrato c ON c.idEmpleado = e.idPersonaFisica
+            WHERE p.id = @id";
+
+        using (var cmd = new SqlCommand(query, connection))
+        {
+          cmd.Parameters.AddWithValue("@id", id);
+
+          using (var reader = cmd.ExecuteReader())
+          {
+            if (reader.Read())
+            {
+              try
+              {
+                return mapEmployee(reader);
+              }
+              catch (Exception ex)
+              {
+                Debug.WriteLine("Error reading employee data: " + ex.Message);
+                throw new Exception("Error al leer los datos del empleado.");
+              }
+            }
+          }
+        }
+      }
+      throw new Exception("Empleado no encontrado.");
+    }
+
+
+    private EmployeeModel mapEmployee(SqlDataReader reader)
+    {
+      var fechaNacimiento = reader.GetDateTime(reader.GetOrdinal("fechaNacimiento"));
+      var fechaContratacion = reader.GetDateTime(reader.GetOrdinal("fechaContratacion"));
+      var fechaCreacion = reader.GetDateTime(reader.GetOrdinal("fechaCreacion"));
+
+      return new EmployeeModel
+      {
+          email = reader["correoElectronico"].ToString(),
+          idNumber = reader["identificacion"].ToString(),
+          phoneNumber = reader["numeroTelefono"].ToString(),
+          firstName = reader["primerNombre"].ToString(),
+          secondName = reader["segundoNombre"] as string,
+          firstLastName = reader["primerApellido"].ToString(),
+          secondLastName = reader["segundoApellido"].ToString(),
+          gender = reader["genero"].ToString(),
+          province = reader["provincia"].ToString(),
+          canton = reader["canton"].ToString(),
+          district = reader["distrito"].ToString(),
+          otherSigns = reader["otrasSenas"].ToString(),
+          role = reader["rol"].ToString(),
+          username = reader["nickname"].ToString(),
+          password = reader["contrasena"]?.ToString(),
+          birthDay = fechaNacimiento.Day,
+          birthMonth = fechaNacimiento.Month,
+          birthYear = fechaNacimiento.Year,
+          hireDay = fechaContratacion.Day,
+          hireMonth = fechaContratacion.Month,
+          hireYear = fechaContratacion.Year,
+          creationDay = fechaCreacion.Day,
+          creationMonth = fechaCreacion.Month,
+          creationYear = fechaCreacion.Year,
+          salary = Convert.ToInt32(reader["salarioBruto"]),
+          reportsHours = Convert.ToInt32(reader["reportaHoras"]),
+          typeContract = reader["tipoContrato"].ToString()
+      };
+    }
+
+
+    public EmployeeModel GetEmployeeById(Guid id)
+    {
+      using (var connection = GetConnection())
+      {
+        connection.Open();
+        Console.WriteLine("Se crea el query...");
+        var query = @"
+              SELECT p.correoElectronico, p.identificacion, 
+             p.numeroTelefono, p.fechaNacimiento,
+             pf.primerNombre, pf.segundoNombre, 
+             pf.primerApellido, pf.segundoApellido, 
+             pf.genero, d.provincia, d.canton, d.distrito, 
+             d.otrasSenas, e.rol, e.fechaContratacion, u.nickname,
+             u.contrasena, c.fechaCreacion, c.reportaHoras, c.salarioBruto, 
+             c.tipoContrato 
+            FROM Empleado e 
+            JOIN Persona p ON p.id = e.idPersonaFisica
+            JOIN PersonaFisica pf ON pf.id = e.idPersonaFisica 
+            JOIN Direccion d ON d.idPersona = p.id
+            JOIN Usuario u ON u.idPersonaFisica = pf.id 
+            JOIN Contrato c ON c.idEmpleado = e.idPersonaFisica
+            WHERE p.id = @id";
+
+        using (var cmd = new SqlCommand(query, connection))
+        {
+          cmd.Parameters.AddWithValue("@id", id);
+
+          using (var reader = cmd.ExecuteReader())
+          {
+            if (reader.Read())
+            {
+              try
+              {
+                return mapEmployee(reader);
+              }
+              catch (Exception ex)
+              {
+                Debug.WriteLine("Error reading employee data: " + ex.Message);
+                throw new Exception("Error al leer los datos del empleado.");
+              }
+            }
+          }
+        }
+      }
+      throw new Exception("Empleado no encontrado.");
+    }
+
+
     public bool createNewEmployee(EmployeeModel employee, string loggedId)
     {
       using (var connection = GetConnection())
@@ -112,7 +286,6 @@ namespace back_end.Infraestructure
         {
           try
           {
-          
             var currentData = GetEmployeeCurrentData(id, transaction);
             if (currentData == null)
             {
@@ -327,6 +500,7 @@ namespace back_end.Infraestructure
         throw new Exception("Update failed: UpdateEmployeeContractDetails.");
       return true;
     }
+
   }
 }
 
