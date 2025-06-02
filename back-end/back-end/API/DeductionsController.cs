@@ -21,12 +21,12 @@ namespace back_end.API
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult ComputeDeductions(List<PayrollEmployeeModel> payrollEmployees)
+        public async Task<IActionResult> ComputeDeductions(List<PayrollEmployeeModel> payrollEmployees)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                payrollEmployees = deduction.computeDeductions(payrollEmployees);
+                payrollEmployees = await deduction.computeDeductions(payrollEmployees);
                 iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)
