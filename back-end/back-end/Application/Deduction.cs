@@ -15,6 +15,9 @@ namespace back_end.Application
         private const string FEMALE_IN_ENGLISH = "female";
         private const string FEMALE_IN_SPANISH = "femenino";
 
+        private const string FRIENDS_API_JSON_RETURN_KEY = "monthlyCost";
+        private const string GEEMS_API_JSON_RETURN_KEY = "amountToCharge";
+
         private const string VORLAGENERSTELLER_API_URL = 
             "https://mediseguro-vorlagenersteller-d4hmbvf7frg7aqan.southcentralus-01.azurewebsites.net/api/MediSeguroMonto";
         private const string FRIENDS_API_URL =
@@ -83,7 +86,7 @@ namespace back_end.Application
                 default:
                     throw new Exception("Unknown API can not be used.");
             }
-            var extractedValue = extractDoubleValue(myJsonDoc);
+            var extractedValue = extractDoubleValue(myJsonDoc.RootElement);
             deduction.resultAmount = extractedValue;
             return deduction;
         }
@@ -177,31 +180,27 @@ namespace back_end.Application
             return translatedGender;
         }
 
-        private double extractDoubleValue(JsonDocument doc)
+        private double extractDoubleValue(JsonElement rootElement)
         {
-            var root = doc.RootElement;
-
-            if (root.ValueKind == JsonValueKind.Number)
+            switch (rootElement.ValueKind)
             {
-                return root.GetDouble();
+                case JsonValueKind.Number:
+                    return rootElement.GetDouble();
+                case JsonValueKind.Object:
+                    if (rootElement.TryGetProperty(FRIENDS_API_JSON_RETURN_KEY, out var monthlyCostProp) 
+                        && monthlyCostProp.ValueKind == JsonValueKind.Number)
+                    {
+                        return monthlyCostProp.GetDouble();
+                    }
+                    if (rootElement.TryGetProperty(GEEMS_API_JSON_RETURN_KEY, out var amountToChargeProp) 
+                        && amountToChargeProp.ValueKind == JsonValueKind.Number)
+                    {
+                        return amountToChargeProp.GetDouble();
+                    }
+                    throw new Exception("No numeric fields found in Json object.");
+                default:
+                    throw new Exception("Unsupported JsonElement format.");
             }
-
-            if (root.ValueKind == JsonValueKind.Object)
-            {
-                if (root.TryGetProperty("monthlyCost", out var monthlyCostProp) && monthlyCostProp.ValueKind == JsonValueKind.Number)
-                {
-                    return monthlyCostProp.GetDouble();
-                }
-
-                if (root.TryGetProperty("amountToCharge", out var amountToChargeProp) && amountToChargeProp.ValueKind == JsonValueKind.Number)
-                {
-                    return amountToChargeProp.GetDouble();
-                }
-
-                throw new Exception("No known numeric fields found in JSON object.");
-            }
-
-            throw new Exception("Unsupported JSON format.");
         }
     }
 }
