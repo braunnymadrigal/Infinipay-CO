@@ -5,7 +5,7 @@ namespace back_end.Application
     public interface IContextGrossSalaryComputation
     {
         void SetStrategy(IStrategyGrossSalaryComputation strategy);
-        void SetRangeOfDates(DateOnly startDate, DateOnly endDate);
-        List<GrossSalaryModel> ComputeGrossSalary(List<GrossSalaryModel> grossSalaries);
+        List<PayrollEmployeeModel> ComputeGrossSalary(List<PayrollEmployeeModel> 
+            grossSalaries, DateOnly startDate, DateOnly endDate);
     }
 }

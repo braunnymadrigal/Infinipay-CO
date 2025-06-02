@@ -4,8 +4,6 @@ namespace back_end.Application
 {
     public class ContextGrossSalaryComputation : IContextGrossSalaryComputation
     {
-        private DateOnly startDate;
-        private DateOnly endDate;
         private IStrategyGrossSalaryComputation? strategy;
 
         public void SetStrategy(IStrategyGrossSalaryComputation strategy)
@@ -13,21 +11,16 @@ namespace back_end.Application
             this.strategy = strategy;
         }
 
-        public void SetRangeOfDates(DateOnly startDate, DateOnly endDate)
-        {
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-
-        public List<GrossSalaryModel> ComputeGrossSalary(List<GrossSalaryModel> grossSalaries)
+        public List<PayrollEmployeeModel> ComputeGrossSalary(List<PayrollEmployeeModel> payrollEmployees,
+            DateOnly startDate, DateOnly endDate)
         {
             HandleErrorsProvokedByBadInitialization();
-            return (strategy.ComputeGrossSalary(grossSalaries, startDate, endDate));
+            return (strategy.ComputeGrossSalary(payrollEmployees, startDate, endDate));
         }
 
         private void HandleErrorsProvokedByBadInitialization()
         {
-            if (strategy == null || startDate == DateOnly.MinValue || endDate == DateOnly.MaxValue)
+            if (strategy == null)
             {
                 throw new Exception("ContextGrossSalaryComputation has not been setted correctly.");
             }

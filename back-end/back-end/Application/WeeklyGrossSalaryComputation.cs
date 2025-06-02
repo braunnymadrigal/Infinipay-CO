@@ -4,13 +4,13 @@ namespace back_end.Application
 {
     public class WeeklyGrossSalaryComputation : IStrategyGrossSalaryComputation
     {
-        public List<GrossSalaryModel> ComputeGrossSalary(List<GrossSalaryModel> grossSalaries, DateOnly startDate, DateOnly endDate)
+        public List<PayrollEmployeeModel> ComputeGrossSalary(List<PayrollEmployeeModel> payrollEmployees, DateOnly startDate, DateOnly endDate)
         {
-            foreach (var grossSalary in grossSalaries)
+            foreach (var payrollEmployee in payrollEmployees)
             {
-                grossSalary.ComputedGrossSalary = grossSalary.GrossSalary * grossSalary.HoursWorked;
+                payrollEmployee.computedGrossSalary = payrollEmployee.rawGrossSalary * payrollEmployee.hoursNumber;
             }
-            return grossSalaries;
+            return payrollEmployees;
         }
     }
 }
