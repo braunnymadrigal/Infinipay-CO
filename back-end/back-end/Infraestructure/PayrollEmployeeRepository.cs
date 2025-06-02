@@ -191,7 +191,7 @@ namespace back_end.Infraestructure
             + "f.paramDos param2Value, f.paramTres param3Value, "
             + "a.paramUnoClave param1Key, a.paramDosClave param2Key, "
             + "a.paramTresClave param3Key, a.metodo apiMethod, "
-            + "a.headerUnoValor header1Value, a.headerUnoValor header1Key, "
+            + "a.headerUnoValor header1Value, a.headerUnoClave header1Key, "
             + "dp.salarioBruto previousComputedGrossSalary, "
             + "pla.id payrollId, pla.estado payrollState, pla.fechaInicio payrollStartDate "
             + "FROM Persona p "
