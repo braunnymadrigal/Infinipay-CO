@@ -17,12 +17,14 @@ namespace back_end.API
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult ComputeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees)
+        public IActionResult ComputeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees, 
+            DateOnly endDate)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                payrollEmployees = taxCCSS.ComputeTaxesCCSS(payrollEmployees);
+                payrollEmployees = taxCCSS.computeTaxesCCSS(payrollEmployees, 
+                    endDate);
                 iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)

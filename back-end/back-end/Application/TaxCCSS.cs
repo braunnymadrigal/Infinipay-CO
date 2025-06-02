@@ -8,43 +8,80 @@ namespace back_end.Application
         private const double P_VALUE_ON_DECIMAL_SQL_TYPE = 11.0;
         private const double S_VALUE_ON_DECIMAL_SQL_TYPE = 2.0;
         private const double EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE = 10.0;
+        private const double EMPLOYER_TAX_PERCENT = 0.1467;
+        private const double EMPLOYEE_TAX_PERCENT = 0.0967;
+        private const double MINIMUM_MONTHLY_CONTRIBUTION = 163669.0;
+
+        private const int DAYS_IN_A_WEEK = 7;
+        private const int BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 15;
+        private const int MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 30;
+        private const int MONTHS_TO_SUBSTRACT = -1;
 
         private const string HIRING_TYPE_EXCLUDED_FROM_TAXES = "servicios";
 
-        private const double EMPLOYER_TAX_PERCENT = 0.1467;
-        private const double EMPLOYEE_TAX_PERCENT = 0.0967;
-
-        public List<PayrollEmployeeModel> ComputeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees)
+        public List<PayrollEmployeeModel> computeTaxesCCSS(List<PayrollEmployeeModel> 
+            payrollEmployees, DateOnly endDate)
         {
             for (int i = 0; i < payrollEmployees.Count; ++i)
             {
-                payrollEmployees[i] = ComputeTaxCCSS(payrollEmployees[i]);
+                payrollEmployees[i] = computeTaxCCSS(payrollEmployees[i], endDate);
             }
             return payrollEmployees;
         }
 
-        private PayrollEmployeeModel ComputeTaxCCSS(PayrollEmployeeModel payrollEmployee)
+        private PayrollEmployeeModel computeTaxCCSS(PayrollEmployeeModel payrollEmployee, 
+            DateOnly endDate)
         {
-            ValidateComputedGrossSalary(payrollEmployee.computedGrossSalary);
+            validateComputedGrossSalary(payrollEmployee.computedGrossSalary);
             var employeeTax = 0.0;
             var employerTax = 0.0;
             if (payrollEmployee.hiringType != HIRING_TYPE_EXCLUDED_FROM_TAXES)
             {
-                employeeTax = payrollEmployee.computedGrossSalary * EMPLOYEE_TAX_PERCENT;
-                employerTax = payrollEmployee.computedGrossSalary * EMPLOYER_TAX_PERCENT;
+                var grossSalary = payrollEmployee.computedGrossSalary;
+                if (isTheEndOfTheMonth(endDate))
+                {
+                    var sumOfSalaries = sumPreviousSalaries(
+                        payrollEmployee.previousComputedGrossSalaries, 
+                        endDate.AddMonths(MONTHS_TO_SUBSTRACT));
+                    if (sumOfSalaries + grossSalary < MINIMUM_MONTHLY_CONTRIBUTION)
+                    {
+                        grossSalary = (MINIMUM_MONTHLY_CONTRIBUTION - sumOfSalaries);
+                    }
+                }
+                employeeTax = grossSalary * EMPLOYEE_TAX_PERCENT;
+                employerTax = grossSalary * EMPLOYER_TAX_PERCENT;
             }
             payrollEmployee.ccssEmployeeDeduction = employeeTax;
             payrollEmployee.ccssEmployerDeduction = employerTax;
             return payrollEmployee;
         }
 
-        private void ValidateComputedGrossSalary(double computedGrossSalary)
+        private double sumPreviousSalaries(List<PayrollPreviousComputedGrossSalary> salaries, 
+            DateOnly minimumDate)
         {
-            ValidateComputedGrossSalaryGreaterThanZero(computedGrossSalary);
-            ValidateComputedGrossSalarySize(computedGrossSalary);
+            var sum = 0.0;
+            foreach (var salary in salaries)
+            {
+                if (salary.startDate > minimumDate)
+                {
+                    sum += salary.amount;
+                }
+            }
+            return sum;
         }
 
-        private void ValidateComputedGrossSalarySize(double computedGrossSalary)
+        private bool isTheEndOfTheMonth(DateOnly endDate)
+        {
+            return !(endDate.Month == endDate.AddDays(DAYS_IN_A_WEEK).Month);
+        }
+
+        private void validateComputedGrossSalary(double computedGrossSalary)
+        {
+            validateComputedGrossSalaryGreaterThanZero(computedGrossSalary);
+            validateComputedGrossSalarySize(computedGrossSalary);
+        }
+
+        private void validateComputedGrossSalarySize(double computedGrossSalary)
         {
             var maxSize = 
                 (Math.Pow(
@@ -59,7 +96,7 @@ namespace back_end.Application
             }
         }
 
-        private void ValidateComputedGrossSalaryGreaterThanZero(double computedGrossSalary)
+        private void validateComputedGrossSalaryGreaterThanZero(double computedGrossSalary)
         {
             if (computedGrossSalary < 0)
             {
