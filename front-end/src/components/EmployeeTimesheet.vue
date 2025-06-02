@@ -48,7 +48,7 @@
       <tbody>
         <tr>
           <td class="weekHeader"
-              v-for="(day, index) in workWeek" :key="day.toISOString()">
+              v-for="(day, index) in workWeek" :key="formatDate(day)">
             <div class="d-flex justify-content-left gap-2"
                  style="color: #405d72">
               <span style="font-size: 12px">
@@ -189,7 +189,11 @@
         }
       },
       formatDate(date) {
-        return date.toISOString().split('T')[0];
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
       },
       async getEmployeeHours() {
         this.isLoading = true;
@@ -198,7 +202,12 @@
         try {
           if (this.baseDate <= this.getMonday(this.currentDate)) {
 
-            const sunday = new Date(this.baseDate);
+            const sunday = new Date(
+              this.baseDate.getFullYear(),
+              this.baseDate.getMonth(),
+              this.baseDate.getDate()
+            );
+
             sunday.setDate(sunday.getDate() + 6);
 
             const employeeHours = await this.$api.getEmployeeHours(
@@ -231,14 +240,13 @@
             }));
 
           if (payload.length !== 0) {
-            const success = await this.$api.registerEmployeeHours(payload);
-            console.log(success.data);
+            await this.$api.registerEmployeeHours(payload);
           }
         } catch (error) {
-          console.error("Error fetching employee hours:", error);
+          console.error("Error registering employee hours:", error);
         } finally {
           this.isLoading = false;
-          window.location.href = "/EmployeeTimesheet";
+          // window.location.href = "/EmployeeTimesheet";
         }
       },
       getMonday(date) {
@@ -259,15 +267,20 @@
         this.baseDate = this.getMonday(newDate);
       },
       resetHours() {
+        const base = new Date(
+          this.baseDate.getFullYear(),
+          this.baseDate.getMonth(),
+          this.baseDate.getDate()
+        );
+
         this.hours = Array(7).fill(0).map((_, i) => {
-          const date = new Date(this.baseDate);
-          date.setDate(this.baseDate.getDate() + i);
+          const date = new Date(base);
+          date.setDate(date.getDate() + i);
           return [this.formatDate(date), 0];
         });
       },
       alreadyRegistered(day) {
         const dateObj = day instanceof Date ? day : new Date(day);
-
         return Object.prototype.hasOwnProperty.call(
           this.monthlyHours, this.formatDate(dateObj));
       }
@@ -330,12 +343,15 @@
       getBackgroundColor(day) {
         const formattedDay = this.formatDate(day);
 
-        if (!this.alreadyRegistered(formattedDay)) {
+        const entry = this.monthlyHours[formattedDay];
+        if (!entry) {
           return "#fff8f3";
-        } else if (this.monthlyHours[formattedDay].approved == null) {
-          return "#ff8667"
-        } else if (this.monthlyHours[formattedDay].approved) {
-          return "#7fd1ae"
+        }
+
+        if (entry.approved == null) {
+          return "#ff8667"; // Pending
+        } else if (entry.approved === true) {
+          return "#7fd1ae";
         } else {
           return "#c35355";
         }
