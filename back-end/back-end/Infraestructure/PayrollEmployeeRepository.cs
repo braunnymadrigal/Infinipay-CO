@@ -215,7 +215,8 @@ namespace back_end.Infraestructure
             + "WHERE e.idEmpleadorContratador = @employerId and e.fechaDespido is null "
             + ") payroll "
             + "WHERE(payroll.payrollState = 'completado' or payroll.payrollState is NULL) AND "
-            + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) "
+            + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) AND "
+            + "(payroll.hiringDate <= @endDate) "
             + "ORDER BY payroll.id, payroll.deductionId, payroll.payrollStartDate";
             return query;
         }
