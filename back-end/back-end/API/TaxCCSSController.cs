@@ -22,8 +22,8 @@ namespace back_end.API
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var taxesCCSS = taxCCSS.ComputeTaxesCCSS(payrollEmployees);
-                iActionResult = Ok(taxesCCSS);
+                payrollEmployees = taxCCSS.ComputeTaxesCCSS(payrollEmployees);
+                iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)
             {
