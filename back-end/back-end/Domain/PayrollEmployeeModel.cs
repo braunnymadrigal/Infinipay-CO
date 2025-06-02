@@ -15,6 +15,6 @@
         public required int hoursNumber { get; set; }
         public required string companyAssociation { get; set; }
         public required List<PayrollDeductionModel> deductions { get; set; }
-        public required List<double> previousComputedGrossSalaries { get; set; }
+        public required List<PayrollPreviousComputedGrossSalary> previousComputedGrossSalaries { get; set; }
     }
 }

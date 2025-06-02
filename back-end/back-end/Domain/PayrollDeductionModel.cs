@@ -15,5 +15,6 @@
         public required string param3Key { get; set; }
         public required string header1Value { get; set; }
         public required string header1Key { get; set; }
+        public required double resultAmount { get; set; }
     }
 }

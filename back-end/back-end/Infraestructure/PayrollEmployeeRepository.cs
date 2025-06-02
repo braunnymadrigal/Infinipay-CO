@@ -31,32 +31,33 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> transformDataTablePayrollEmployeeList(DataTable dataTable)
         {
             checkDataTableCorrectness(dataTable);
-            List<PayrollEmployeeModel> payrollEmployees = new List<PayrollEmployeeModel>();
-            int payrollEmployeesIndex = PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX;
+            var payrollEmployees = new List<PayrollEmployeeModel>();
+            var payrollEmployeesIndex = PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX;
             var previousId = "";
-            var previousDeductionId = "";
+            var deductionIds = new HashSet<string>();
+            var payrollIds = new HashSet<string>();
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
                 var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
+                var payrollId = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
                 if (previousId != id)
                 {
-                    addPayrollEmployeeModel(payrollEmployees, payrollEmployeesIndex, dataRow);
-                    previousId = id;
-                    previousDeductionId = deductionId;
                     ++payrollEmployeesIndex;
+                    payrollEmployees = addPayrollEmployeeModel(payrollEmployees, payrollEmployeesIndex, dataRow);
+                    previousId = id;
+                    deductionIds.Clear();
+                    payrollIds.Clear();
                 }
-                else
+                if (deductionIds.Contains(deductionId) == false)
                 {
-                    if (previousDeductionId != deductionId)
-                    {
-                        addPayrollDeductionModel(payrollEmployees, payrollEmployeesIndex, dataRow);
-                        previousDeductionId = deductionId;
-                    } 
-                    else 
-                    {
-                        payrollEmployees = addPreviousComputedSalary(payrollEmployees, payrollEmployeesIndex, dataRow);
-                    }
+                    payrollEmployees = addPayrollDeductionModel(payrollEmployees, payrollEmployeesIndex, dataRow);
+                    deductionIds.Add(deductionId);
+                }
+                if (payrollIds.Contains(payrollId) == false)
+                {
+                    payrollEmployees = addPreviousComputedSalary(payrollEmployees, payrollEmployeesIndex, dataRow);
+                    payrollIds.Add(payrollId);
                 }
             }
             return payrollEmployees;
@@ -91,10 +92,9 @@ namespace back_end.Infraestructure
                 hoursNumber = actualHoursNumber,
                 companyAssociation = companyAssociaton,
                 deductions = new List<PayrollDeductionModel>(),
-                previousComputedGrossSalaries = new List<double>()
+                previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
             };
             payrollEmployees.Add(newPayrollEmployee);
-            payrollEmployees = addPayrollDeductionModel(payrollEmployees, payrollEmployeesIndex, dataRow);
             return payrollEmployees;
         }
 
@@ -130,27 +130,31 @@ namespace back_end.Infraestructure
                     param2Key = param2Key,
                     param3Key = param3Key,
                     header1Value = header1Value,
-                    header1Key = header1Key
+                    header1Key = header1Key,
+                    resultAmount = 0
                 };
                 payrollEmployees[payrollEmployeesIndex].deductions.Add(newDeduction);
             }
-            payrollEmployees = addPreviousComputedSalary(payrollEmployees, payrollEmployeesIndex, dataRow);
             return payrollEmployees;
         }
 
         private List<PayrollEmployeeModel> addPreviousComputedSalary(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var previousComputedSalary = 
-                utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
-            if (previousComputedSalary != "")
+            var payrollId = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
+            if (payrollId != "")
             {
-                payrollEmployees[payrollEmployeesIndex]
-                    .previousComputedGrossSalaries.Add(Convert.ToDouble(previousComputedSalary));
+                var previousSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
+                var startDate = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollStartDate"]);
+                var newPreviousComputedGrossSalary = new PayrollPreviousComputedGrossSalary
+                {
+                    amount = Convert.ToDouble(previousSalary),
+                    startDate = DateOnly.FromDateTime(Convert.ToDateTime(startDate))
+                };
+                payrollEmployees[payrollEmployeesIndex].previousComputedGrossSalaries.Add(newPreviousComputedGrossSalary);
             }
             return payrollEmployees;
         }
-
 
         private void checkDataTableCorrectness(DataTable dataTable)
         {
@@ -159,6 +163,7 @@ namespace back_end.Infraestructure
                 throw new Exception("Payroll employee table could not be extracted.");
             }
         }
+
         private SqlCommand createPayrollEmployeeTableCommand(string employerId, DateOnly startDate, DateOnly endDate)
         {
             var query = createPayrollTableQuery();
@@ -188,7 +193,7 @@ namespace back_end.Infraestructure
             + "a.paramTresClave param3Key, a.metodo apiMethod, "
             + "a.headerUnoValor header1Value, a.headerUnoValor header1Key, "
             + "dp.salarioBruto previousComputedGrossSalary, "
-            + "pla.estado payrollState, pla.fechaInicio payrollStartDate "
+            + "pla.id payrollId, pla.estado payrollState, pla.fechaInicio payrollStartDate "
             + "FROM Persona p "
             + "INNER JOIN Empleado e on e.idPersonaFisica = p.id "
             + "INNER JOIN PersonaFisica pf on pf.id = p.id "
