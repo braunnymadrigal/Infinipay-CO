@@ -5,9 +5,6 @@ namespace back_end.Application
 {
     public class TaxCCSS : ITaxCCSS
     {
-        private const int GROSS_SALARIES_MINIMUM_SIZE = 1;
-        private const int GROSS_SALARIES_MAXIMUM_SIZE = 1000;
-
         private const double P_VALUE_ON_DECIMAL_SQL_TYPE = 11.0;
         private const double S_VALUE_ON_DECIMAL_SQL_TYPE = 2.0;
         private const double EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE = 10.0;
@@ -17,28 +14,28 @@ namespace back_end.Application
         private const double EMPLOYER_TAX_PERCENT = 0.1467;
         private const double EMPLOYEE_TAX_PERCENT = 0.0967;
 
-        public List<TaxCCSSModel> ComputeTaxesCCSS(List<GrossSalaryModel> grossSalaries)
+        public List<PayrollEmployeeModel> ComputeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees)
         {
-            var ccssTaxes = new List<TaxCCSSModel>();
-            for (int i = 0; i < grossSalaries.Count; ++i)
+            for (int i = 0; i < payrollEmployees.Count; ++i)
             {
-                var computedResult = ComputeTaxCCSS(grossSalaries[i]);
-                ccssTaxes.Add(computedResult);
+                payrollEmployees[i] = ComputeTaxCCSS(payrollEmployees[i]);
             }
-            return ccssTaxes;
+            return payrollEmployees;
         }
 
-        private TaxCCSSModel ComputeTaxCCSS(GrossSalaryModel grossSalary)
+        private PayrollEmployeeModel ComputeTaxCCSS(PayrollEmployeeModel payrollEmployee)
         {
-            ValidateComputedGrossSalary(grossSalary.ComputedGrossSalary);
+            ValidateComputedGrossSalary(payrollEmployee.computedGrossSalary);
             var employeeTax = 0.0;
             var employerTax = 0.0;
-            if (grossSalary.HiringType != HIRING_TYPE_EXCLUDED_FROM_TAXES)
+            if (payrollEmployee.hiringType != HIRING_TYPE_EXCLUDED_FROM_TAXES)
             {
-                employeeTax = grossSalary.ComputedGrossSalary * EMPLOYEE_TAX_PERCENT;
-                employerTax = grossSalary.ComputedGrossSalary * EMPLOYER_TAX_PERCENT;
+                employeeTax = payrollEmployee.computedGrossSalary * EMPLOYEE_TAX_PERCENT;
+                employerTax = payrollEmployee.computedGrossSalary * EMPLOYER_TAX_PERCENT;
             }
-            return new TaxCCSSModel { EmployeeAmount = employeeTax, EmployerAmount = employerTax };
+            payrollEmployee.ccssEmployeeDeduction = employeeTax;
+            payrollEmployee.ccssEmployerDeduction = employerTax;
+            return payrollEmployee;
         }
 
         private void ValidateComputedGrossSalary(double computedGrossSalary)
@@ -67,18 +64,6 @@ namespace back_end.Application
             if (computedGrossSalary < 0)
             {
                 throw new Exception("The computed gross salary can not be less than zero.");
-            }
-        }
-
-        private void ValidateList(List<GrossSalaryModel> grossSalaries)
-        {
-            if (grossSalaries.Count < GROSS_SALARIES_MINIMUM_SIZE)
-            {
-                throw new Exception("The list most contain at least one GrossSalaryModel");
-            }
-            if (grossSalaries.Count > GROSS_SALARIES_MAXIMUM_SIZE)
-            {
-                throw new Exception("Due to SqlServer limitations: the list can not exceed 1000 models");
             }
         }
     }
