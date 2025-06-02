@@ -9,12 +9,13 @@ namespace back_end.API
     [ApiController]
     public class PayrollEmployeeController : GeneralController
     {
-        private readonly IPayrollEmployeeRepository payrollEmployeeRepository;
+        private readonly IPayrollEmployee payrollEmployee;
 
         public PayrollEmployeeController()
         {
-            payrollEmployeeRepository = new PayrollEmployeeRepository(new ConnectionRepository()
-                , new UtilityRepository());
+            payrollEmployee = new PayrollEmployee(
+                new PayrollEmployeeRepository(new ConnectionRepository()
+                , new UtilityRepository()));
         }
 
         [Authorize(Roles = "empleador")]
@@ -25,7 +26,8 @@ namespace back_end.API
             try
             {
                 var employerId = GetUser().PersonId;
-                var payrollEmployees = payrollEmployeeRepository.getPayrollEmployees(employerId, startDate, endDate);
+                var payrollEmployees = payrollEmployee.getPayrollEmployees(employerId, 
+                    startDate, endDate);
                 iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)

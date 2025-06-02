@@ -18,26 +18,6 @@ namespace back_end.Application
             this.contextGrossSalaryComputation = contextGrossSalaryComputation;
         }
 
-
-
-        //private const int MAXIMUM_NUMBER_OF_DAYS_A_DATE_RANGE_CAN_REPRESENT = 31;
-
-        //private void CheckDateRangeCorrectness()
-        //{
-        //    if (startDate == DateOnly.MinValue || endDate == DateOnly.MaxValue)
-        //    {
-        //        throw new Exception("Date values are not coherent.");
-        //    }
-        //    if (startDate >= endDate)
-        //    {
-        //        throw new Exception("The start date shall not surpass the end date.");
-        //    }
-        //    if (startDate.AddDays(MAXIMUM_NUMBER_OF_DAYS_A_DATE_RANGE_CAN_REPRESENT) < endDate)
-        //    {
-        //        throw new Exception("The range of date shall not represent more than one month");
-        //    }
-        //}
-
         public List<PayrollEmployeeModel> computeAllGrossSalaries(List<PayrollEmployeeModel> 
             payrollEmployees, DateOnly startDate, DateOnly endDate)
         {
