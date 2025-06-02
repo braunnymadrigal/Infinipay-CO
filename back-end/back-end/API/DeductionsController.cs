@@ -12,36 +12,22 @@ namespace back_end.API
     [ApiController]
     public class DeductionsController : GeneralController
     {
+        private readonly IDeduction deduction;
+
         public DeductionsController()
         {
-
+            deduction = new Deduction();
         }
 
-        //[Authorize(Roles = "empleador")]
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ComputeDeductions(int type)
+        public IActionResult ComputeDeductions(List<PayrollEmployeeModel> payrollEmployees)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                JsonDocument myJsonDoc;
-                switch (type)
-                {
-                    case 1:
-                        myJsonDoc = await ApiFriends();
-                        break;
-                    case 2:
-                        myJsonDoc = await ApiVorlagenersteller();
-                        break;
-                    case 3:
-                        myJsonDoc = await ApiGeems();
-                        break;
-                    default:
-                        throw new Exception("Bad type");
-                }
-                double extractedValue = ExtractDoubleValue(myJsonDoc);
-
-                iActionResult = Ok(extractedValue);
+                payrollEmployees = deduction.computeDeductions(payrollEmployees);
+                iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)
             {
@@ -49,6 +35,39 @@ namespace back_end.API
             }
             return iActionResult;
         }
+
+        //[Authorize(Roles = "empleador")]
+        //[HttpPost]
+        //public async Task<IActionResult> ComputeMoreDeductions(int type)
+        //{
+        //    IActionResult iActionResult = BadRequest("Unknown error.");
+        //    try
+        //    {
+        //        JsonDocument myJsonDoc;
+        //        switch (type)
+        //        {
+        //            case 1:
+        //                myJsonDoc = await ApiFriends();
+        //                break;
+        //            case 2:
+        //                myJsonDoc = await ApiVorlagenersteller();
+        //                break;
+        //            case 3:
+        //                myJsonDoc = await ApiGeems();
+        //                break;
+        //            default:
+        //                throw new Exception("Bad type");
+        //        }
+        //        double extractedValue = ExtractDoubleValue(myJsonDoc);
+
+        //        iActionResult = Ok(extractedValue);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        iActionResult = NotFound(e.Message);
+        //    }
+        //    return iActionResult;
+        //}
 
 
         private async Task<JsonDocument> ApiFriends()
