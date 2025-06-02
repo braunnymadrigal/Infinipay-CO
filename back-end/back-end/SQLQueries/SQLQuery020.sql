@@ -1,18 +1,19 @@
 ﻿USE [InfinipayDB];
 GO
 
-CREATE TABLE ApiExterna (
-	id UNIQUEIDENTIFIER PRIMARY KEY NOT NULL DEFAULT NEWID(),
-	idFormula UNIQUEIDENTIFIER NOT NULL,
-	metodo VARCHAR(4) NOT NULL,
-	headerUnoClave VARCHAR(50) NOT NULL,
-	headerUnoValor VARCHAR(500) NOT NULL,
-	paramUnoClave VARCHAR(50) NOT NULL,
-	paramDosClave VARCHAR(50),
-	paramTresClave VARCHAR(50),
+-- obtiene la fecha de horas aprobadas mas reciente de un empleado
 
-	CONSTRAINT CHK_ApiExterna_metodo CHECK (metodo IN ('GET', 'POST')),
-	CONSTRAINT UQ_ApiExterna_idFormula UNIQUE (idFormula),
-	CONSTRAINT FK_ApiExterna_idFormula FOREIGN KEY (idFormula) REFERENCES Formula(id)
-);
+CREATE FUNCTION dbo.function_getEmployeeCurrentHours(
+	@employee uniqueidentifier,
+	@startDate date,
+	@endDate date
+)
+RETURNS TABLE
+AS
+RETURN
+	SELECT MAX(fecha) AS fechaHoras 
+	FROM Horas
+	WHERE [idEmpleado] = @employee 
+	and [aprobadas] = 1 
+	and ([fecha] BETWEEN @startDate and @endDate);
 GO
