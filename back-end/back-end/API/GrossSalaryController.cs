@@ -14,20 +14,19 @@ namespace back_end.API
 
         public GrossSalaryController()
         {
-            grossSalary = new GrossSalary (
-                new GrossSalaryRepository( new ConnectionRepository(), new UtilityRepository() ), 
-                new ContextGrossSalaryComputation()
-            );
+            grossSalary = new GrossSalary (new ContextGrossSalaryComputation());
         }
 
-        [Authorize(Roles = "empleador")]
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult ComputeGrossSalary(DateOnly startDate, DateOnly endDate)
+        public IActionResult ComputeGrossSalary(List<PayrollEmployeeModel> payrollEmployees, 
+            DateOnly startDate, DateOnly endDate)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var grossSalaries = CallGrossSalaryMethods(startDate, endDate);
+                var grossSalaries = grossSalary.computeAllGrossSalaries(payrollEmployees, 
+                    startDate, endDate);
                 iActionResult = Ok(grossSalaries);
             }
             catch (Exception e)
@@ -35,14 +34,6 @@ namespace back_end.API
                 iActionResult = NotFound(e.Message);
             }
             return iActionResult;
-        }
-
-        private List<GrossSalaryModel> CallGrossSalaryMethods(DateOnly startDate, DateOnly endDate)
-        {
-            grossSalary.SetIdEmployer(GetUser().PersonId);
-            grossSalary.SetDateRange(startDate, endDate);
-            grossSalary.SetNumberOfWorkedDays();
-            return grossSalary.ComputeAllGrossSalaries();
         }
     }
 }
