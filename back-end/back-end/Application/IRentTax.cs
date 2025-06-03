@@ -1,5 +1,6 @@
 ﻿using back_end.Domain;
 public interface IRentTax
 {
-  List<RentTaxModel> calculateRentTaxes(List<GrossSalaryModel> grossSalaries);
+  List<PayrollEmployeeModel> calculateRentTaxes(List<PayrollEmployeeModel>
+    payrollEmployees, DateOnly endDate);
 }

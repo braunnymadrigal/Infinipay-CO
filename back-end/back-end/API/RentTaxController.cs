@@ -18,12 +18,13 @@ namespace back_end.API
 
     [Authorize(Roles = "empleador")]
     [HttpPost]
-    public IActionResult ComputeRentTaxes(List<GrossSalaryModel> grossSalaries)
+    public IActionResult ComputeRentTaxes(List<PayrollEmployeeModel>
+      payrollEmployees, DateOnly endDate)
     {
       IActionResult iActionResult = BadRequest("Unknown error.");
       try
       {
-        var rentTaxes = rentTax.calculateRentTaxes(grossSalaries);
+        var rentTaxes = rentTax.calculateRentTaxes(payrollEmployees, endDate);
         iActionResult = Ok(rentTaxes);
       }
       catch (Exception e)
