@@ -38,7 +38,7 @@
               <td>
                 <div class="d-flex justify-content-center gap-2">
                   <button class="btn btn-success btn-sm"
-                          :disabled="numAssignedBenefits === 
+                          :disabled="numAssignedBenefits ===
                             maxBenefitsPerEmployee"
                           style="width: 70px;
                   border: transparent;
@@ -51,6 +51,10 @@
             </tr>
           </tbody>
         </table>
+        <div v-if="showError"
+             class="alert alert-danger alert-dismissable fade show">
+          {{errorMessage}}
+        </div>
       </div>
     </div>
   </div>
@@ -75,6 +79,8 @@
     },
     data() {
       return {
+        showError: false,
+        errorMessage: "",
         showPopup: false,
         selectedAddBenefit: null,
         warningMaxBenefits:
@@ -88,16 +94,15 @@
             selectedAddBenefit.benefit.id);
 
           this.showPopup = false;
-          console.log("Assigned 1");
           this.$router.go(0);
-          console.log("Assigned 2");
         } catch (error) {
           this.showPopup = true;
-          console.error("Error:", error);
           if (error.response) {
-            const message = error.response.data?.message || "Error desconocido";
-            alert(message);
-            this.$router.push('AssignedBenefitList');
+            this.errorMessage = error.response.data?.message
+              || "Error desconocido";
+            this.errorMessage += ". Por favor refrescar la página.";
+            this.showError = true;
+              
           }
         }
       }
