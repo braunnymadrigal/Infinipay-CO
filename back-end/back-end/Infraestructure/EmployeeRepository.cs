@@ -17,7 +17,8 @@ namespace back_end.Infraestructure
         builder.Configuration.GetConnectionString("InfinipayDBContext");
     }
 
-    private bool IsDataValid(EmployeeModel employee, SqlTransaction transaction) {
+    private bool IsDataValid(EmployeeModel employee, SqlTransaction transaction)
+    {
       if (dataAlreadyExists("Persona", "identificacion"
         , employee.idNumber, transaction)) {
         throw new Exception("CEDULA_DUPLICADA");
@@ -76,45 +77,6 @@ namespace back_end.Infraestructure
       throw new Exception("No se encontró un usuario con ese ID.");
     }
 
-    private EmployeeModel mapEmployee(SqlDataReader reader)
-    {
-      var fechaNacimiento = reader.GetDateTime(reader.GetOrdinal("fechaNacimiento"));
-      var fechaContratacion = reader.GetDateTime(reader.GetOrdinal("fechaContratacion"));
-      var fechaCreacion = reader.GetDateTime(reader.GetOrdinal("fechaCreacion"));
-
-      return new EmployeeModel
-      {
-          email = reader["correoElectronico"].ToString(),
-          idNumber = reader["identificacion"].ToString(),
-          phoneNumber = reader["numeroTelefono"].ToString(),
-          firstName = reader["primerNombre"].ToString(),
-          secondName = reader["segundoNombre"] as string,
-          firstLastName = reader["primerApellido"].ToString(),
-          secondLastName = reader["segundoApellido"].ToString(),
-          gender = reader["genero"].ToString(),
-          province = reader["provincia"].ToString(),
-          canton = reader["canton"].ToString(),
-          district = reader["distrito"].ToString(),
-          otherSigns = reader["otrasSenas"].ToString(),
-          role = reader["rol"].ToString(),
-          username = reader["nickname"].ToString(),
-          password = reader["contrasena"]?.ToString(),
-          birthDay = fechaNacimiento.Day,
-          birthMonth = fechaNacimiento.Month,
-          birthYear = fechaNacimiento.Year,
-          hireDay = fechaContratacion.Day,
-          hireMonth = fechaContratacion.Month,
-          hireYear = fechaContratacion.Year,
-          creationDay = fechaCreacion.Day,
-          creationMonth = fechaCreacion.Month,
-          creationYear = fechaCreacion.Year,
-          salary = Convert.ToInt32(reader["salarioBruto"]),
-          reportsHours = Convert.ToInt32(reader["reportaHoras"]),
-          typeContract = reader["tipoContrato"].ToString()
-      };
-    }
-
-
     public EmployeeModel GetEmployeeById(Guid id)
     {
       using (var connection = GetConnection())
@@ -128,7 +90,7 @@ namespace back_end.Infraestructure
              pf.primerApellido, pf.segundoApellido, 
              pf.genero, d.provincia, d.canton, d.distrito, 
              d.otrasSenas, e.rol, e.fechaContratacion, u.nickname,
-             u.contrasena, c.fechaCreacion, c.reportaHoras, c.salarioBruto, 
+             c.fechaCreacion, c.reportaHoras, c.salarioBruto, 
              c.tipoContrato 
             FROM Empleado e 
             JOIN Persona p ON p.id = e.idPersonaFisica
@@ -161,7 +123,6 @@ namespace back_end.Infraestructure
       }
       throw new Exception("Empleado no encontrado.");
     }
-
 
     public bool createNewEmployee(EmployeeModel employee, string logguedId)
     {
@@ -203,10 +164,11 @@ namespace back_end.Infraestructure
       }
     }
 
-    public void UpdateEmployeeData(EmployeeModel employee, Guid id)
+    public void UpdateEmployeeData(EmployeeModel employee, Guid id, string loggedUsername)
     {
-     using (var connection = GetConnection())
+      using (var connection = GetConnection())
       {
+      
         connection.Open();
         using (var transaction = connection.BeginTransaction())
         {
@@ -234,52 +196,41 @@ namespace back_end.Infraestructure
               if (dataAlreadyExists("Persona", "identificacion"
                 , employee.idNumber, transaction)) {
                 throw new Exception("CEDULA_DUPLICADA");
-                }
+              }
             }
             if (employee.phoneNumber != currentData.phoneNumber) {
               if (dataAlreadyExists("Persona", "numeroTelefono"
                 , employee.phoneNumber, transaction)) {
                 throw new Exception("TELEFONO_DUPLICADO");
-                }
+              }
             }
             if (employee.email != currentData.email) {
               if (dataAlreadyExists("Persona", "correoElectronico"
                 , employee.email, transaction)) {
                 throw new Exception("EMAIL_DUPLICADO");
-                }
+              }
             }
             if (employee.username != currentData.username) {
               if (dataAlreadyExists("Usuario", "nickname"
                 , employee.username, transaction)) {
                 throw new Exception("USERNAME_DUPLICADO");
-                }
+              }
             }
+            
+            UpdatePerson(employee, id, transaction);
+            
+            UpdateNaturalPerson(employee, id, transaction);
+            
+            UpdateAddress(employee, id, transaction);
+            
+            UpdateUser(employee, id, transaction);
+            
+            UpdateEmployeeDetails(employee, id, transaction);
+            
+            UpdateEmployeeContractDetails(employee, id, transaction);
 
-            if (!UpdatePerson(employee, id, transaction))
-            {
-              throw new Exception("Error updating person data.");
-            }
-
-            if (!UpdateNaturalPerson(employee, id, transaction))
-            {
-              throw new Exception("Error updating natural person data.");
-            }
-            if (!UpdateAddress(employee, id, transaction))
-            {
-              throw new Exception("Error updating address data.");
-            }
-            if (!UpdateUser(employee, id, transaction))
-            {
-              throw new Exception("Error updating user data.");
-            }
-            if (!UpdateEmployeeDetails(employee, id, transaction))
-            {
-              throw new Exception("Error updating employee details.");
-            }
-            if (!UpdateEmployeeContractDetails(employee, id, transaction))
-            {
-              throw new Exception("Error updating employee contract details.");
-            }
+            UpdateEmployeeAudit(id, loggedUsername, transaction);
+            
             Debug.WriteLine("Employee data updated successfully.");
             transaction.Commit();
           }
@@ -288,8 +239,46 @@ namespace back_end.Infraestructure
             transaction.Rollback();
             throw new Exception("Error updating employee data: " + ex.Message);
           }
+
         }
-      }
+      }  
+    }
+
+    private EmployeeModel mapEmployee(SqlDataReader reader)
+    {
+      var fechaNacimiento = reader.GetDateTime(reader.GetOrdinal("fechaNacimiento"));
+      var fechaContratacion = reader.GetDateTime(reader.GetOrdinal("fechaContratacion"));
+      var fechaCreacion = reader.GetDateTime(reader.GetOrdinal("fechaCreacion"));
+
+      return new EmployeeModel
+      {
+          email = reader["correoElectronico"].ToString(),
+          idNumber = reader["identificacion"].ToString(),
+          phoneNumber = reader["numeroTelefono"].ToString(),
+          firstName = reader["primerNombre"].ToString(),
+          secondName = reader["segundoNombre"] as string,
+          firstLastName = reader["primerApellido"].ToString(),
+          secondLastName = reader["segundoApellido"].ToString(),
+          gender = reader["genero"].ToString(),
+          province = reader["provincia"].ToString(),
+          canton = reader["canton"].ToString(),
+          district = reader["distrito"].ToString(),
+          otherSigns = reader["otrasSenas"].ToString(),
+          role = reader["rol"].ToString(),
+          username = reader["nickname"].ToString(),
+          birthDay = fechaNacimiento.Day,
+          birthMonth = fechaNacimiento.Month,
+          birthYear = fechaNacimiento.Year,
+          hireDay = fechaContratacion.Day,
+          hireMonth = fechaContratacion.Month,
+          hireYear = fechaContratacion.Year,
+          creationDay = fechaCreacion.Day,
+          creationMonth = fechaCreacion.Month,
+          creationYear = fechaCreacion.Year,
+          salary = Convert.ToInt32(reader["salarioBruto"]),
+          reportsHours = Convert.ToInt32(reader["reportaHoras"]),
+          typeContract = reader["tipoContrato"].ToString()
+      };
     }
 
     private Guid insertAudit(string username, SqlTransaction transaction)
@@ -487,7 +476,7 @@ namespace back_end.Infraestructure
       return count > 0;
     }
 
-    private bool UpdatePerson(EmployeeModel employee, Guid id
+    private void UpdatePerson(EmployeeModel employee, Guid id
       , SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
@@ -505,10 +494,9 @@ namespace back_end.Infraestructure
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Update failed: UpdatePerson.");
-      return true;
     }
 
-    private bool UpdateNaturalPerson(EmployeeModel employee, Guid id, SqlTransaction transaction)
+    private void UpdateNaturalPerson(EmployeeModel employee, Guid id, SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
                 UPDATE [dbo].[PersonaFisica]
@@ -528,10 +516,9 @@ namespace back_end.Infraestructure
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Update failed: UpdateNaturalPerson.");
-      return true;
     }
 
-    private bool UpdateAddress(EmployeeModel employee, Guid id, SqlTransaction transaction)
+    private void UpdateAddress(EmployeeModel employee, Guid id, SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
                 UPDATE [dbo].[Direccion]
@@ -549,27 +536,23 @@ namespace back_end.Infraestructure
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Update failed: UpdateAddress.");
-      return true;
     }
 
-    private bool UpdateUser(EmployeeModel employee, Guid id, SqlTransaction transaction)
+    private void UpdateUser(EmployeeModel employee, Guid id, SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
                 UPDATE [dbo].[Usuario]
-                SET [nickname] = @nickname,
-                    [contrasena] = HASHBYTES('SHA2_512', CONVERT(varchar(100), @contrasena))
+                SET [nickname] = @nickname
                 WHERE [idPersonaFisica] = @id", transaction.Connection, transaction);
 
       cmd.Parameters.AddWithValue("@nickname", employee.username);
-      cmd.Parameters.AddWithValue("@contrasena", employee.password);
       cmd.Parameters.AddWithValue("@id", id);
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Update failed: UpdateUser.");
-      return true;
     }
 
-    private bool UpdateEmployeeDetails(EmployeeModel employee, Guid id
+    private void UpdateEmployeeDetails(EmployeeModel employee, Guid id
       , SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
@@ -586,11 +569,9 @@ namespace back_end.Infraestructure
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Update failed: UpdateEmployeeDetails.");
-      return true;
-
     }
 
-    private bool UpdateEmployeeContractDetails(EmployeeModel employee, Guid id, SqlTransaction transaction)
+    private void UpdateEmployeeContractDetails(EmployeeModel employee, Guid id, SqlTransaction transaction)
     {
       var cmd = new SqlCommand(@"
         UPDATE Contrato SET reportaHoras = @reportaHoras, fechaCreacion = @fechaCreacion, salarioBruto = @salarioBruto,
@@ -606,9 +587,22 @@ namespace back_end.Infraestructure
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Update failed: UpdateEmployeeContractDetails.");
-      return true;
     }
 
+    private void UpdateEmployeeAudit(Guid EmployeeId, string loggedUsername, SqlTransaction transaction)
+    {
+        var cmd = new SqlCommand(@"
+        UPDATE a SET a.ultimoUsuarioModificador = @ultimoUsuarioModificador
+        FROM Auditoria a JOIN Persona p ON p.IdAuditoria = a.id
+          WHERE p.id = @id;", transaction.Connection, transaction);
+
+          cmd.Parameters.AddWithValue("@ultimoUsuarioModificador", loggedUsername);
+          cmd.Parameters.AddWithValue("@id", EmployeeId);
+
+        if (cmd.ExecuteNonQuery() < 1)
+          throw new Exception("Update failed: UpdateEmployeeAudit.");
+        
+    }
   }
 }
 

@@ -121,7 +121,12 @@ namespace back_end.API
         {
           return BadRequest();
         }
-        _employeeCommand.UpdateEmployeeData(employee, id);
+        var loggedUsername = GetLoggedUsername();
+        if (string.IsNullOrEmpty(loggedUsername))
+        {
+          return Unauthorized(new { message = "Usuario no autenticado" });
+        }
+        _employeeCommand.UpdateEmployeeData(employee, id, loggedUsername);
         return Ok(true);
       }
       catch (Exception ex)
@@ -129,6 +134,21 @@ namespace back_end.API
         return StatusCode(StatusCodes.Status500InternalServerError
           , new { message = "Error actualizando empleado", details = ex.Message });
       }
+    }
+
+    private string GetLoggedUsername() {
+      string loggedId = "";
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity != null)
+        {
+          var userClaims = identity.Claims;
+          var sid = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+          if (sid != null)
+          {
+            loggedId = sid;
+          }
+        }
+      return loggedId;
     }
   }
 }
