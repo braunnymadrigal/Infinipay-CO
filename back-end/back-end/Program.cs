@@ -1,6 +1,9 @@
 ﻿using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using back_end.Application;
+using back_end.Models;
+using back_end.Repositories;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -71,6 +74,18 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<EmployeeBenefitRepository>();
+builder.Services.AddScoped<CompanyBenefitRepository>();
+
+builder.Services.AddScoped<IBenefitQuery<EmployeeBenefitDTO>
+  , EmployeeBenefitQuery>();
+
+builder.Services.AddScoped<IBenefitQuery<CompanyBenefitDTO>
+  , CompanyBenefitQuery>();
+
+builder.Services.AddScoped<IEmployeeBenefitAssignment
+  , EmployeeBenefitAssignment>();
 
 var app = builder.Build();
 

@@ -69,9 +69,21 @@ export default {
           authHeader()
         );
       },
+
+      benefitAPI(benefit) {
+        return axios.get(benefit.urlAPI, {
+          params: {
+            param1: benefit.paramOneAPI,
+            param2: benefit.paramTwoAPI,
+            param3: benefit.paramThreeAPI
+          }
+        });
+      },
+
       getCompanyBenefits() {
         return axios.get(`${apiBaseURL}/CompanyBenefit`, authHeader());
       },
+
       createCompanyBenefit(benefitData) {
         return axios.post(
           `${apiBaseURL}/CompanyBenefit`,

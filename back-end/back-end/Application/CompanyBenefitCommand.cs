@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +16,8 @@ namespace back_end.Application
       _companyBenefitRepository = new CompanyBenefitRepository();
     }
 
-    public void CreateBenefit(CompanyBenefitDTO benefitWrapper, string loggedUserId)
+    public void CreateBenefit(CompanyBenefitDTO benefitWrapper
+      , string loggedUserId)
     {
       _companyBenefitRepository.CreateBenefit(benefitWrapper, loggedUserId);
     }

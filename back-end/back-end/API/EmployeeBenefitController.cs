@@ -13,10 +13,15 @@ namespace back_end.Controllers
   [ApiController]
   public class EmployeeBenefitController : ControllerBase
   {
-    private readonly EmployeeBenefitQuery _employeeBenefitQuery;
-    public EmployeeBenefitController()
+    private readonly IBenefitQuery<EmployeeBenefitDTO> employeeBenefitQuery;
+    private readonly IEmployeeBenefitAssignment employeeBenefitAssignment;
+    public EmployeeBenefitController(
+      IBenefitQuery<EmployeeBenefitDTO> employeeBenefitQuery
+      , IEmployeeBenefitAssignment employeeBenefitAssignment
+    )
     {
-      _employeeBenefitQuery = new EmployeeBenefitQuery();
+      this.employeeBenefitQuery = employeeBenefitQuery;
+      this.employeeBenefitAssignment = employeeBenefitAssignment;
     }
 
     private string getLoggedUserClaim(string claimType)
@@ -34,24 +39,47 @@ namespace back_end.Controllers
       return "";
     }
 
+    private string getLoggedUserNickname()
+    {
+      var loggedUser = getLoggedUserClaim(ClaimTypes.NameIdentifier);
+
+      if (string.IsNullOrEmpty(loggedUser))
+      {
+        loggedUser = "";
+      }
+
+      return loggedUser;
+    }
+
+    private string getLoggedUserId()
+    {
+      var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
+
+      if (string.IsNullOrEmpty(loggedUserId))
+      {
+        loggedUserId = "";
+      }
+
+      return loggedUserId;
+    }
 
     [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpGet]
-    public ActionResult<List<EmployeeBenefitDTO>> Get()
+    public ActionResult<List<EmployeeBenefitDTO>> get()
     {
       try
       {
-        var loggedUserNickname = getLoggedUserClaim(ClaimTypes.NameIdentifier);
+        var loggedUserNickname = getLoggedUserNickname();
 
-        if (loggedUserNickname == null)
+        if (string.IsNullOrEmpty(loggedUserNickname))
         {
-          return BadRequest(
-            "No se pudo obtener el nombre de usuario desde el token/cookie");
+          return NotFound(
+            "No se pudo obtener el nombre de usuario");
         }
 
-        var benefits = _employeeBenefitQuery.getBenefits(loggedUserNickname);
+        var benefits = employeeBenefitQuery.getBenefits(loggedUserNickname);
 
-        if (benefits == null || benefits.Count == 0)
+        if (benefits == null)
         {
           return NotFound("Beneficios no encontrados");
         }
@@ -71,7 +99,7 @@ namespace back_end.Controllers
 
     [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpPost]
-    public ActionResult<bool> AssignBenefit([FromBody]
+    public ActionResult<bool> assignBenefit([FromBody]
       AssignBenefitRequest request)
     {
       try
@@ -81,13 +109,15 @@ namespace back_end.Controllers
           return BadRequest("La solicitud está vacía.");
         }
 
-        var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
+        var loggedUserId = getLoggedUserId();
 
         if (string.IsNullOrWhiteSpace(loggedUserId))
         {
-          return Unauthorized("No se pudo obtener el usuario.");
+          return NotFound("No se pudo obtener el identificador" +
+            " del usuario.");
         }
-        var assignmentResult = _employeeBenefitQuery.assignBenefit(request
+
+        var assignmentResult = employeeBenefitAssignment.assignBenefit(request
           , loggedUserId);
 
         if (!assignmentResult)
@@ -96,7 +126,7 @@ namespace back_end.Controllers
             , "No se pudo asignar el beneficio.");
         }
         
-        return Ok(true);
+        return Ok(assignmentResult);
       }
       catch (Exception ex)
       {

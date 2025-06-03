@@ -95,8 +95,6 @@
 </template>
 
 <script>
-  import axios from "axios";
-
   import HeaderCompany from "./HeaderCompany.vue";
   import MainFooter from "./MainFooter.vue";
   import AssignedBenefitListModal from "./AssignedBenefitListModal";
@@ -109,6 +107,7 @@
       AssignedBenefitListModal,
       AddAssignedBenefitListModal,
     },
+
     data() {
       return {
         showPopup: false,
@@ -121,10 +120,40 @@
         maxBenefitsPerEmployee: 0
       };
     },
+
     created() {
       this.getAssignedBenefits();
     },
+
     methods: {
+      async getAssignedBenefits() {
+        try {
+          const benefitsUser = await this.$api.getAssignedBenefits();
+          this.showPopup = false;
+          this.allBenefits = await Promise.all(
+            benefitsUser.data.map(async (benefit) => {
+              benefit.formattedDeduction = await this.formulaFormat(benefit);
+              return benefit;
+            })
+          );
+
+          if (this.allBenefits.length != 0) {
+            this.assignedBenefits = this.allBenefits.filter(b => b.assigned);
+            this.availableBenefits = this.allBenefits.filter(b => !b.assigned);
+            this.maxBenefitsPerEmployee =
+              this.allBenefits[0].benefit.benefitsPerEmployee;
+          }
+
+        } catch (error) {
+          this.showPopup = true;
+          console.error("Error:", error);
+          if (error.response) {
+            const message = error.response.data?.message || "Error desconocido";
+            alert(message);
+          }
+        }
+      },
+
       truncateString(str, maxLength) {
         if (str.length > maxLength) {
           return str.substring(0, maxLength) + "...";
@@ -148,47 +177,14 @@
           return benefit.benefit.paramOneAPI;
         } else if (benefit.benefit.deductionType === 'api') {
           try {
-            const response = await axios.get(benefit.benefit.urlAPI, {
-              params: {
-                param1: benefit.benefit.formulaParamUno,
-                param2: benefit.benefit.formulaParamDos,
-                param3: benefit.benefit.formulaParamTres
-              }
-            });
-
+            const response = await this.$api.benefitAPI(benefit.benefit);
             return response.data.resultado ?? "Resultado no habilitado.";
           } catch (error) {
-            console.error("API call error:", error);
             return "Resultado no habilitado.";
           }
         }
       },
 
-      async getAssignedBenefits() {
-        try {
-          const benefitsUser = await this.$api.getAssignedBenefits();
-          this.showPopup = false;
-          this.allBenefits = await Promise.all(
-            benefitsUser.data.map(async (benefit) => {
-              benefit.formattedDeduction = await this.formulaFormat(benefit);
-              return benefit;
-            })
-          );
-
-          this.assignedBenefits = this.allBenefits.filter(b => b.assigned);
-          this.availableBenefits = this.allBenefits.filter(b => !b.assigned);
-          this.maxBenefitsPerEmployee =
-            this.allBenefits[0].benefit.benefitsPerEmployee;
-
-        } catch (error) {
-          this.showPopup = true;
-          console.error("Error:", error);
-          if (error.response) {
-            const message = error.response.data?.message || "Error desconocido";
-            alert(message);
-          }
-        }
-      }
     }
   };
 </script>
