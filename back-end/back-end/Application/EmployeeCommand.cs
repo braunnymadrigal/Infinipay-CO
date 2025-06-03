@@ -11,10 +11,10 @@ namespace back_end.Application
             _employeeRepository = new EmployeeRepository();
         }
         
-        public void UpdateEmployeeData(EmployeeModel employee, Guid id)
+        public void UpdateEmployeeData(EmployeeModel employee, Guid id, string loggedUsername)
         {
             try {
-                _employeeRepository.UpdateEmployeeData(employee, id);
+                _employeeRepository.UpdateEmployeeData(employee, id, loggedUsername);
             }
             catch (Exception ex) {
                 if (ex.Message.Contains("CEDULA_DUPLICADA"))

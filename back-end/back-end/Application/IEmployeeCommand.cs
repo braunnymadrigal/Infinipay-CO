@@ -4,6 +4,6 @@ namespace back_end.Application
 {
     public interface IEmployeeCommand
     {
-        public void UpdateEmployeeData(EmployeeModel employee, Guid id);
+        public void UpdateEmployeeData(EmployeeModel employee, Guid id, string logguedUsername);
     }
 }
