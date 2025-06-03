@@ -269,6 +269,7 @@
                 <option disabled value="">Seleccione una opción</option>
                 <option value="tiempoCompleto">Tiempo completo</option>
                 <option value="medioTiempo">Medio tiempo</option>
+                <option value="horas">Horas</option>
                 <option value="servicios">Servicios profesionales</option>
               </select>
             </div>
