@@ -236,7 +236,7 @@
             date,
             hoursWorked
             }));
-
+          console.log(payload);
           if (payload.length !== 0) {
             await this.$api.registerEmployeeHours(payload);
           }
@@ -244,7 +244,7 @@
           console.error("Error registering employee hours:", error);
         } finally {
           this.isLoading = false;
-          window.location.href = "/EmployeeTimesheet";
+          // window.location.href = "/EmployeeTimesheet";
         }
       },
       getMonday(date) {
@@ -263,12 +263,16 @@
         const newDate = new Date(this.baseDate);
         newDate.setDate(this.baseDate.getDate() + 7);
         this.baseDate = this.getMonday(newDate);
+        console.log(this.baseDate);
+        this.resetHours();
         this.getEmployeeHours();
       },
       getPreviousWeek() {
         const newDate = new Date(this.baseDate);
         newDate.setDate(this.baseDate.getDate() - 7);
         this.baseDate = this.getMonday(newDate);
+        console.log(this.baseDate);
+        this.resetHours();
         this.getEmployeeHours();
       },
       resetHours() {
@@ -283,6 +287,7 @@
           date.setDate(date.getDate() + i);
           return [this.formatDate(date), 0];
         });
+        console.log(this.hours);
       },
       alreadyRegistered(day) {
         const dateObj = day instanceof Date ? day : new Date(day);

@@ -109,7 +109,6 @@ namespace back_end.API
     public ActionResult<bool> Post([FromBody] List<HoursModel>
       employeeHoursWorked)
     {
-      Console.WriteLine(employeeHoursWorked.Count);
       try
       {
         var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
