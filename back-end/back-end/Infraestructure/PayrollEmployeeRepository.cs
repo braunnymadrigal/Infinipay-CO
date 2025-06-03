@@ -84,6 +84,7 @@ namespace back_end.Infraestructure
                 gender = gender,
                 rawGrossSalary = Convert.ToDouble(salary),
                 computedGrossSalary = 0,
+                rentTax = 0,
                 ccssEmployeeDeduction = 0,
                 ccssEmployerDeduction = 0,
                 hiringType = hiringType,
