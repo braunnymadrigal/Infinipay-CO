@@ -180,6 +180,7 @@
 
           this.employeeType = contract.data.typeContract;
           this.isHourlyEmployee = contract.data.reportsHours;
+
         } catch (error) {
           this.showPopup = true;
           if (error.response) {
@@ -198,10 +199,8 @@
       async getEmployeeHours() {
         this.isLoading = true;
         this.monthlyHours = {};
-
         try {
           if (this.baseDate <= this.getMonday(this.currentDate)) {
-
             const sunday = new Date(
               this.baseDate.getFullYear(),
               this.baseDate.getMonth(),
@@ -209,7 +208,6 @@
             );
 
             sunday.setDate(sunday.getDate() + 6);
-
             const employeeHours = await this.$api.getEmployeeHours(
               this.formatDate(this.baseDate), this.formatDate(sunday));
 
@@ -246,13 +244,18 @@
           console.error("Error registering employee hours:", error);
         } finally {
           this.isLoading = false;
-          // window.location.href = "/EmployeeTimesheet";
+          window.location.href = "/EmployeeTimesheet";
         }
       },
       getMonday(date) {
         const day = date.getDay();
         const diff = (day === 0 ? -6 : 1) - day;
-        const monday = new Date(date);
+        const monday = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        );
+
         monday.setDate(date.getDate() + diff);
         return monday;
       },
@@ -260,11 +263,13 @@
         const newDate = new Date(this.baseDate);
         newDate.setDate(this.baseDate.getDate() + 7);
         this.baseDate = this.getMonday(newDate);
+        this.getEmployeeHours();
       },
       getPreviousWeek() {
         const newDate = new Date(this.baseDate);
         newDate.setDate(this.baseDate.getDate() - 7);
         this.baseDate = this.getMonday(newDate);
+        this.getEmployeeHours();
       },
       resetHours() {
         const base = new Date(
@@ -291,11 +296,12 @@
           if (this.isSameMonthYear(day)) {
             if (!this.isPreviousDay(day)) {
               disable = true;
-            } else if (this.employeeType === "semanal") {
+            } else if (this.employeeType === "servicios"
+              || this.employeeType === "horas") {
               disable = !this.isSameWeek(day);
-            } else if (this.employeeType == "quincenal") {
+            } else if (this.employeeType == "medioTiempo") {
               disable = !this.isSameFortnight(day);
-            } else if (this.employeeType == "mensual") {
+            } else if (this.employeeType == "tiempoCompleto") {
               disable = !this.isSameMonth(day);
             }
           }
@@ -349,7 +355,7 @@
         }
 
         if (entry.approved == null) {
-          return "#ff8667"; // Pending
+          return "#ff8667";
         } else if (entry.approved === true) {
           return "#7fd1ae";
         } else {

@@ -12,7 +12,8 @@ namespace back_end.Infraestructure
   public class EmployeeHoursRepository : IEmployeeHoursRepository
   {
     private readonly AbstractConnectionRepository connectionRepository;
-    public EmployeeHoursRepository() { 
+    public EmployeeHoursRepository()
+    {
       connectionRepository = new ConnectionRepository();
     }
 
@@ -69,7 +70,8 @@ namespace back_end.Infraestructure
     }
 
     public List<HoursModel> GetEmployeeHoursList(string loggedUserId
-      , DateOnly startDate, DateOnly endDate) {
+      , DateOnly startDate, DateOnly endDate)
+    {
 
       List<HoursModel> hoursModel = new List<HoursModel>();
 
@@ -99,7 +101,7 @@ namespace back_end.Infraestructure
         var dataTable = connectionRepository.ExecuteQuery(command);
         if (dataTable.Rows.Count == 0)
         {
-          throw new Exception("Ningún dato retornado del usuario.");
+          return hoursModel;
         }
 
         foreach (DataRow row in dataTable.Rows)
@@ -162,7 +164,7 @@ namespace back_end.Infraestructure
       try
       {
         connectionRepository.ExecuteCommand(command);
-        
+
       }
       catch (Exception ex)
       {
@@ -178,4 +180,3 @@ namespace back_end.Infraestructure
     }
   }
 }
-  
