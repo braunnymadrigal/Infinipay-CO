@@ -162,10 +162,7 @@
     },
     async created() {
       await this.getEmployeeHoursContract();
-
-      if (this.isHourlyEmployee) {
-        await this.getEmployeeHours();
-      }
+      await this.getEmployeeHours();
     },
     mounted() {
       this.resetHours();
@@ -244,7 +241,7 @@
           console.error("Error registering employee hours:", error);
         } finally {
           this.isLoading = false;
-          // window.location.href = "/EmployeeTimesheet";
+          window.location.href = "/EmployeeTimesheet";
         }
       },
       getMonday(date) {
