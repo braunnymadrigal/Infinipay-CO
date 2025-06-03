@@ -1,31 +1,35 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using back_end.Repositories;
+﻿using back_end.Repositories;
 using back_end.Models;
 
 namespace back_end.Application
 {
   public class EmployeeBenefitQuery : IBenefitQuery<EmployeeBenefitDTO>
   {
-    private readonly EmployeeBenefitRepository _employeeBenefitRepository;
+    private readonly EmployeeBenefitRepository employeeBenefitRepository;
 
-    public EmployeeBenefitQuery()
+    public EmployeeBenefitQuery(EmployeeBenefitRepository
+      employeeBenefitRepository)
     {
-      _employeeBenefitRepository = new EmployeeBenefitRepository();
+      this.employeeBenefitRepository = employeeBenefitRepository;
     }
 
     public List<EmployeeBenefitDTO> getBenefits(string loggedUserNickname)
     {
-      return _employeeBenefitRepository.getBenefits(loggedUserNickname);
-    }
+      List<EmployeeBenefitDTO> benefits;
 
-    public bool assignBenefit(AssignBenefitRequest request
-      , string loggedUserNickname)
-    {
-      return _employeeBenefitRepository.assignBenefit(request
-        , loggedUserNickname);
+      if (string.IsNullOrWhiteSpace(loggedUserNickname))
+      {
+        benefits = new List<EmployeeBenefitDTO>();
+      } else
+      {
+        benefits = employeeBenefitRepository.getBenefits(loggedUserNickname);
+
+        if (benefits == null)
+        {
+          benefits = new List<EmployeeBenefitDTO>();
+        }
+      }
+      return benefits;
     }
   }
 }
