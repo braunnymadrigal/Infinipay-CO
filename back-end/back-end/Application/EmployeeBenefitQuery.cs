@@ -31,5 +31,10 @@ namespace back_end.Application
       }
       return benefits;
     }
+    
+    public EmployeeBenefitDTO getBenefitById(Guid id)
+    {
+      throw new NotImplementedException("This method is not implemented for EmployeeBenefitQuery.");
+    }
   }
 }

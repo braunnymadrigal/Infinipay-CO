@@ -6,6 +6,7 @@ CREATE OR ALTER PROCEDURE StoreBenefit
 	@Param2 VARCHAR(50) = NULL,
 	@Param3 VARCHAR(50) = NULL,
 	@Name VARCHAR(100),
+	@CompanyId UNIQUEIDENTIFIER,
 	@MinTime decimal(4,2) = 0,
 	@Description VARCHAR(256),
 	@ElegibleEmployees VARCHAR(14) = 'todos'
@@ -20,12 +21,6 @@ BEGIN
 	DECLARE @IdFormula UNIQUEIDENTIFIER = NEWID();
 	INSERT INTO Formula(id, tipoFormula, urlAPI, paramUno, paramDos, paramTres) VALUES
 	(@IdFormula, @FormulaType, @UrlApi, @Param1, @Param2, @Param3);
-
-	-- Find CompanyId
-	DECLARE @CompanyId UNIQUEIDENTIFIER;
-	SELECT TOP 1 @CompanyId = pj.id FROM Usuario u JOIN Empleador e ON
-	u.idPersonaFisica = e.idPersonaFisica JOIN PersonaJuridica pj ON e.idPersonaJuridica = pj.id
-	WHERE u.nickname = @User;
 
 	-- Create Benefit
 	DECLARE @BenefitId UNIQUEIDENTIFIER = NEWID(); 

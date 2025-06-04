@@ -50,7 +50,8 @@
                 Eliminar
               </button>
               <router-link :to="'/BenefitDetails/' + benefit.id">
-                <button
+                <router-link
+                  :to="`/BenefitUpdate/${benefit.benefit.id}`"
                   class="btn btn-primary btn-sm"
                   style="
                     background-color: #405d72;
@@ -58,8 +59,8 @@
                     width: 70px;
                   "
                 >
-                  Ver
-                </button>
+                  Editar
+                </router-link>
               </router-link>
             </div>
           </td>

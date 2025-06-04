@@ -29,5 +29,15 @@ namespace back_end.Application
       }
       return benefits;
     }
+
+    public CompanyBenefitDTO getBenefitById(Guid id)
+    {
+      try {
+        var benefit = companyBenefitRepository.getBenefitById(id);
+        return benefit;
+      } catch (Exception ex) {
+        throw new Exception("Error al obtener el beneficio por ID", ex);
+      }
+    }
   }
 }
