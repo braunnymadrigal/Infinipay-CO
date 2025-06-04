@@ -230,44 +230,96 @@ namespace Tests
             Assert.That(result, Is.EqualTo(expectedResult).Within(0.01));
         }
 
+        [Test]
+        public void Test_MonthlyGrossSalaryComputation_HiredBeforeStartDate()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 1500.0;
+            employees[0].hiringDate = new DateOnly(2020, 1, 1);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 30);
+            var expectedResult = 1500.0;
 
+            // Act
+            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
 
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
 
-        //[Test]
-        //public void Test_Print_Stub()
-        //{
-        //    // Arrange
-        //    var numTimes = 3;
-        //    var stub = new Mock<IDependency>();
-        //    stub.Setup(d => d.ImportantMethod(numTimes)).Returns("Hello");
+        [Test]
+        public void Test_MonthlyGrossSalaryComputation_HiredOnStartDate()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 1800.0;
+            employees[0].hiringDate = new DateOnly(2025, 6, 1);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 30);
+            var expectedResult = 1800.0;
 
-        //    var printer = new Printer(stub.Object);
-        //    var expectedResult = "print:HelloHelloHello";
+            // Act
+            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
 
-        //    // Act
-        //    var result = printer.Print(numTimes);
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
 
-        //    // Assert
-        //    Assert.AreEqual(expectedResult, result);
-        //}
+        [Test]
+        public void Test_MonthlyGrossSalaryComputation_HiredAfterStartDate()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 2100.0;
+            employees[0].hiringDate = new DateOnly(2025, 6, 10);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 30);
+            var expectedWorkedDays = 21;
+            var expectedResult = (2100.0 / 30.0) * expectedWorkedDays;
 
-        //[Test]
-        //public void Test_Print_Mock()
-        //{
-        //    // Arrange
-        //    var numTimes = 3;
-        //    var mock = new Mock<IDependency>();
-        //    mock.Setup(d => d.ImportantMethod(numTimes)).Returns("Hello");
+            // Act
+            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
 
-        //    var printer = new Printer(mock.Object);
-        //    var expectedResult = "print:HelloHelloHello";
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
 
-        //    // Act
-        //    var result = printer.Print(numTimes);
+        [Test]
+        public void Test_MonthlyGrossSalaryComputation_HiredOnLastDay()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 3000.0;
+            employees[0].hiringDate = new DateOnly(2025, 6, 30);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 30);
+            var expectedResult = (3000.0 / 30.0);
 
-        //    // Assert
-        //    Assert.AreEqual(expectedResult, result);
-        //    mock.Verify(d => d.ImportantMethod(numTimes), Times.Exactly(numTimes));
-        //}
+            // Act
+            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_MonthlyGrossSalaryComputation_DecimalPrecision()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 1789.45;
+            employees[0].hiringDate = new DateOnly(2025, 6, 5);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 30);
+            var expectedWorkedDays = 26;
+            var expectedResult = (1789.45 / 30.0) * expectedWorkedDays;
+
+            // Act
+            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult).Within(0.01));
+        }
     }
 }
