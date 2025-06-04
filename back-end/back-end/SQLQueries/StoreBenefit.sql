@@ -31,4 +31,3 @@ BEGIN
 	INSERT INTO Deduccion (nombre, descripcion, idPersonaJuridica, idBeneficio, idFormula, idAuditoria) VALUES
 	(@Name, @Description, @CompanyId, @BenefitId, @IdFormula, @IdAudit);
 END;
-

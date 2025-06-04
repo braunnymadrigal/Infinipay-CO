@@ -227,10 +227,30 @@ export default {
         });
     },
     submitForm() {
-      console.log("Submitting form with data:", this.benefitform);
+      const newBenefit = {
+        benefit: {
+          name: this.benefitform.benefit.name,
+          description: this.benefitform.benefit.description,
+          elegibleEmployees: this.benefitform.benefit.elegibleEmployees,
+          minEmployeeTime: this.benefitform.benefit.minEmployeeTime,
+          deductionType: this.benefitform.benefit.deductionType,
+          urlAPI: this.benefitform.benefit.urlAPI
+            ? String(this.benefitform.benefit.urlAPI)
+            : null,
+          paramOneAPI: String(this.benefitform.benefit.paramOneAPI),
+          paramTwoAPI:
+            this.benefitform.benefit.paramTwoAPI !== null
+              ? String(this.benefitform.benefit.paramTwoAPI)
+              : null,
+          paramThreeAPI:
+            this.benefitform.benefit.paramThreeAPI !== null
+              ? String(this.benefitform.benefit.paramThreeAPI)
+              : null,
+        },
+      };
 
       this.$api
-        .updateCompanyBenefit(this.benefitform, this.benefitform.benefit.id)
+        .updateCompanyBenefit(newBenefit, this.benefitform.benefit.id)
         .then(() => {
           this.$router.push("../BenefitList");
         })
