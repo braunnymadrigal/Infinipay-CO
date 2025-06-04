@@ -36,58 +36,72 @@
 
         <div class="mb-3">
           <label for="employerUsername" class="form-label">
-            Usuario del empleador</label>
+            Usuario del empleador
+          </label>
           <input type="text" class="form-control" v-model="employerUsername"
-            style="background-color: #FFF8F3;" id="employerUsername" required 
-            maxlength="30" pattern="^[a-z_\.]+$" title="Sólo se permiten letras minúsculas, guiones bajos y puntos." 
-            placeholder="Escriba el nombre de usuario que acaba de crear."
-          />
+                 style="background-color: #FFF8F3;" id="employerUsername" required
+                 maxlength="30" pattern="^[a-z_\.]+$" title="Sólo se permiten letras minúsculas, guiones bajos y puntos."
+                 placeholder="Escriba el nombre de usuario que acaba de crear." />
         </div>
 
         <div class="mb-3">
           <label for="legalName" class="form-label">Razón social</label>
-          <input type="text" class="form-control" id="legalName" 
-            style="background-color: #FFF8F3;" v-model="legalName"
-            required maxlength="256"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
-            title="Sólo se permiten letras, acentos, espacios y '&'."
-            placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
+          <input type="text" class="form-control" id="legalName"
+                 style="background-color: #FFF8F3;" v-model="legalName"
+                 required maxlength="256"
+                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
+                 title="Sólo se permiten letras, acentos, espacios y '&'."
+                 placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
+        </div>
+
+        <div class="mb-3">
+          <label for="associationName" class="form-label">Nombre de Asociación
+          </label>
+          <input type="text" class="form-control" id="legalName"
+                 style="background-color: #FFF8F3;" v-model="associationName"
+                 required maxlength="256"
+                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
+                 title="Sólo se permiten letras, acentos, espacios y '&'."
+                 placeholder="Sólo letras, acentos, espacios y '&'" rows="2">
         </div>
 
         <div class="mb-3">
           <label for="description" class="form-label">
-            Descripción de la empresa</label>
+            Descripción de la empresa
+          </label>
           <textarea class="form-control" style="background-color: #FFF8F3;"
-            v-model="description" id="description" maxlength="256"
-            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
-            title="Sólo se permiten letras, acentos y espacios."
-            placeholder=
-            "Sólo se permiten espacios, letras y acentos del abecedario español."
-            rows="4"></textarea>
+                    v-model="description" id="description" maxlength="256"
+                    pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
+                    title="Sólo se permiten letras, acentos y espacios."
+                    placeholder="Sólo se permiten espacios, letras y acentos del abecedario español."
+                    rows="4"></textarea>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Fecha de creación</label>
           <div class="d-flex gap-2">
             <select id="creationDay" class="form-select"
-              v-model="creationDay" style="background-color: #FFF8F3;" required>
+                    v-model="creationDay" style="background-color: #FFF8F3;" required>
               <option value="">Día</option>
-              <option v-for="day in 31" :key="day" :value="day">{{ day }}
+              <option v-for="day in 31" :key="day" :value="day">
+                {{ day }}
               </option>
             </select>
             <select id="creationMonth" class="form-select"
-              v-model="creationMonth" style="background-color: #FFF8F3;"
-              required>
+                    v-model="creationMonth" style="background-color: #FFF8F3;"
+                    required>
               <option value="">Mes</option>
               <option v-for="(month, index)
-                in months" :key="index" :value="index + 1"> {{ month }}
+                in months" :key="index" :value="index + 1">
+                {{ month }}
               </option>
             </select>
             <select id="creationYear" class="form-select" v-model="creationYear"
-              style="background-color: #FFF8F3;" required>
+                    style="background-color: #FFF8F3;" required>
               <option value="">Año</option>
               <option v-for="year in years" :key="year" :value="year">
-                {{ year }}</option>
+                {{ year }}
+              </option>
             </select>
           </div>
         </div>
@@ -95,9 +109,9 @@
         <div class="mb-3">
           <label for="idNumber" class="form-label">Cédula jurídica</label>
           <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="idNumber"
-            id="idNumber" required pattern="^\d{10}$" title="10 dígitos, sin guiones."
-            placeholder="10 dígitos, sin guiones">
+                 style="background-color: #FFF8F3;" v-model="idNumber"
+                 id="idNumber" required pattern="^\d{10}$" title="10 dígitos, sin guiones."
+                 placeholder="10 dígitos, sin guiones">
         </div>
 
         <div class="mb-3">
@@ -105,18 +119,18 @@
           <div class="d-flex align-items-center mb-2">
             <span class="me-2">+506</span>
             <input type="text" class="form-control"
-            style="background-color: #FFF8F3;" v-model="phoneNumber"
-            id="phoneNumber" required pattern="\d{8}" title="8 dígitos, sin guiones."
-            placeholder="8 dígitos, sin guiones">
+                   style="background-color: #FFF8F3;" v-model="phoneNumber"
+                   id="phoneNumber" required pattern="\d{8}" title="8 dígitos, sin guiones."
+                   placeholder="8 dígitos, sin guiones">
           </div>
         </div>
 
         <div class="mb-3">
           <label for="email" class="form-label">Correo electrónico</label>
           <input type="email" class="form-control"
-            style="background-color: #FFF8F3;" v-model="email" id="email"
-            required maxlength="100" placeholder="xxx@xxxx.xxx" title="Formato: xxx@xxxx.xxx"
-          @input="email = $event.target.value.toLowerCase()">
+                 style="background-color: #FFF8F3;" v-model="email" id="email"
+                 required maxlength="100" placeholder="xxx@xxxx.xxx" title="Formato: xxx@xxxx.xxx"
+                 @input="email = $event.target.value.toLowerCase()">
         </div>
 
         <h3 class="fw-normal mb-3">Dirección</h3>
@@ -125,31 +139,30 @@
             <div class="col-md-6">
               <label for="province" class="form-label">Provincia</label>
               <input type="text" class="form-control"
-              style="background-color: #FFF8F3;" v-model="address.province"
-              id="province" required maxlength="50" title="Sólo se permiten letras, acentos y espacios."
-              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+                     style="background-color: #FFF8F3;" v-model="address.province"
+                     id="province" required maxlength="50" title="Sólo se permiten letras, acentos y espacios."
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="canton" class="form-label">Cantón</label>
               <input type="text" class="form-control"
-              style="background-color: #FFF8F3;" v-model="address.canton"
-              id="canton" required maxlength="50"
-              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+                     style="background-color: #FFF8F3;" v-model="address.canton"
+                     id="canton" required maxlength="50"
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="district" class="form-label">Distrito</label>
               <input type="text" class="form-control"
-              style="background-color: #FFF8F3;" v-model="address.district"
-              id="district" required maxlength="50" title="Sólo se permiten letras, acentos y espacios."
-              pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
+                     style="background-color: #FFF8F3;" v-model="address.district"
+                     id="district" required maxlength="50" title="Sólo se permiten letras, acentos y espacios."
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$">
             </div>
             <div class="col-md-6">
               <label for="otherSigns" class="form-label">Otras señas</label>
               <textarea class="form-control" style="background-color: #FFF8F3;
               height: 38px;" v-model="address.otherSigns" id="otherSigns"
-              maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$" title="Sólo se permiten letras, números y espacios."
-              rows="2" placeholder=
-              "Sólo se permiten letras, números y espacios en blanco">
+                        maxlength="256" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$" title="Sólo se permiten letras, números y espacios."
+                        rows="2" placeholder="Sólo se permiten letras, números y espacios en blanco">
             </textarea>
             </div>
           </div>
@@ -157,9 +170,10 @@
 
         <div class="mb-3">
           <label for="benefits" class="form-label">
-            Cantidad máxima de beneficios por empleado</label>
-          <select id="benefits" class="form-select" 
-           style="background-color: #FFF8F3;" v-model="benefits" required>
+            Cantidad máxima de beneficios por empleado
+          </label>
+          <select id="benefits" class="form-select"
+                  style="background-color: #FFF8F3;" v-model="benefits" required>
             <option disabled value="">Seleccione una cantidad</option>
             <option v-for="n in 100" :key="n" :value="n-1">{{ n-1 }}</option>
           </select>
@@ -168,20 +182,20 @@
         <div class="mb-3">
           <label for="paymentType" class="form-label">Tipo de pago</label>
           <select id="paymentType" class="form-select"
-            style="background-color: #FFF8F3;" v-model="paymentType"
-            required>
+                  style="background-color: #FFF8F3;" v-model="paymentType"
+                  required>
             <option disabled value="">Seleccione un tipo de pago</option>
             <option value="semanal">Semanal</option>
             <option value="quincenal">Quincenal</option>
             <option value="mensual">Mensual</option>
           </select>
         </div>
-        
+
         <div class="d-flex justify-content-center mt-4" style="gap: 10px;">
           <router-link to="/RegisterEmployer" class="btn btn-secondary"
-            style="background-color: #405D72;"> Volver</router-link>
+                       style="background-color: #405D72;"> Volver</router-link>
           <button type="submit" class="btn btn-secondary"
-            style="background-color: #405D72; border: transparent;">
+                  style="background-color: #405D72; border: transparent;">
             Registrar
           </button>
         </div>
@@ -263,6 +277,7 @@ export default {
     submitForm() {
       const companyData = {
         legalName: this.legalName,
+        associationName: this.associationName,
         description: this.description,
         idNumber: this.idNumber,
         phoneNumber: this.phoneNumber,
