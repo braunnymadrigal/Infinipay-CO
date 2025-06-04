@@ -100,7 +100,7 @@ namespace back_end.Controllers
     [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpPost]
     public ActionResult<bool> assignBenefit([FromBody]
-      AssignBenefitRequest request)
+      AssignBenefitReq request)
     {
       try
       {

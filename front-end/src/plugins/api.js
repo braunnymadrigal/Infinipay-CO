@@ -42,7 +42,7 @@ export default {
       },
 
       login(userCredential) {
-        return axios.post(`${apiBaseURL}/Login/Login`, {
+        return axios.post(`${apiBaseURL}/Login`, {
           NicknameOrEmail: userCredential.userId,
           Password: userCredential.userPassword,
         });
@@ -99,6 +99,7 @@ export default {
       getCompanyBenefits() {
         return axios.get(`${apiBaseURL}/CompanyBenefit`, authHeader());
       },
+
       createCompanyBenefit(benefitData) {
         return axios.post(
           `${apiBaseURL}/CompanyBenefit`,

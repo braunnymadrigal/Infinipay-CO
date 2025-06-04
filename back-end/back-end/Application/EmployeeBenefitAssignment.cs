@@ -13,7 +13,7 @@ namespace back_end.Application
       this.employeeBenefitRepository = employeeBenefitRepository;
     }
 
-    public bool assignBenefit(AssignBenefitRequest request
+    public bool assignBenefit(AssignBenefitReq request
       , string loggedUserNickname)
     {
       if (string.IsNullOrWhiteSpace(loggedUserNickname))

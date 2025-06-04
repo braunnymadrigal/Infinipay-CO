@@ -11,7 +11,7 @@ namespace back_end.Models
     public bool assigned { get; set; }
   }
 
-  public class AssignBenefitRequest
+  public class AssignBenefitReq
   {
     [Required]
     public string id {get; set; }

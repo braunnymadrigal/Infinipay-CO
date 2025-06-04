@@ -26,7 +26,6 @@ namespace back_end.Application
       }
       try 
       {
-                Console.WriteLine("Creando beneficio enviando a repository...");
         companyBenefitRepository.CreateBenefit(benefit, loggedUserNickname);
       }
       catch (Exception ex)
