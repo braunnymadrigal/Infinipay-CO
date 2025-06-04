@@ -247,7 +247,6 @@ namespace back_end.Repositories
 
                     if (dataAlreadyExists("Beneficio", "nombre", companyBenefit.benefit.name, companyBenefit.benefit.companyId, transaction))
                         throw new Exception("BENEFICIO_DUPLICADO");
-
                     using (var cmd = new SqlCommand("StoreBenefit", _connection, transaction))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
