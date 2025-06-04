@@ -1,21 +1,28 @@
 ﻿using back_end.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Transactions;
+using System.Text;
+using back_end.Application;
 
 namespace back_end.Repositories
 {
-    public class CompanyBenefitRepository
+    public class CompanyBenefitRepository :
+        IBenefitRepository<CompanyBenefitDTO>
     {
-        private readonly string _connectionRoute;
         private SqlConnection _connection;
-
+        private string _connectionRoute;
+        private string _connectStringName = "InfinipayDBContext";
         public CompanyBenefitRepository()
         {
             var builder = WebApplication.CreateBuilder();
-            _connectionRoute = builder.Configuration.GetConnectionString("InfinipayDBContext");
+            
+            _connectionRoute = builder.Configuration
+                .GetConnectionString(this._connectStringName)
+                ?? throw new Exception("Connection string not found.");
+            
             _connection = new SqlConnection(_connectionRoute);
         }
 
@@ -64,14 +71,13 @@ namespace back_end.Repositories
                 ? Convert.ToDateTime(column["ultimaFechaModificacion"]) : DateTime.MinValue;
         }
 
-
         private DataTable GetQueryTable(string query, SqlParameter[] parameters)
         {
             DataTable queryTable = new DataTable();
 
-            using (var connection = new SqlConnection(_connectionRoute))
+            try
             {
-                using (SqlCommand queryCommand = new SqlCommand(query, connection))
+                using (SqlCommand queryCommand = new SqlCommand(query, _connection))
                 using (SqlDataAdapter tableAdapter = new SqlDataAdapter(queryCommand))
                 {
                     if (parameters != null && parameters.Length > 0)
@@ -85,10 +91,28 @@ namespace back_end.Repositories
                     }
 
                     tableAdapter.Fill(queryTable);
-                }
+                    }
+            }
+            catch (Exception ex)
+            {
+                _connection.Close();
+                throw new Exception("Error al ejecutar consulta con parámetros: "
+                + ex.Message, ex);
             }
 
+            _connection.Close();
             return queryTable;
+        }
+
+        private bool dataAlreadyExists(string table, string field, string value
+        , SqlTransaction transaction)
+        {
+            var cmd = new SqlCommand(
+                $"SELECT COUNT(*) FROM [{table}] WHERE [{field}] = @value",
+                transaction.Connection, transaction);
+            cmd.Parameters.AddWithValue("@value", value);
+            var count = (int)cmd.ExecuteScalar();
+            return count > 0;
         }
 
         public List<CompanyBenefitDTO> getBenefits(string nickname)
@@ -148,6 +172,10 @@ namespace back_end.Repositories
 
                 using (var transaction = _connection.BeginTransaction())
                 {
+                    if (dataAlreadyExists("Beneficio", "nombre", companyBenefit.benefit.name, transaction))
+                    {
+                        throw new Exception("BENEFICIO_DUPLICADO");
+                    }
                     try
                     {
                         using (var cmd = new SqlCommand("StoreBenefit", _connection, transaction))
