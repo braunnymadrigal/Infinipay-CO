@@ -116,43 +116,6 @@ export default {
         );
       },
 
-      benefitAPI(benefit) {
-        return axios.get(benefit.urlAPI, {
-          params: {
-            param1: benefit.paramOneAPI,
-            param2: benefit.paramTwoAPI,
-            param3: benefit.paramThreeAPI,
-          },
-        });
-      },
-
-      getCompanyBenefits() {
-        return axios.get(`${apiBaseURL}/CompanyBenefit`, authHeader());
-      },
-
-      createCompanyBenefit(benefitData) {
-        return axios.post(
-          `${apiBaseURL}/CompanyBenefit`,
-          benefitData,
-          authHeader()
-        );
-      },
-
-      getCompanyBenefitById(benefitId) {
-        return axios.get(
-          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
-          authHeader()
-        );
-      },
-
-      updateCompanyBenefit(benefitData, benefitId) {
-        return axios.put(
-          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
-          benefitData,
-          authHeader()
-        );
-      },
-
       getEmployeeHoursContract() {
         return axios.get(`${apiBaseURL}/EmployeeHours`, authHeader());
       },

@@ -97,17 +97,15 @@ export default {
       try {
         await this.$api.assignBenefit(selectedAddBenefit.benefit.id);
 
-          this.showPopup = false;
-          this.$router.go(0);
-        } catch (error) {
-          this.showPopup = true;
-          if (error.response) {
-            this.errorMessage = error.response.data?.message
-              || "Error desconocido";
-            this.errorMessage += ". Por favor refrescar la página.";
-            this.showError = true;
-
-          }
+        this.showPopup = false;
+        this.$router.go(0);
+      } catch (error) {
+        this.showPopup = true;
+        if (error.response) {
+          this.errorMessage =
+            error.response.data?.message || "Error desconocido";
+          this.errorMessage += ". Por favor refrescar la página.";
+          this.showError = true;
         }
       }
     },
