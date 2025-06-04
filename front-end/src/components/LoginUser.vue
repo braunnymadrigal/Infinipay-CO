@@ -1,29 +1,34 @@
-<template>
+﻿<template>
   <!-- HEADER -->
-  <div>
-    <div class="CompanyLogo">
-      <img
-        src="../assets/images/logo.png"
-        alt="Company logo"
-        class="LogoImg"
-      />
+  <div class="container my-5">
+    <div class="text-center mb-4">
+      <img src="../assets/images/logo.png" alt="Company logo" class="img-fluid"
+        style="max-width: 350px;">
     </div>
-    <header class="MainHeader">
-      <div class="MainHeaderNavigation">
-        <nav class="MainHeaderNavigationLinks">
-          <div class="NavigationSectionLeft">
-            <router-link to="/LoginUser" class="LeftButton">
-              Iniciar sesión</router-link>
-            <router-link to="/RegisterEmployer" class="LeftButton">
-              Registrá tu empresa
+    <header class="mb-5 custom-header">
+      <nav class="navbar navbar-expand-lg rounded custom-navbar">
+        <div class="container-fluid">
+          <div class="d-flex">
+            <router-link to="/LoginUser" class="btn btn-outline-primary me-2"
+              style="background-color: #405D72; color: #FFFFFF;
+              border: transparent;"> Iniciar sesión</router-link>
+            <router-link to="/RegisterEmployer" class="btn btn-primary"
+              style="background-color: #405D72;
+              border: transparent;">Registrá tu empresa
+          </router-link>
+          </div>
+          <div class="ms-auto">
+            <router-link to="/" class="btn btn-primary me-2"
+              style="background-color: #F7E7DC; color: #2b3f4e;
+                border: 2px solid transparent;">Página Principal
+            </router-link>
+            <router-link to="/" class="btn btn-secondary"
+              style="background-color: #F7E7DC; color: #2b3f4e;
+                border: 2px solid transparent;">¿Necesitás ayuda?
             </router-link>
           </div>
-          <div class="NavigationSectionRight">
-            <router-link to="/" class="RightButton">
-              Página principal</router-link>
-          </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
     </header>
   </div>
 
@@ -31,17 +36,16 @@
   <div class="h-100 d-flex align-items-center justify-content-center 
   bg-transparent">
     <div class="card p-4 bg-transparent border-0" 
-    style="max-width: 600px; width: 100%">
-      <i class="pi pi-user" style="font-size: 8.5rem"></i>
+    style="max-width: 600px; width: 100%; text-align: center">
+      <i class="pi pi-user" style="font-size: 8.5rem; color: #405D72"></i>
     </div>
   </div>
   <div class="h-100 d-flex align-items-center justify-content-center 
   bg-transparent">
     <div class="card p-4 bg-transparent border-0" 
     style="max-width: 600px; width: 100%">
-      <h1 class="font-weight-bold">Iniciar sesión</h1>
-      <h6 class="text-secondary">¿Aún no has registrado tu empresa? 
-        ¡Empezá ya!</h6>
+      <h1 class="font-weight-bold" style="text-align: center; color: #405D72">
+        Iniciar sesión</h1>
     </div>
   </div>
   <div class="h-100 d-flex align-items-center justify-content-center 
@@ -85,12 +89,33 @@
             required
           />
         </div>
-        <div>
-          <button type="submit" class="btn btn-dark btn-round">
+        <div style="text-align: center">
+          <button type="submit" class="btn btn-dark btn-round" 
+          style="background-color: #405D72; border-color: #2b3f4e;">
             Iniciar sesión
           </button>
         </div>
       </form>
+    </div>
+  </div>
+  <div v-if="showWrongPassword" @click.stop 
+  class="h-100 d-flex align-items-center justify-content-center 
+  bg-transparent">
+    <div class="card bg-transparent border-0" 
+    style="max-width: 600px; width: 100%">
+      <div class="text-danger">
+        Correo electrónico/nombre de usuario o contraseña incorrectos.
+      </div>
+    </div>
+  </div>
+  <div v-if="showLoginForbidden" @click.stop 
+  class="h-100 d-flex align-items-center justify-content-center 
+  bg-transparent">
+    <div class="card bg-transparent border-0" 
+    style="max-width: 600px; width: 100%">
+      <div class="text-danger">
+        Demasiados intentos fallidos. Intentar de nuevo en 10 minutos.
+      </div>
     </div>
   </div>
   <div class="h-100 d-flex align-items-center justify-content-center 
@@ -102,58 +127,55 @@
   </div>
 
   <!-- FOOTER -->
-  <footer class="MainFooter">
-    <div>
-      <p class="MainFooterText">Contacto</p>
-      <p class="MainFooterText">Infinipay CO.</p>
-      <div class="SocialMediaContainer">
-        <a href="#" class="fa fa-facebook"></a>
-        <a href="#" class="fa fa-linkedin"></a>
-        <a href="#" class="fa fa-youtube"></a>
-        <a href="#" class="fa fa-instagram"></a>
-      </div>
-    </div>
-    <div>
-      <p class="MainFooterSubtitule">Empresa y equipo</p>
-      <div class="FooterNavLinks">
-        <a href="#">Sobre nosotros</a>
-      </div>
-    </div>
-    <div >
-      <p class="MainFooterSubtitule">Recursos</p>
-      <div class="FooterNavLinks">
-        <a href="#">¿Cómo registro mi empresa?</a>
-        <a href="#">¿Cómo registro empleados a mi empresa?</a>
-        <a href="#">¿Cómo accedo a mi perfil?</a>
-      </div>
-    </div>
-    <div>
-      <p class="MainFooterSubtitule">Contacto</p>
-      <div class="FooterNavLinks">
-        <a href="#"> <i class="pi pi-phone" style="color:#405D72;"></i>
-            +506 2000-0000</a>
-        <a href="#"> <i class="pi pi-home" style="color:#405D72;"></i>
-            San José, Montes de Oca, San Pedro</a>
-      </div>
-    </div>
-  </footer>
+  <MainFooter/>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        user: { userId: "", userPassword: "" },
-      };
+import MainFooter from "./MainFooter.vue";
+export default {
+  components: {
+    MainFooter
+  },
+  data() {
+    return {
+      user: { userId: "", userPassword: "" },
+      showWrongPassword: false,
+      showLoginForbidden: false,
+    };
+  },
+  methods: {
+    startLogin() {
+      this.showWrongPassword = false;
+      this.showLoginForbidden = false;
+      this.$api.login({
+        userId: this.user.userId,
+        userPassword: this.user.userPassword
+      })
+        .then(
+          response => {
+            this.$cookies.set('jwt', response.data);
+            this.$router.push('MyProfile');
+          }
+        )
+        .catch(
+          error => {
+            if (error.response) {
+              if (error.response.data == "Too many failed attempts.") {
+                this.showLoginForbidden = true;
+              } else {
+                this.showWrongPassword = true;
+              }
+            } else {
+              console.log(error);
+            }
+          }
+        )
+      ;
     },
-    methods: {
-      startLogin() {
-        console.log("Saved:", this.user);
-      },
-    },
-  };
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
+<style>
+  @import '../assets/css/HeaderFooter.css';
 </style>
