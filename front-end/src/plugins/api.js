@@ -57,30 +57,55 @@ export default {
       },
 
       getAssignedBenefits() {
-        return axios.get(`${apiBaseURL}/AssignedBenefitList`, authHeader());
+        return axios.get(`${apiBaseURL}/EmployeeBenefit`, authHeader());
       },
 
       assignBenefit(benefitId) {
         return axios.post(
-          `${apiBaseURL}/AssignedBenefitList`,
+          `${apiBaseURL}/EmployeeBenefit`,
           {
-            benefitId: benefitId,
+            id: benefitId,
           },
           authHeader()
         );
       },
-      
-			generateEmployeePayroll(payload = {}) {
-				return axios.post(`${apiBaseURL}/PayrollOrchestrator`
-				, payload, authHeader());
-			},
-      
-			showEmployeesPayroll() {
-				return axios.get(`${apiBaseURL}/PayrollOrchestrator`, authHeader());
-			},
-      
+
+      generateEmployeePayroll(payload = {}) {
+        return axios.post(
+          `${apiBaseURL}/PayrollOrchestrator`,
+          payload,
+          authHeader()
+        );
+      },
+
+      showEmployeesPayroll() {
+        return axios.get(`${apiBaseURL}/PayrollOrchestrator`, authHeader());
+      },
+
       getEmployeeById(employeeId) {
         return axios.get(`${apiBaseURL}/Employee/${employeeId}`, authHeader());
+      },
+
+      benefitAPI(benefit) {
+        return axios.get(benefit.urlAPI, {
+          params: {
+            param1: benefit.paramOneAPI,
+            param2: benefit.paramTwoAPI,
+            param3: benefit.paramThreeAPI,
+          },
+        });
+      },
+
+      getCompanyBenefits() {
+        return axios.get(`${apiBaseURL}/CompanyBenefit`, authHeader());
+      },
+
+      createCompanyBenefit(benefitData) {
+        return axios.post(
+          `${apiBaseURL}/CompanyBenefit`,
+          benefitData,
+          authHeader()
+        );
       },
 
       updateEmployee(employeeData, employeeId) {
@@ -90,25 +115,43 @@ export default {
           authHeader()
         );
       },
-      
+
       getEmployeeHoursContract() {
-				return axios.get(`${apiBaseURL}/EmployeeHours`, authHeader());
-			},
+        return axios.get(`${apiBaseURL}/EmployeeHours`, authHeader());
+      },
 
-			getEmployeeHours(startDate, endDate) {
-				return axios.get(`${apiBaseURL}/EmployeeHours/Hours`, {
-					params: {
-						startDate,
-						endDate
-					},
-					...authHeader(),
-				});
-			},
+      getEmployeeHours(startDate, endDate) {
+        return axios.get(`${apiBaseURL}/EmployeeHours/Hours`, {
+          params: {
+            startDate,
+            endDate,
+          },
+          ...authHeader(),
+        });
+      },
 
-			registerEmployeeHours(employeeHoursWorked) {
-				return axios.post(`${apiBaseURL}/EmployeeHours`, employeeHoursWorked
-					, authHeader());
-			},
+      registerEmployeeHours(employeeHoursWorked) {
+        return axios.post(
+          `${apiBaseURL}/EmployeeHours`,
+          employeeHoursWorked,
+          authHeader()
+        );
+      },
+
+      getCompanyBenefitById(benefitId) {
+        return axios.get(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          authHeader()
+        );
+      },
+
+      updateCompanyBenefit(benefitData, benefitId) {
+        return axios.put(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          benefitData,
+          authHeader()
+        );
+      },
     };
   },
 };

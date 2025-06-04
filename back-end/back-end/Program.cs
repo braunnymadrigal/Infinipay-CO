@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using back_end.Infraestructure;
 using back_end.Application;
+using back_end.Models;
+using back_end.Repositories;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,8 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: MyAllowSpecificOrigins,
                     policy =>
                     {
-                      policy.WithOrigins("http://localhost:8081", "http://localhost:8080")
+                      policy.WithOrigins("http://localhost:8081"
+                        , "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
@@ -83,6 +86,19 @@ builder.Services.AddScoped<IEmployeeHoursQuery, EmployeeHoursQuery>();
 builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
 
 builder.Services.AddScoped<IRentTax, RentTax>();
+builder.Services.AddScoped<EmployeeBenefitRepository>();
+builder.Services.AddScoped<CompanyBenefitRepository>();
+builder.Services.AddScoped<ICompanyBenefitCommand, CompanyBenefitCommand>();
+
+
+builder.Services.AddScoped<IBenefitQuery<EmployeeBenefitDTO>
+  , EmployeeBenefitQuery>();
+
+builder.Services.AddScoped<IBenefitQuery<CompanyBenefitDTO>
+  , CompanyBenefitQuery>();
+
+builder.Services.AddScoped<IEmployeeBenefitAssignment
+  , EmployeeBenefitAssignment>();
 
 var app = builder.Build();
 

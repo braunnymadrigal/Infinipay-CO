@@ -5,7 +5,7 @@
     class="card p-4 mx-auto"
     style="max-width: 1000px; background-color: #fff8f3; border: none"
   >
-    <h1 class="text-center" style="color: #405d72">Agregar beneficio</h1>
+    <h1 class="text-center" style="color: #405d72">Editar beneficio</h1>
     <h2 class="text-center" style="color: #758694">Datos del beneficio</h2>
     <div class="">
       <form @submit.prevent="submitForm">
@@ -16,7 +16,7 @@
             class="form-control"
             id="BenefitName"
             style="background-color: #fff8f3"
-            v-model="newBenefitForm.name"
+            v-model="benefitform.benefit.name"
             required
             maxlength="100"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s&]+$"
@@ -31,7 +31,7 @@
           <textarea
             class="form-control"
             style="background-color: #fff8f3"
-            v-model="newBenefitForm.description"
+            v-model="benefitform.benefit.description"
             id="BenefitDescription"
             maxlength="300"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
@@ -47,7 +47,7 @@
             id="BenefitAppliesTo"
             class="form-select"
             style="background-color: #fff8f3"
-            v-model="newBenefitForm.elegibleEmployees"
+            v-model="benefitform.benefit.elegibleEmployees"
             required
           >
             <option disabled value="">Seleccione una opción</option>
@@ -68,7 +68,7 @@
             class="form-control"
             id="BenefitMinMonths"
             style="background-color: #fff8f3"
-            v-model.number="newBenefitForm.minEmployeeTime"
+            v-model.number="benefitform.benefit.minEmployeeTime"
             required
             min="0"
             step="0.01"
@@ -91,7 +91,7 @@
               id="BenefitTypeFormula"
               class="form-select"
               style="background-color: #fff8f3"
-              v-model="newBenefitForm.deductionType"
+              v-model="benefitform.benefit.deductionType"
               required
             >
               <option value="porcentaje">Porcentaje</option>
@@ -102,8 +102,8 @@
 
           <div
             v-if="
-              newBenefitForm.deductionType === 'porcentaje' ||
-              newBenefitForm.deductionType === 'montoFijo'
+              benefitform.benefit.deductionType === 'porcentaje' ||
+              benefitform.benefit.deductionType === 'montoFijo'
             "
             class="mb-3"
           >
@@ -113,53 +113,53 @@
               class="form-control"
               id="BenefitFormula"
               style="background-color: #fff8f3"
-              v-model="newBenefitForm.paramOneAPI"
+              v-model="benefitform.benefit.paramOneAPI"
               required
               min="0"
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
+          <div v-if="benefitform.benefit.deductionType === 'api'" class="mb-3">
             <label for="ApiURL" class="form-label">URL</label>
             <input
               type="text"
               class="form-control"
               id="ApiURL"
               style="background-color: #fff8f3"
-              v-model="newBenefitForm.urlAPI"
+              v-model="benefitform.benefit.urlAPI"
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
+          <div v-if="benefitform.benefit.deductionType === 'api'" class="mb-3">
             <label for="Parameter1" class="form-label">Parametro 1</label>
             <input
               type="text"
               class="form-control"
               id="Parameter1"
               style="background-color: #fff8f3"
-              v-model="newBenefitForm.paramOneAPI"
+              :v-model="String(benefitform.benefit.paramOneAPI)"
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
+          <div v-if="benefitform.benefit.deductionType === 'api'" class="mb-3">
             <label for="Parameter2" class="form-label">Parametro 2</label>
             <input
               type="text"
               class="form-control"
               id="Parameter2"
               style="background-color: #fff8f3"
-              v-model="newBenefitForm.paramTwoAPI"
+              :v-model="String(benefitform.benefit.paramTwoAPI)"
             />
           </div>
 
-          <div v-if="newBenefitForm.deductionType === 'api'" class="mb-3">
+          <div v-if="benefitform.benefit.deductionType === 'api'" class="mb-3">
             <label for="Parameter3" class="form-label">Parametro 3</label>
             <input
               type="text"
               class="form-control"
               id="Parameter3"
               style="background-color: #fff8f3"
-              v-model="newBenefitForm.paramThreeAPI"
+              :v-model="String(benefitform.benefit.paramThreeAPI)"
             />
           </div>
         </fieldset>
@@ -195,62 +195,75 @@ export default {
   },
   data() {
     return {
-      newBenefitForm: {
-        name: "",
-        description: "",
-        elegibleEmployees: "",
-        minEmployeeTime: 0,
-        deductionType: "",
-        paramOneAPI: 0,
-        paramTwoAPI: null,
-        paramThreeAPI: null,
-        urlAPI: "",
+      benefitform: {
+        benefit: {
+          id: null,
+          companyId: null,
+          name: "",
+          description: "",
+          elegibleEmployees: "",
+          minEmployeeTime: 0,
+          deductionType: "",
+          paramOneAPI: "",
+          paramTwoAPI: "",
+          paramThreeAPI: "",
+          urlAPI: "",
+        },
       },
     };
   },
   methods: {
-    submitForm() {
-      const form = this.newBenefitForm;
-
-      if (
-        form.name.trim() === "" ||
-        form.description.trim() === "" ||
-        form.elegibleEmployees === "" ||
-        form.deductionType === "" ||
-        form.paramOneAPI === null
-      ) {
-        alert("Por favor, completa todos los campos requeridos.");
-        return;
-      }
-
-      const newBenefit = {
-        benefit: {
-          name: form.name,
-          description: form.description,
-          elegibleEmployees: form.elegibleEmployees,
-          minEmployeeTime: form.minEmployeeTime,
-          deductionType: form.deductionType,
-          urlAPI: form.urlAPI ? String(form.urlAPI) : null,
-          paramOneAPI: String(form.paramOneAPI),
-          paramTwoAPI:
-            form.paramTwoAPI !== null ? String(form.paramTwoAPI) : null,
-          paramThreeAPI:
-            form.paramThreeAPI !== null ? String(form.paramThreeAPI) : null,
-        },
-      };
+    fetchBenefitData() {
       this.$api
-        .createCompanyBenefit(newBenefit)
-        .then(() => {
-          alert("Beneficio creado exitosamente.");
-          this.$router.push("/BenefitList");
+        .getCompanyBenefitById(this.$route.params.id)
+        .then((response) => {
+          this.benefitform.benefit = response.data.benefit;
         })
         .catch((error) => {
-          console.error("Error al crear el beneficio:", error);
+          console.error("Error al obtener los datos del beneficio:", error);
           alert(
-            "Hubo un error al crear el beneficio. Por favor, inténtalo de nuevo."
+            "No se pudo cargar el beneficio. Por favor, inténtalo de nuevo."
           );
         });
     },
+    submitForm() {
+      const newBenefit = {
+        benefit: {
+          name: this.benefitform.benefit.name,
+          description: this.benefitform.benefit.description,
+          elegibleEmployees: this.benefitform.benefit.elegibleEmployees,
+          minEmployeeTime: this.benefitform.benefit.minEmployeeTime,
+          deductionType: this.benefitform.benefit.deductionType,
+          urlAPI: this.benefitform.benefit.urlAPI
+            ? String(this.benefitform.benefit.urlAPI)
+            : null,
+          paramOneAPI: String(this.benefitform.benefit.paramOneAPI),
+          paramTwoAPI:
+            this.benefitform.benefit.paramTwoAPI !== null
+              ? String(this.benefitform.benefit.paramTwoAPI)
+              : null,
+          paramThreeAPI:
+            this.benefitform.benefit.paramThreeAPI !== null
+              ? String(this.benefitform.benefit.paramThreeAPI)
+              : null,
+        },
+      };
+
+      this.$api
+        .updateCompanyBenefit(newBenefit, this.benefitform.benefit.id)
+        .then(() => {
+          this.$router.push("../BenefitList");
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el beneficio:", error);
+          alert(
+            "No se pudo actualizar el beneficio. Por favor, inténtalo de nuevo."
+          );
+        });
+    },
+  },
+  mounted() {
+    this.fetchBenefitData();
   },
 };
 </script>
