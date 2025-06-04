@@ -131,45 +131,6 @@ export default {
   },
 
   methods: {
-    truncateString(str, maxLength) {
-      if (str.length > maxLength) {
-        return str.substring(0, maxLength) + "...";
-      }
-      return str;
-    },
-
-    openAssignedBenefitListModal(benefit) {
-      this.selectedBenefit = benefit;
-      this.showAssignedBenefitListModal = true;
-    },
-
-    openAddAssignedBenefitListModal() {
-      this.showAddAssignedBenefitListModal = true;
-    },
-
-    async formulaFormat(benefit) {
-      if (benefit.benefit.deductionType === "montoFijo") {
-        return benefit.benefit.paramOneAPI + " CRC";
-      } else if (benefit.benefit.deductionType === "porcentaje") {
-        return benefit.benefit.paramOneAPI;
-      } else if (benefit.benefit.deductionType === "api") {
-        try {
-          const response = await axios.get(benefit.benefit.urlAPI, {
-            params: {
-              param1: benefit.benefit.formulaParamUno,
-              param2: benefit.benefit.formulaParamDos,
-              param3: benefit.benefit.formulaParamTres,
-            },
-          });
-
-          return response.data.resultado ?? "Resultado no habilitado.";
-        } catch (error) {
-          console.error("API call error:", error);
-          return "Resultado no habilitado.";
-        }
-      }
-    },
-
     async getAssignedBenefits() {
       try {
         const benefitsUser = await this.$api.getAssignedBenefits();

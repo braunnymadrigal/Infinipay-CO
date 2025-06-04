@@ -226,44 +226,6 @@ namespace back_end.Repositories
         VALUES(@BeneficioId, @PersonaFisicaId)";
     }
 
-    private bool getAssignmentResult(string query, SqlParameter[] parameters)
-    {
-      bool assignmentResultSuccess = false;
-
-      try
-      {
-        using (SqlCommand queryCommand = new SqlCommand(query, _connection))
-        {
-          if (parameters != null && parameters.Length > 0)
-          {
-            queryCommand.Parameters.AddRange(parameters);
-          }
-
-          if (_connection.State != ConnectionState.Open)
-          {
-            _connection.Open();
-          }
-          assignmentResultSuccess = queryCommand.ExecuteNonQuery() >= 1;
-        }
-      }
-      catch (Exception ex)
-      {
-        _connection.Close();
-        throw new Exception("Error al ejecutar consulta de asignación de " +
-          "beneficio: " + ex.Message, ex);
-      }
-      _connection.Close();
-
-      return assignmentResultSuccess;
-    }
-
-    private string assignBenefitQuery()
-    {
-      return @"
-        INSERT INTO BeneficioPorEmpleado ([idBeneficio], [idEmpleado])
-        VALUES(@BeneficioId, @PersonaFisicaId)";
-    }
-
     public bool assignBenefit(AssignBenefitReq request
       , string loggedUserNickname)
     {
