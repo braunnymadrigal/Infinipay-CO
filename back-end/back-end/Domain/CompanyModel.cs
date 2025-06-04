@@ -11,6 +11,7 @@ namespace back_end.Domain
     public string email { get; set; }
     [Required]
     public string legalName { get; set; }
+    public string? associationName { get; set; }
     [Required]
     public string employerUsername { get; set; }
     public string description { get; set; }
