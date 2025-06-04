@@ -93,7 +93,7 @@ namespace back_end.Repositories
 		    JOIN Contrato c ON c.idEmpleado = e.idPersonaFisica
         LEFT JOIN BeneficioPorEmpleado bpe 
                ON bpe.idEmpleado = e.idPersonaFisica AND bpe.idBeneficio = b.id
-        WHERE u.nickname = 'juanito77'
+        WHERE u.nickname = @nickname
           AND (c.tipoContrato = b.empleadoElegible OR b.empleadoElegible
             = 'todos');
       ";
