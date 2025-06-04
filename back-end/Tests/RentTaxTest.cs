@@ -18,7 +18,6 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
-        // not needed for this test but required by model
         fullName = "Test Employee",
         id = "",
         gender = "",
@@ -32,8 +31,6 @@ namespace Tests
         hoursNumber = 0,
         companyAssociation = "",
         deductions = new List<PayrollDeductionModel>(),
-
-        // specific for this test
         hiringType = "servicios",
         computedGrossSalary = 1_000_000,
         previousComputedGrossSalaries =
