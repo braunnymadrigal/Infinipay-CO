@@ -1,5 +1,5 @@
 ﻿import { createApp } from "vue";
-import ApiPlugin from './plugins/api';
+import ApiPlugin from "./plugins/api";
 import App from "./App.vue";
 import "primeicons/primeicons.css";
 
@@ -20,6 +20,7 @@ import AssignedBenefitList from "./components/AssignedBenefitList.vue";
 import EmployeesList from "./components/EmployeesList.vue";
 import CompanyList from "./components/CompanyList.vue";
 import BenefitDetails from "./components/BenefitDetails.vue";
+import UpdateEmployeeForm from "./components/UpdateEmployeeForm.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -62,6 +63,11 @@ const router = createRouter({
     },
     { path: "/EmployeesList", name: "EmployeesList", component: EmployeesList },
     { path: "/CompanyList", name: "CompanyList", component: CompanyList },
+    {
+      path: "/EmployeeUpdate/:id",
+      name: "EmployeeUpdate",
+      component: UpdateEmployeeForm,
+    },
   ],
 });
 
@@ -69,4 +75,4 @@ const app = createApp(App);
 app.use(router);
 app.use(VueCookies, { expires: "7d" });
 app.use(ApiPlugin);
-app.mount('#app');
+app.mount("#app");
