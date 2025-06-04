@@ -19,6 +19,7 @@ namespace Tests
       var employee = new PayrollEmployeeModel
       {
         // not needed for this test but required by model
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -51,6 +52,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -82,6 +84,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -113,6 +116,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -144,6 +148,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -182,6 +187,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -214,6 +220,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -246,6 +253,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
+        fullName = "Test Employee",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
