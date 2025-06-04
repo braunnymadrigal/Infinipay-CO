@@ -12,7 +12,7 @@ namespace back_end.Application
       this.employeeHoursRepository = employeeHoursRepository;
     }
 
-    public bool RegisterEmployeeHours(string loggedUserId
+    public bool registerEmployeeHours(string loggedUserId
       , List<HoursModel> employeeHoursWorked)
     {
       try
@@ -47,7 +47,7 @@ namespace back_end.Application
           }
         }
 
-        return employeeHoursRepository.RegisterEmployeeHours(loggedUserId
+        return employeeHoursRepository.registerEmployeeHours(loggedUserId
           , employeeHoursWorked);
       }
       catch (Exception ex)

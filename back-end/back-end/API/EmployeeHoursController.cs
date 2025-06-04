@@ -37,21 +37,35 @@ namespace back_end.API
       return "";
     }
 
-    [Authorize(Roles = "supervisor, administrador, sinRol")]
+    private string getLoggedUserId()
+    {
+      var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
+
+      if (string.IsNullOrEmpty(loggedUserId))
+      {
+        loggedUserId = "";
+      }
+
+      return loggedUserId;
+    }
+
+[Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpGet]
-		public ActionResult<EmployeeHoursModel> Get()
+		public ActionResult<EmployeeHoursModel> get()
 		{
       try
       {
-        var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
+        var loggedUserId = getLoggedUserId();
 
-        if (loggedUserId == null)
+        if (string.IsNullOrEmpty(loggedUserId))
         {
-          return BadRequest(
-            "No se pudo obtener el id de usuario desde el token/cookie");
+          return NotFound(
+            "No se pudo obtener el identificador de usuario");
         }
+
         var employeeHoursModel
-          = employeeHoursQuery.GetEmployeeHoursContract(loggedUserId);
+          = employeeHoursQuery.getEmployeeHoursContract(loggedUserId);
+
         if (employeeHoursModel == null)
         {
           return NotFound("Horas de empleado no encontrado");
@@ -71,22 +85,23 @@ namespace back_end.API
 
     [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpGet("Hours")]
-    public ActionResult<List<HoursModel>> Get([FromQuery] DateOnly startDate,
+    public ActionResult<List<HoursModel>> get([FromQuery] DateOnly startDate,
       DateOnly endDate)
     {
       try
       {
-        var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
+        var loggedUserId = getLoggedUserId();
 
-        if (loggedUserId == null)
+        if (string.IsNullOrEmpty(loggedUserId))
         {
-          return BadRequest(
-            "No se pudo obtener el id de usuario desde el token/cookie");
+          return NotFound(
+            "No se pudo obtener el identificador de usuario");
         }
 
         var employeeHoursModel
-          = employeeHoursQuery.GetEmployeeHoursList(loggedUserId
+          = employeeHoursQuery.getEmployeeHoursList(loggedUserId
           , startDate, endDate);
+
         if (employeeHoursModel == null)
         {
           return NotFound("Contrato de empleado no encontrado");
@@ -106,20 +121,20 @@ namespace back_end.API
 
     [Authorize(Roles = "supervisor, administrador, sinRol")]
     [HttpPost]
-    public ActionResult<bool> Post([FromBody] List<HoursModel>
+    public ActionResult<bool> post([FromBody] List<HoursModel>
       employeeHoursWorked)
     {
       try
       {
-        var loggedUserId = getLoggedUserClaim(ClaimTypes.Sid);
+        var loggedUserId = getLoggedUserId();
 
-        if (loggedUserId == null)
+        if (string.IsNullOrEmpty(loggedUserId))
         {
-          return BadRequest(
-            "No se pudo obtener el id de usuario desde el token/cookie");
+          return NotFound(
+            "No se pudo obtener el identificador de usuario");
         }
 
-        var success = employeeHoursCommand.RegisterEmployeeHours(loggedUserId
+        var success = employeeHoursCommand.registerEmployeeHours(loggedUserId
           , employeeHoursWorked);
 
         if (success)

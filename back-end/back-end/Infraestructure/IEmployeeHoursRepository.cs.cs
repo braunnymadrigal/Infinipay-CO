@@ -4,11 +4,11 @@ namespace back_end.Infraestructure
 {
   public interface IEmployeeHoursRepository
   {
-    public EmployeeHoursModel GetEmployeeHoursContract(string loggedUserId);
-    public List<HoursModel> GetEmployeeHoursList(string loggedUserId
+    public EmployeeHoursModel getEmployeeHoursContract(string loggedUserId);
+    public List<HoursModel> getEmployeeHoursList(string loggedUserId
       , DateOnly startDate, DateOnly endDate);
 
-    public bool RegisterEmployeeHours(string loggedUserId
+    public bool registerEmployeeHours(string loggedUserId
       , List<HoursModel> employeeHoursWorked);
   }
 }

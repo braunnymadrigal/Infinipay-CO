@@ -4,7 +4,7 @@ namespace back_end.Application
 {
   public interface IEmployeeHoursCommand
   {
-    public bool RegisterEmployeeHours(string loggedUserId
+    public bool registerEmployeeHours(string loggedUserId
       , List<HoursModel> employeeHoursWorked);
   }
 }

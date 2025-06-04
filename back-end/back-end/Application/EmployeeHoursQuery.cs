@@ -12,7 +12,7 @@ namespace back_end.Application
     {
       this.employeeHoursRepository = employeeHoursRepository;
     }
-    public EmployeeHoursModel GetEmployeeHoursContract(string loggedUserId)
+    public EmployeeHoursModel getEmployeeHoursContract(string loggedUserId)
     {
       if (string.IsNullOrEmpty(loggedUserId))
       {
@@ -20,18 +20,18 @@ namespace back_end.Application
       }
 
       EmployeeHoursModel employeeHoursModel
-        = employeeHoursRepository.GetEmployeeHoursContract(loggedUserId);
+        = employeeHoursRepository.getEmployeeHoursContract(loggedUserId);
 
       if (employeeHoursModel == null)
       {
-        throw new InvalidOperationException(
+        throw new InvalidDataException(
           "No se puedo obtener detalles del contrato.");
       }
 
       return employeeHoursModel;
     }
 
-    public List<HoursModel> GetEmployeeHoursList(string loggedUserId,
+    public List<HoursModel> getEmployeeHoursList(string loggedUserId,
       DateOnly startDate, DateOnly endDate)
     {
       if (string.IsNullOrEmpty(loggedUserId))
@@ -45,11 +45,11 @@ namespace back_end.Application
           "de fin");
       }
 
-      List<HoursModel> hours = employeeHoursRepository.GetEmployeeHoursList(
+      List<HoursModel> hours = employeeHoursRepository.getEmployeeHoursList(
         loggedUserId, startDate, endDate);
       if (hours == null)
       {
-        throw new InvalidOperationException("Horas no obtenidas");
+        throw new InvalidDataException("Horas no obtenidas");
       }
 
       return hours;

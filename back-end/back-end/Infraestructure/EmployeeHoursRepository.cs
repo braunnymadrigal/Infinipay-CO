@@ -12,53 +12,65 @@ namespace back_end.Infraestructure
   public class EmployeeHoursRepository : IEmployeeHoursRepository
   {
     private readonly AbstractConnectionRepository connectionRepository;
-    public EmployeeHoursRepository()
+    public EmployeeHoursRepository(AbstractConnectionRepository
+      connectionRepository)
     {
-      connectionRepository = new ConnectionRepository();
+      this.connectionRepository = connectionRepository;
     }
 
-    public EmployeeHoursModel GetEmployeeHoursContract(string loggedUserId)
+    private string getEmployeeHoursContractQuery()
     {
-      EmployeeHoursModel employeeHoursModel = new EmployeeHoursModel();
-
-      string query = @"
+      return @"
         SELECT 
 	        c.reportaHoras,
 	        c.tipoContrato
         FROM Contrato c
         WHERE c.idEmpleado = @loggedUserId;
       ";
+    }
+
+    private void getEmployeeHoursContractFromTable(EmployeeHoursModel
+      employeeHoursModel, DataTable tableResult)
+    {
+      var dataRow = tableResult.Rows[0];
+
+      if (dataRow["tipoContrato"] == DBNull.Value)
+      {
+        throw new Exception("El tipo de contrato es requerido " +
+          "pero no fue encontrado.");
+      }
+
+      if (dataRow["reportaHoras"] == DBNull.Value)
+      {
+        throw new Exception("El campo reportaHoras es requerido" +
+          " pero no fue encontrado.");
+      }
+
+      employeeHoursModel.typeContract
+        = Convert.ToString(dataRow["tipoContrato"]);
+      employeeHoursModel.reportsHours
+        = Convert.ToBoolean(dataRow["reportaHoras"]);
+    }
+
+    public EmployeeHoursModel getEmployeeHoursContract(string loggedUserId)
+    {
+      EmployeeHoursModel employeeHoursModel = new EmployeeHoursModel();
+
+      string query = getEmployeeHoursContractQuery();
 
       try
       {
         var command = new SqlCommand(query, connectionRepository.connection);
         command.Parameters.AddWithValue("@loggedUserId", loggedUserId);
 
-        var dataTable = connectionRepository.ExecuteQuery(command);
+        var tableResult = connectionRepository.ExecuteQuery(command);
 
-        if (dataTable.Rows.Count == 0)
+        if (tableResult.Rows.Count == 0)
         {
           throw new Exception("Ningún dato retornado del usuario.");
         }
 
-        var dataRow = dataTable.Rows[0];
-
-        if (dataRow["tipoContrato"] == DBNull.Value)
-        {
-          throw new Exception("El tipo de contrato es requerido " +
-            "pero no fue encontrado.");
-        }
-
-        if (dataRow["reportaHoras"] == DBNull.Value)
-        {
-          throw new Exception("El campo reportaHoras es requerido" +
-            " pero no fue encontrado.");
-        }
-
-        employeeHoursModel.typeContract
-          = Convert.ToString(dataRow["tipoContrato"]);
-        employeeHoursModel.reportsHours
-          = Convert.ToBoolean(dataRow["reportaHoras"]);
+        getEmployeeHoursContractFromTable(employeeHoursModel, tableResult);
       }
       catch (Exception ex)
       {
@@ -69,13 +81,9 @@ namespace back_end.Infraestructure
       return employeeHoursModel;
     }
 
-    public List<HoursModel> GetEmployeeHoursList(string loggedUserId
-      , DateOnly startDate, DateOnly endDate)
+    private string getEmployeeHoursListQuery()
     {
-
-      List<HoursModel> hoursModel = new List<HoursModel>();
-
-      string query = @"
+      return @"
         SELECT
           h.Fecha,
           h.horasTrabajadas,
@@ -85,6 +93,35 @@ namespace back_end.Infraestructure
         WHERE idEmpleado = @loggedUserId 
           AND h.Fecha BETWEEN @startDate AND @endDate;
       ";
+    }
+
+    private void getEmployeeHoursListFromTable(List<HoursModel> hoursModel
+      , DataTable resultTable)
+    {
+      foreach (DataRow row in resultTable.Rows)
+      {
+        hoursModel.Add(new HoursModel
+        {
+          date = DateOnly.FromDateTime((DateTime)row["Fecha"]),
+
+          hoursWorked = (short)row["horasTrabajadas"],
+
+          approved = row["aprobadas"] != DBNull.Value
+            ? Convert.ToBoolean(row["aprobadas"]) : null,
+
+          supervidorId = row["idSupervisor"] != DBNull.Value
+            ? (Guid)row["idSupervisor"] : null
+        });
+      }
+    }
+
+    public List<HoursModel> getEmployeeHoursList(string loggedUserId
+      , DateOnly startDate, DateOnly endDate)
+    {
+
+      List<HoursModel> hoursModel = new List<HoursModel>();
+
+      string query = getEmployeeHoursListQuery();
 
       try
       {
@@ -98,27 +135,14 @@ namespace back_end.Infraestructure
         command.Parameters.AddWithValue("@endDate"
           , endDate.ToDateTime(TimeOnly.MinValue));
 
-        var dataTable = connectionRepository.ExecuteQuery(command);
-        if (dataTable.Rows.Count == 0)
+        var resultTable = connectionRepository.ExecuteQuery(command);
+
+        if (resultTable.Rows.Count == 0)
         {
           return hoursModel;
         }
 
-        foreach (DataRow row in dataTable.Rows)
-        {
-          hoursModel.Add(new HoursModel
-          {
-            date = DateOnly.FromDateTime((DateTime)row["Fecha"]),
-
-            hoursWorked = (short)row["horasTrabajadas"],
-
-            approved = row["aprobadas"] != DBNull.Value
-              ? Convert.ToBoolean(row["aprobadas"]) : null,
-
-            supervidorId = row["idSupervisor"] != DBNull.Value
-              ? (Guid)row["idSupervisor"] : null
-          });
-        }
+        getEmployeeHoursListFromTable(hoursModel, resultTable);
       }
       catch (Exception ex)
       {
@@ -128,14 +152,9 @@ namespace back_end.Infraestructure
       return hoursModel;
     }
 
-    public bool RegisterEmployeeHours(string loggedUserId
-      , List<HoursModel> employeeHoursWorked)
+    private void registerEmployeeHoursQueryBuilder(string loggedUserId
+      , List<HoursModel> employeeHoursWorked, SqlCommand command)
     {
-      bool success = false;
-
-      var command = new SqlCommand();
-      command.Connection = connectionRepository.connection;
-
       var queryBuilder = new StringBuilder();
 
       queryBuilder.Append("INSERT INTO Horas(fecha, horasTrabajadas" +
@@ -160,6 +179,18 @@ namespace back_end.Infraestructure
       }
 
       command.CommandText = queryBuilder.ToString();
+    }
+
+    public bool registerEmployeeHours(string loggedUserId
+      , List<HoursModel> employeeHoursWorked)
+    {
+      bool success = false;
+
+      var command = new SqlCommand();
+      command.Connection = connectionRepository.connection;
+
+      registerEmployeeHoursQueryBuilder(loggedUserId, employeeHoursWorked
+        , command);
 
       try
       {
