@@ -217,7 +217,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
-        fullName = "Test Employee",
+        fullName = "Test Employee2",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
@@ -250,7 +250,7 @@ namespace Tests
     {
       var employee = new PayrollEmployeeModel
       {
-        fullName = "Test Employee",
+        fullName = "Test Employee3",
         id = "",
         gender = "",
         birthDate = DateOnly.MinValue,
