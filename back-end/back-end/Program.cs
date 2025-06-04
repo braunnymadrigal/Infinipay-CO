@@ -75,7 +75,6 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IRentTax, RentTax>();
 builder.Services.AddScoped<EmployeeBenefitRepository>();
 builder.Services.AddScoped<CompanyBenefitRepository>();
 builder.Services.AddScoped<ICompanyBenefitCommand, CompanyBenefitCommand>();
