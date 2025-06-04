@@ -81,6 +81,25 @@ export default {
           authHeader()
         );
       },
+      
+      getEmployeeHoursContract() {
+				return axios.get(`${apiBaseURL}/EmployeeHours`, authHeader());
+			},
+
+			getEmployeeHours(startDate, endDate) {
+				return axios.get(`${apiBaseURL}/EmployeeHours/Hours`, {
+					params: {
+						startDate,
+						endDate
+					},
+					...authHeader(),
+				});
+			},
+
+			registerEmployeeHours(employeeHoursWorked) {
+				return axios.post(`${apiBaseURL}/EmployeeHours`, employeeHoursWorked
+					, authHeader());
+			},
     };
   },
 };

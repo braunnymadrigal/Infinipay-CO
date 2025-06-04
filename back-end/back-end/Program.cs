@@ -1,6 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using back_end.Infraestructure;
 using back_end.Application;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -14,7 +15,9 @@ builder.Services.AddCors(options =>
                     {
                       policy.WithOrigins("http://localhost:8081", "http://localhost:8080")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithExposedHeaders("WWW-Authenticate");
                     });
 });
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -72,6 +75,13 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 
+// Dependency inyection here
+builder.Services.AddScoped<AbstractConnectionRepository
+  , ConnectionRepository>();
+builder.Services.AddScoped<IEmployeeHoursRepository, EmployeeHoursRepository>();
+builder.Services.AddScoped<IEmployeeHoursQuery, EmployeeHoursQuery>();
+builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
+
 builder.Services.AddScoped<IRentTax, RentTax>();
 
 var app = builder.Build();
@@ -85,10 +95,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
 
