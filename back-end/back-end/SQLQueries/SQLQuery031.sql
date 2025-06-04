@@ -1,4 +1,4 @@
-CREATE TRIGGER trrg_UpdateEmployeeAudit
+CREATE TRIGGER trrg_Audit_GetDateUpdate
 ON Auditoria
 AFTER UPDATE
 AS
