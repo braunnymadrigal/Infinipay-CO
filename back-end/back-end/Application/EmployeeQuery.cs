@@ -20,16 +20,15 @@ namespace back_end.Application
     {
         if (id == Guid.Empty)
         {
-            throw new ArgumentException("Invalid employee ID.");
+          throw new ArgumentException("Invalid employee ID.");
         }
         try
         {
-                    Console.WriteLine("Llamando al repository...");
-            return _employeeRepository.GetEmployeeById(id);
+          return _employeeRepository.GetEmployeeById(id);
         }
         catch (Exception ex)
         {
-            throw new Exception("Error retrieving employee: " + ex.Message);
+          throw new Exception("Error retrieving employee: " + ex.Message);
         }
     }
   }
