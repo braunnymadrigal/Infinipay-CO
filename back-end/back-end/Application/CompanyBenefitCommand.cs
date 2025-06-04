@@ -32,6 +32,8 @@ namespace back_end.Application
       {
         if (ex.Message.Contains("BENEFICIO_DUPLICADO"))
                     throw new Exception("Ya existe un beneficio registrado con ese nombre.");
+        if (ex.Message.Contains("EMPRESA_NO_ENCONTRADA"))
+                    throw new Exception("No se encontró la empresa asociada.");
         throw new Exception("Error inesperado creando beneficio." +
                     " Detalles: " + ex.Message);
       }

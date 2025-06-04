@@ -104,15 +104,31 @@ namespace back_end.Repositories
             return queryTable;
         }
 
-        private bool dataAlreadyExists(string table, string field, string value
-        , SqlTransaction transaction)
+        private bool dataAlreadyExists(string table, string field, string value, Guid? idPersonaJuridica,
+            SqlTransaction transaction)
         {
             var cmd = new SqlCommand(
-                $"SELECT COUNT(*) FROM [{table}] WHERE [{field}] = @value",
+                $"SELECT COUNT(*) FROM [{table}] WHERE [{field}] = @value AND idPersonaJuridica = @empresaId",
                 transaction.Connection, transaction);
+        
             cmd.Parameters.AddWithValue("@value", value);
+            cmd.Parameters.AddWithValue("@empresaId", idPersonaJuridica);
+
             var count = (int)cmd.ExecuteScalar();
             return count > 0;
+        }
+
+        private Guid getCompanyId(string nickname, SqlTransaction transaction)
+        {
+            var cmd = new SqlCommand(
+                "SELECT pj.id FROM PersonaJuridica pj " +
+                "JOIN Empleador em ON em.idPersonaJuridica = pj.id " +
+                "JOIN Usuario u ON em.idPersonaFisica = u.idPersonaFisica " +
+                "WHERE u.nickname = @nickname", transaction.Connection, transaction);
+
+            cmd.Parameters.AddWithValue("@nickname", nickname);
+            var result = cmd.ExecuteScalar();
+            return result != null ? (Guid)result : Guid.Empty;
         }
 
         public List<CompanyBenefitDTO> getBenefits(string nickname)
@@ -172,7 +188,13 @@ namespace back_end.Repositories
 
                 using (var transaction = _connection.BeginTransaction())
                 {
-                    if (dataAlreadyExists("Beneficio", "nombre", companyBenefit.benefit.name, transaction))
+                    companyBenefit.benefit.companyId = getCompanyId(loggedUserNickname, transaction);
+                    if (!companyBenefit.benefit.companyId.HasValue)
+                    {
+                        throw new Exception("EMPRESA_NO_ENCONTRADA");
+                    }
+                    if (dataAlreadyExists("Beneficio", "nombre", companyBenefit.benefit.name,
+                        companyBenefit.benefit.companyId, transaction))
                     {
                         throw new Exception("BENEFICIO_DUPLICADO");
                     }
@@ -189,6 +211,7 @@ namespace back_end.Repositories
                             cmd.Parameters.AddWithValue("@Param2", (object?)companyBenefit.benefit.paramTwoAPI ?? DBNull.Value);
                             cmd.Parameters.AddWithValue("@Param3", (object?)companyBenefit.benefit.paramThreeAPI ?? DBNull.Value);
                             cmd.Parameters.AddWithValue("@Name", companyBenefit.benefit.name);
+                            cmd.Parameters.AddWithValue("@idPersonaJuridica", companyBenefit.benefit.companyId);
                             cmd.Parameters.AddWithValue("@MinTime", companyBenefit.benefit.minEmployeeTime);
                             cmd.Parameters.AddWithValue("@Description", companyBenefit.benefit.description);
                             cmd.Parameters.AddWithValue("@ElegibleEmployees", (object?)companyBenefit.benefit.elegibleEmployees ?? "todos");
