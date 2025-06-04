@@ -213,9 +213,9 @@ namespace back_end.Infraestructure
       var cmd = new SqlCommand(@"
                 INSERT INTO [dbo].[PersonaJuridica]
                 ([id], [descripcion], [tipoPago], [beneficiosPorEmpleado],
-                [razonSocial])
+                [razonSocial], [nombreAsociacion])
                 VALUES (@id, @descripcion, @tipoPago, @beneficiosPorEmpleado,
-                @razonSocial)",
+                @razonSocial, @nombreAsociacion)",
           transaction.Connection, transaction);
 
       cmd.Parameters.AddWithValue("@id", personId);
@@ -224,6 +224,7 @@ namespace back_end.Infraestructure
       cmd.Parameters.AddWithValue("@tipoPago", company.paymentType);
       cmd.Parameters.AddWithValue("@beneficiosPorEmpleado", company.benefits);
       cmd.Parameters.AddWithValue("@razonSocial", company.legalName);
+      cmd.Parameters.AddWithValue("@nombreAsociacion", company.associationName);
 
       if (cmd.ExecuteNonQuery() < 1)
         throw new Exception("Insert failed: insertLegalPerson.");

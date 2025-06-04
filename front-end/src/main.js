@@ -1,4 +1,4 @@
-﻿import { createApp } from "vue";
+import { createApp } from "vue";
 import ApiPlugin from "./plugins/api";
 import App from "./App.vue";
 import "primeicons/primeicons.css";
@@ -22,6 +22,7 @@ import CompanyList from "./components/CompanyList.vue";
 import BenefitDetails from "./components/BenefitDetails.vue";
 import GeneratePayroll from "./components/GeneratePayroll.vue";
 import ShowPayrollResults from "./components/ShowPayrollResults.vue";
+import EmployeeTimesheet from "./components/EmployeeTimesheet.vue";
 import UpdateEmployeeForm from "./components/UpdateEmployeeForm.vue";
 
 const router = createRouter({
@@ -71,6 +72,11 @@ const router = createRouter({
     
     { path: "/ShowPayrollResults", name: "ShowPayrollResults"
       , component: ShowPayrollResults },
+    {
+      path: "/EmployeeTimesheet",
+      name: "EmployeeTimesheet",
+      component: EmployeeTimesheet
+    },
     {
       path: "/EmployeeUpdate/:id",
       name: "EmployeeUpdate",
