@@ -14,6 +14,10 @@ namespace back_end.Application
     private const double TIER_4_RATE = 0.20;
     private const double TIER_5_RATE = 0.25;
 
+    private const double P_VALUE_ON_DECIMAL_SQL_TYPE = 11.0;
+    private const double S_VALUE_ON_DECIMAL_SQL_TYPE = 2.0;
+    private const double EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE = 10.0;
+
     private const string HIRING_TYPE_EXCLUDED_FROM_RENT_TAX = "servicios";
 
     public List<PayrollEmployeeModel>
@@ -43,11 +47,13 @@ namespace back_end.Application
 
       if (isTheEndOfTheMonth(endDate))
       {
+        validateComputedGrossSalary(payrollEmployee.computedGrossSalary);
         payrollEmployee.rentTax = calculateEndOfMonthTax(payrollEmployee
           , endDate);
       }
       else
       {
+        validateComputedGrossSalary(payrollEmployee.computedGrossSalary);
         payrollEmployee.rentTax = calculateProjectedTax(payrollEmployee
           , endDate);
       }
@@ -76,8 +82,6 @@ namespace back_end.Application
 
       return fullTax - previousTax;
     }
-
-
 
     private double calculateProjectedTax(PayrollEmployeeModel employee
       , DateOnly endDate)
@@ -134,6 +138,39 @@ namespace back_end.Application
         return 0;
 
       return (salary - lowerLimit) * rate;
+    }
+
+    private void validateComputedGrossSalary(double computedGrossSalary)
+    {
+      validateComputedGrossSalaryGreaterThanZero(computedGrossSalary);
+      validateComputedGrossSalarySize(computedGrossSalary);
+    }
+
+    private void validateComputedGrossSalarySize(double computedGrossSalary)
+    {
+      var maxSize =
+          (Math.Pow(
+              EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE,
+              (P_VALUE_ON_DECIMAL_SQL_TYPE - S_VALUE_ON_DECIMAL_SQL_TYPE)
+              )
+          ) -
+          (Math.Pow(EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE
+          , -S_VALUE_ON_DECIMAL_SQL_TYPE));
+      if (computedGrossSalary > maxSize)
+      {
+        throw new Exception("The computed gross salary can not exceed" +
+          "the database limitations");
+      }
+    }
+
+    private void validateComputedGrossSalaryGreaterThanZero(double
+      computedGrossSalary)
+    {
+      if (computedGrossSalary < 0)
+      {
+        throw new Exception("The computed gross salary can not be" +
+          "less than zero.");
+      }
     }
   }
 }
