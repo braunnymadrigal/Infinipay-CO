@@ -127,6 +127,12 @@
         </button>
       </div>
     </div>
+    <div v-if="showError"
+          class="alert alert-danger alert-dismissable fade show">
+      <button type="button" class="btn-close" @click="showError = false">
+      </button>
+      {{errorMessage}}
+    </div>
   </div>
 
   <div v-if="showPopup" @click.stop
@@ -147,6 +153,7 @@
       HeaderCompany,
       MainFooter,
     },
+
     data() {
       return {
         showPopup: false,
@@ -158,34 +165,53 @@
         hours: {},
         monthlyHours: {},
         isLoading: true,
+        showError: false,
+        errorMessage: ""
       };
     },
-    async created() {
-      await this.getEmployeeHoursContract();
-      await this.getEmployeeHours();
+
+    created() {
+      this.initializeEmployeeTimesheet()
     },
+
     mounted() {
       this.resetHours();
     },
+
     methods: {
+      async initializeEmployeeTimesheet() {
+        await this.getEmployeeHoursContract();
+        await this.getEmployeeHours();
+      },
+
+      displayError(error) {
+        this.errorMessage = error
+          + " Por favor espere unos minutos e intente de nuevo.";
+        this.showError = true;
+      },
+
       async getEmployeeHoursContract() {
         try {
           const contract = await this.$api.getEmployeeHoursContract();
           if (contract == null) {
-            throw new Error("No se puedo obtener información del contrato");
+            const errorMessage = "No se pudo obtener información del contrato.";
+            this.displayError(errorMessage);
           }
 
           this.employeeType = contract.data.typeContract;
           this.isHourlyEmployee = contract.data.reportsHours;
 
         } catch (error) {
-          this.showPopup = true;
-          if (error.response) {
-            const message = error.response.data?.message || "Error desconocido";
-            console.error(message);
+          console.error("API error:", error);
+          if (error.response?.status === 403) {
+            this.showPopup = true;
+          } else {
+            const errorMessage = "Error obtniendo la información del contrato.";
+          this.displayError(errorMessage);
           }
         }
       },
+
       formatDate(date) {
         const d = new Date(date);
         const year = d.getFullYear();
@@ -193,6 +219,7 @@
         const day = String(d.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
       },
+
       async getEmployeeHours() {
         this.isLoading = true;
         this.monthlyHours = {};
@@ -209,21 +236,23 @@
               this.formatDate(this.baseDate), this.formatDate(sunday));
 
             if (employeeHours == null) {
-              throw new Error("No se recibio las horas del empleado");
-            }
-
-            for (let i = 0; i < employeeHours.data.length; i++) {
-              this.monthlyHours[employeeHours.data[i].date]
-                = employeeHours.data[i];
+              const errorMessage = "No se recibio las horas del empleado."
+              this.displayError(errorMessage)
+            } else {
+              for (let i = 0; i < employeeHours.data.length; i++) {
+                this.monthlyHours[employeeHours.data[i].date]
+                  = employeeHours.data[i];
+              }
             }
           }
-
-          } catch (error) {
-            console.error("Error fetching employee hours:", error);
+        } catch (error) {
+          const errorMessage = "Error obteniendo la información del contrato.";
+          this.displayError(errorMessage);
           } finally {
             this.isLoading = false;
         }
       },
+
       async registerEmployeeHours() {
         this.isLoading = true;
 
@@ -233,17 +262,23 @@
             date,
             hoursWorked
             }));
-          console.log(payload);
+
           if (payload.length !== 0) {
             await this.$api.registerEmployeeHours(payload);
           }
+
+          window.location.href = "/EmployeeTimesheet";
+
         } catch (error) {
-          console.error("Error registering employee hours:", error);
+          if (error.response) {
+            const errorMessage = "Error registrando horas del empleado.";
+            this.displayError(errorMessage);
+          }
         } finally {
           this.isLoading = false;
-          window.location.href = "/EmployeeTimesheet";
         }
       },
+
       getMonday(date) {
         const day = date.getDay();
         const diff = (day === 0 ? -6 : 1) - day;
@@ -256,22 +291,23 @@
         monday.setDate(date.getDate() + diff);
         return monday;
       },
+
       getNextWeek() {
         const newDate = new Date(this.baseDate);
         newDate.setDate(this.baseDate.getDate() + 7);
         this.baseDate = this.getMonday(newDate);
-        console.log(this.baseDate);
         this.resetHours();
         this.getEmployeeHours();
       },
+
       getPreviousWeek() {
         const newDate = new Date(this.baseDate);
         newDate.setDate(this.baseDate.getDate() - 7);
         this.baseDate = this.getMonday(newDate);
-        console.log(this.baseDate);
         this.resetHours();
         this.getEmployeeHours();
       },
+
       resetHours() {
         const base = new Date(
           this.baseDate.getFullYear(),
@@ -284,14 +320,14 @@
           date.setDate(date.getDate() + i);
           return [this.formatDate(date), 0];
         });
-        console.log(this.hours);
       },
+
       alreadyRegistered(day) {
         const dateObj = day instanceof Date ? day : new Date(day);
         return Object.prototype.hasOwnProperty.call(
           this.monthlyHours, this.formatDate(dateObj));
-      }
-,
+      },
+
       disableRegistration(day) {
         let disable = true;
         if (this.isHourlyEmployee) {
@@ -310,9 +346,11 @@
         }
         return disable;
       },
+
       isSameMonthYear(day) {
         return this.currentDate.getYear() == day.getYear();
       },
+
       isPreviousDay(day) {
         const currentDay = this.currentDate;
         const target = new Date(day);
@@ -322,6 +360,7 @@
 
         return currentDay >= target;
       },
+
       isSameWeek(day) {
         const monday = this.getMonday(this.currentDate);
 
@@ -333,6 +372,7 @@
 
         return target >= monday && target <= sunday
       },
+
       isSameFortnight(day) {
         const ref = new Date(this.currentDate);
         const target = new Date(day);
@@ -345,25 +385,29 @@
 
         return refFortnight === targetFortnight;
       },
+
       isSameMonth(day) {
         return day.getMonth() === this.currentDate.getMonth();
       },
+
       getBackgroundColor(day) {
         const formattedDay = this.formatDate(day);
-
         const entry = this.monthlyHours[formattedDay];
+        var color = "";
+
         if (!entry) {
-          return "#fff8f3";
+          color = "#fff8f3";
+        } else if (entry.approved == null) {
+          color = "#ff8667";
+        } else if (entry.approved === true) {
+          color = "#7fd1ae";
+        } else {
+          color = "#c35355";
         }
 
-        if (entry.approved == null) {
-          return "#ff8667";
-        } else if (entry.approved === true) {
-          return "#7fd1ae";
-        } else {
-          return "#c35355";
-        }
+        return color;
       },
+
       registerHour(index, value) {
         let numericValue = Number(value);
         if (numericValue < 0 || numericValue > 9 || isNaN(numericValue)) {
@@ -372,6 +416,7 @@
         this.hours[index][1] = numericValue;
       },
     },
+
     computed: {
       workWeek() {
         const week = []
@@ -383,7 +428,6 @@
         return week;
       }
     }
-
   };
 </script>
 
