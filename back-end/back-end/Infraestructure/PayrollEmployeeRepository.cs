@@ -2,7 +2,7 @@
 using back_end.Application;
 using back_end.Domain;
 using Microsoft.Data.SqlClient;
-
+using System.Diagnostics;
 namespace back_end.Infraestructure
 {
     public class PayrollEmployeeRepository : IPayrollEmployeeRepository
@@ -22,7 +22,7 @@ namespace back_end.Infraestructure
 
         public List<PayrollEmployeeModel> getPayrollEmployees(string employerId, DateOnly startDate, DateOnly endDate)
         {
-            var command = createPayrollEmployeeTableCommand(employerId, startDate, endDate);
+      var command = createPayrollEmployeeTableCommand(employerId, startDate, endDate);
             var dataTable = connectionRepository.ExecuteQuery(command);
             var payrollEmployees = transformDataTablePayrollEmployeeList(dataTable);
             return payrollEmployees;
@@ -30,7 +30,7 @@ namespace back_end.Infraestructure
 
         private List<PayrollEmployeeModel> transformDataTablePayrollEmployeeList(DataTable dataTable)
         {
-            checkDataTableCorrectness(dataTable);
+      checkDataTableCorrectness(dataTable);
             var payrollEmployees = new List<PayrollEmployeeModel>();
             var payrollEmployeesIndex = PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX;
             var previousId = "";
@@ -68,6 +68,16 @@ namespace back_end.Infraestructure
         {
             var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
             var birthDate = utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
+            var firstName = utilityRepository.ConvertDatabaseValueToString(dataRow["firstName"]);
+            var middleName = utilityRepository.ConvertDatabaseValueToString(dataRow["middleName"]);
+            var lastName1 = utilityRepository.ConvertDatabaseValueToString(dataRow["lastName1"]);
+            var lastName2 = utilityRepository.ConvertDatabaseValueToString(dataRow["lastName2"]);
+            if (firstName != "" || middleName != "" || lastName1 != "" || lastName2 != "")
+            {
+              id = $"{id} ({firstName} {middleName} {lastName1} {lastName2})";
+            }
+            var fullName = $"{firstName} {middleName} {lastName1} {lastName2}".Trim();
+            fullName = System.Text.RegularExpressions.Regex.Replace(fullName, @"\s+", " ");
             var gender = utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
             var salary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
             var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
@@ -81,6 +91,7 @@ namespace back_end.Infraestructure
             {
                 id = id,
                 birthDate = DateOnly.FromDateTime(Convert.ToDateTime(birthDate)),
+                fullName = fullName,
                 gender = gender,
                 rawGrossSalary = Convert.ToDouble(salary),
                 computedGrossSalary = 0,
@@ -182,7 +193,7 @@ namespace back_end.Infraestructure
             + "( "
             + "SELECT "
             + "p.id id, p.fechaNacimiento birthDate, "
-            + "pf.genero gender, "
+            + "pf.genero gender, pf.primerNombre firstName, pf.segundoNombre middleName,pf.primerApellido lastName1,pf.segundoApellido lastName2,"
             + "e.fechaContratacion hiringDate, "
             + "c.salarioBruto salary, c.tipoContrato hiringType, "
             + "h.fecha hoursDate, h.horasTrabajadas hoursNumber, "

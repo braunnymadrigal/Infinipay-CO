@@ -45,6 +45,14 @@
               Empresas
             </router-link>
 
+            <router-link to="/GeneratePayroll" class="mx-2"
+              style="color: #405d72;">Generar Planilla
+            </router-link>
+
+            <router-link to="/ShowPayrollResults" class="mx-2"
+              style="color: #405d72;">Resultados Planilla
+            </router-link>
+
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
             </a>

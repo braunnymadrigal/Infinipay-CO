@@ -1,4 +1,4 @@
-﻿import { createApp } from "vue";
+import { createApp } from "vue";
 import ApiPlugin from "./plugins/api";
 import App from "./App.vue";
 import "primeicons/primeicons.css";
@@ -20,6 +20,8 @@ import AssignedBenefitList from "./components/AssignedBenefitList.vue";
 import EmployeesList from "./components/EmployeesList.vue";
 import CompanyList from "./components/CompanyList.vue";
 import BenefitDetails from "./components/BenefitDetails.vue";
+import GeneratePayroll from "./components/GeneratePayroll.vue";
+import ShowPayrollResults from "./components/ShowPayrollResults.vue";
 import EmployeeTimesheet from "./components/EmployeeTimesheet.vue";
 import UpdateEmployeeForm from "./components/UpdateEmployeeForm.vue";
 
@@ -64,6 +66,12 @@ const router = createRouter({
     },
     { path: "/EmployeesList", name: "EmployeesList", component: EmployeesList },
     { path: "/CompanyList", name: "CompanyList", component: CompanyList },
+    
+    { path: "/GeneratePayroll", name: "GeneratePayroll"
+      , component: GeneratePayroll },
+    
+    { path: "/ShowPayrollResults", name: "ShowPayrollResults"
+      , component: ShowPayrollResults },
     {
       path: "/EmployeeTimesheet",
       name: "EmployeeTimesheet",
