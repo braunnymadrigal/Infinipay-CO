@@ -53,7 +53,7 @@ export default {
       },
 
       getCompanyList() {
-        return axios.get(`${apiBaseURL}/Company`);
+        return axios.get(`${apiBaseURL}/Company`, authHeader());
       },
 
       getAssignedBenefits() {

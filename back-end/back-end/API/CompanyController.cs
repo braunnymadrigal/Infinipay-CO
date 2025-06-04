@@ -2,6 +2,7 @@
 using back_end.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 namespace back_end.API
 {
   [Route("api/[controller]")]
@@ -13,6 +14,7 @@ namespace back_end.API
     {
       _companyRepository = new CompanyRepository();
     }
+    [Authorize(Roles = "superAdmin")]
     [HttpGet]
     public List<CompanyModel> GetAllCompanies()
     {

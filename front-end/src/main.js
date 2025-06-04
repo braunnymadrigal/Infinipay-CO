@@ -67,16 +67,22 @@ const router = createRouter({
     },
     { path: "/EmployeesList", name: "EmployeesList", component: EmployeesList },
     { path: "/CompanyList", name: "CompanyList", component: CompanyList },
-    
-    { path: "/GeneratePayroll", name: "GeneratePayroll"
-      , component: GeneratePayroll },
-    
-    { path: "/ShowPayrollResults", name: "ShowPayrollResults"
-      , component: ShowPayrollResults },
+
+    {
+      path: "/GeneratePayroll",
+      name: "GeneratePayroll",
+      component: GeneratePayroll,
+    },
+
+    {
+      path: "/ShowPayrollResults",
+      name: "ShowPayrollResults",
+      component: ShowPayrollResults,
+    },
     {
       path: "/EmployeeTimesheet",
       name: "EmployeeTimesheet",
-      component: EmployeeTimesheet
+      component: EmployeeTimesheet,
     },
     {
       path: "/EmployeeUpdate/:id",

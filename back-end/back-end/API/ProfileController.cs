@@ -18,7 +18,7 @@ namespace back_end.API
             _profileRepository = new ProfileRepository();
         }
 
-        [Authorize]
+        [Authorize(Roles = "empleador, empleado, supervisor, administrador, sinRol")]
         [HttpGet]
         public ProfileModel Get()
         {
