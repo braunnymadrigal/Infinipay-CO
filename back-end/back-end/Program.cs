@@ -82,6 +82,8 @@ builder.Services.AddScoped<IEmployeeHoursRepository, EmployeeHoursRepository>();
 builder.Services.AddScoped<IEmployeeHoursQuery, EmployeeHoursQuery>();
 builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
 
+builder.Services.AddScoped<IRentTax, RentTax>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

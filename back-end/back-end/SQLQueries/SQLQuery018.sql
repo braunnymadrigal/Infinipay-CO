@@ -1,0 +1,27 @@
+﻿USE [InfinipayDB];
+GO
+
+ALTER TABLE DeduccionAPago
+DROP CONSTRAINT PK_DeduccionAPago;
+GO
+
+ALTER TABLE DeduccionAPago
+ADD id UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
+GO
+
+ALTER TABLE DeduccionAPago
+ADD CONSTRAINT PK_DeduccionAPago PRIMARY KEY(id);
+GO
+
+ALTER TABLE DeduccionAPago
+ADD monto DECIMAL(11,2) NOT NULL DEFAULT 0.0;
+GO
+
+ALTER TABLE DeduccionAPago
+ADD tipo VARCHAR(9) NOT NULL;
+GO
+
+ALTER TABLE DeduccionAPago
+ADD CONSTRAINT CHK_DeduccionAPago_tipo
+CHECK (tipo IN ('ccss', 'renta', 'beneficio'));
+GO

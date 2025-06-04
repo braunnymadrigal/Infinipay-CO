@@ -20,17 +20,7 @@ namespace back_end.Infraestructure
     private SqlConnection GetConnection() =>
       new SqlConnection(_connectionRoute);
 
-    private bool dataAlreadyExists(string table, string field, string value
-      , SqlTransaction transaction)
-    {
-      var cmd = new SqlCommand(
-          $"SELECT COUNT(*) FROM [{table}] WHERE [{field}] = @value",
-          transaction.Connection, transaction);
-      cmd.Parameters.AddWithValue("@value", value);
-      var count = (int)cmd.ExecuteScalar();
-      return count > 0;
-    }
-    public string GetUsernameByPersonId(string personId)
+    public string getUsernameByPersonId(string personId)
     {
       using (var connection = GetConnection())
       {
@@ -52,7 +42,7 @@ namespace back_end.Infraestructure
       throw new Exception("No se encontró un usuario con ese ID.");
     }
 
-    public bool createNewEmployee(EmployeeModel employee, string logguedId)
+    public bool createNewEmployee(EmployeeModel employee, string loggedId)
     {
       using (var connection = GetConnection())
       {
@@ -61,40 +51,27 @@ namespace back_end.Infraestructure
         {
           try
           {
-            if (dataAlreadyExists("Persona", "identificacion"
-              , employee.idNumber, transaction))
-              throw new Exception("CEDULA_DUPLICADA");
+            var cmd = new SqlCommand("sp_CreateNewEmployee", connection
+              , transaction)
+            {
+              CommandType = CommandType.StoredProcedure
+            };
 
-            if (dataAlreadyExists("Persona", "numeroTelefono"
-              , employee.phoneNumber, transaction))
-              throw new Exception("TELEFONO_DUPLICADO");
+            addAuditParameters(cmd, loggedId);
+            addPersonParameters(cmd, employee);
+            addNaturalPersonParameters(cmd, employee);
+            addAddressParameters(cmd, employee);
+            addUserParameters(cmd, employee);
+            addEmployeeParameters(cmd, employee, loggedId);
+            addContractParameters(cmd, employee);
 
-            if (dataAlreadyExists("Persona", "correoElectronico"
-              , employee.email, transaction))
-              throw new Exception("EMAIL_DUPLICADO");
-
-            if (dataAlreadyExists("Usuario", "nickname"
-              , employee.username, transaction))
-              throw new Exception("USERNAME_DUPLICADO");
-
-            string loggedUsername = GetUsernameByPersonId(logguedId);
-            var auditId = insertAudit(loggedUsername, transaction);
-            var personId = insertPerson(employee, auditId, transaction);
-
-            insertNaturalPerson(employee, personId, transaction);
-            insertAddress(employee, personId, transaction);
-            insertUser(employee, personId, transaction);
-            insertEmployeeDetails(employee, logguedId, personId
-              , transaction);
-            insertEmployeeContractDetails(employee, personId, transaction);
-
+            cmd.ExecuteNonQuery();
             transaction.Commit();
-            Debug.WriteLine("Successful insertion in all tables.");
             return true;
           }
-          catch (Exception ex)
+          catch (SqlException ex)
           {
-            Debug.WriteLine("Insert error: " + ex.Message);
+            Debug.WriteLine("Stored procedure error: " + ex.Message);
             transaction.Rollback();
             throw;
           }
@@ -102,158 +79,74 @@ namespace back_end.Infraestructure
       }
     }
 
-    private Guid insertAudit(string username, SqlTransaction transaction)
+    private void addAuditParameters(SqlCommand cmd, string loggedId)
     {
-      var cmd = new SqlCommand(@"
-                INSERT INTO [dbo].[Auditoria] ([usuarioCreador])
-                OUTPUT INSERTED.id
-                VALUES (@usuarioCreador)", transaction.Connection
-                , transaction);
-      cmd.Parameters.AddWithValue("@usuarioCreador", username);
-      var auditId = (Guid)cmd.ExecuteScalar();
-      Debug.WriteLine("Inserted audit with ID: " + auditId);
-      return auditId;
+      string loggedUsername = getUsernameByPersonId(loggedId);
+      cmd.Parameters.AddWithValue("@loggedPersonId", Guid.Parse(loggedId));
+
     }
 
-    private Guid insertPerson(EmployeeModel employee, Guid auditId
-      , SqlTransaction transaction)
+    private void addPersonParameters(SqlCommand cmd, EmployeeModel employee)
     {
-      string idType = "fisica";
+      cmd.Parameters.AddWithValue("@birthDay", employee.birthDay);
+      cmd.Parameters.AddWithValue("@birthMonth", employee.birthMonth);
+      cmd.Parameters.AddWithValue("@birthYear", employee.birthYear);
+      cmd.Parameters.AddWithValue("@idNumber", employee.idNumber);
+      cmd.Parameters.AddWithValue("@phoneNumber", employee.phoneNumber);
+      cmd.Parameters.AddWithValue("@email", employee.email);
 
-      var cmd = new SqlCommand(@"
-                INSERT INTO [dbo].[Persona]
-                ([identificacion], [numeroTelefono], [correoElectronico],
-                [tipoIdentificacion], [idAuditoria], [fechaNacimiento])
-                OUTPUT INSERTED.id
-                VALUES (@identificacion, @numeroTelefono, @correoElectronico,
-                @tipoIdentificacion, @idAuditoria, @fechaNacimiento)",
-          transaction.Connection, transaction);
-
-      cmd.Parameters.AddWithValue("@identificacion", employee.idNumber);
-      cmd.Parameters.AddWithValue("@numeroTelefono", employee.phoneNumber);
-      cmd.Parameters.AddWithValue("@correoElectronico", employee.email);
-      cmd.Parameters.AddWithValue("@tipoIdentificacion", idType);
-      cmd.Parameters.AddWithValue("@idAuditoria", auditId);
-      var birthDate = new DateTime(employee.birthYear
-        , employee.birthMonth, employee.birthDay);
-      cmd.Parameters.Add("@fechaNacimiento"
-        , SqlDbType.Date).Value = birthDate;
-
-      var personId = (Guid)cmd.ExecuteScalar();
-
-      return personId;
     }
 
-    private void insertNaturalPerson(EmployeeModel employee, Guid personId
-      , SqlTransaction transaction)
+    private void addNaturalPersonParameters(SqlCommand cmd
+      , EmployeeModel employee)
     {
-      var cmd = new SqlCommand(@"
-          INSERT INTO [dbo].[PersonaFisica]
-          ([id], [primerNombre], [segundoNombre], [primerApellido],
-          [segundoApellido], [genero])
-          VALUES (@id, @primerNombre, @segundoNombre, @primerApellido,
-          @segundoApellido, @genero)",
-          transaction.Connection, transaction);
-
-      cmd.Parameters.AddWithValue("@id", personId);
-      cmd.Parameters.AddWithValue("@primerNombre", employee.firstName);
-      cmd.Parameters.AddWithValue("@segundoNombre",
-        employee.secondName ?? (object)DBNull.Value);
-      cmd.Parameters.AddWithValue("@primerApellido", employee.firstLastName);
-      cmd.Parameters.AddWithValue("@segundoApellido",
-        employee.secondLastName);
-      cmd.Parameters.AddWithValue("@genero", employee.gender);
-      Debug.WriteLine("NaturalPerson Done");
-      if (cmd.ExecuteNonQuery() < 1)
-        throw new Exception("Insert failed: insertNaturalPerson.");
+      cmd.Parameters.AddWithValue("@firstName", employee.firstName);
+      cmd.Parameters.AddWithValue("@secondName"
+        , (object?)employee.secondName ?? DBNull.Value);
+      cmd.Parameters.AddWithValue("@firstLastName", employee.firstLastName);
+      cmd.Parameters.AddWithValue("@secondLastName", employee.secondLastName);
+      cmd.Parameters.AddWithValue("@gender", employee.gender);
     }
 
-    private void insertAddress(EmployeeModel employee, Guid personId
-      , SqlTransaction transaction)
+    private void addAddressParameters(SqlCommand cmd, EmployeeModel employee)
     {
-      var cmd = new SqlCommand(@"
-                INSERT INTO [dbo].[Direccion]
-                ([idPersona], [provincia], [canton], [distrito], [otrasSenas])
-                VALUES (@idPersona, @provincia, @canton, @distrito
-                , @otrasSenas)",
-          transaction.Connection, transaction);
-
-      cmd.Parameters.AddWithValue("@idPersona", personId);
-      cmd.Parameters.AddWithValue("@provincia", employee.province);
+      cmd.Parameters.AddWithValue("@province", employee.province);
       cmd.Parameters.AddWithValue("@canton", employee.canton);
-      cmd.Parameters.AddWithValue("@distrito", employee.district);
-      cmd.Parameters.AddWithValue("@otrasSenas"
-        , employee.otherSigns ?? (object)DBNull.Value);
-      if (cmd.ExecuteNonQuery() < 1)
-        throw new Exception("Insert failed: insertAddress.");
+      cmd.Parameters.AddWithValue("@district", employee.district);
+      cmd.Parameters.AddWithValue("@otherSigns"
+        , (object?)employee.otherSigns ?? DBNull.Value);
     }
-    private void insertUser(EmployeeModel employee, Guid personId
-  , SqlTransaction transaction)
+
+    private void addUserParameters(SqlCommand cmd, EmployeeModel employee)
     {
       var birthDate = new DateTime(employee.birthYear, employee.birthMonth
         , employee.birthDay);
-      var rawPassword = employee.firstLastName + birthDate.ToString("ddMMyyyy")
-        + "!";
-      var cmd = new SqlCommand(@"
-        INSERT INTO [dbo].[Usuario]
-        ([idPersonaFisica], [nickname], [contrasena])
-        VALUES (@idPersonaFisica, @nickname,
-        HASHBYTES('SHA2_512', CONVERT(varchar(100), @contrasena)))",
-      transaction.Connection, transaction);
-
-      cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
-      cmd.Parameters.AddWithValue("@nickname", employee.username);
-      cmd.Parameters.AddWithValue("@contrasena", rawPassword);
-      if (cmd.ExecuteNonQuery() < 1)
-        throw new Exception("Insert failed: Usuario.");
+      var rawPassword = employee.firstLastName +
+        birthDate.ToString("ddMMyyyy") + "!";
+      cmd.Parameters.AddWithValue("@username", employee.username);
+      cmd.Parameters.AddWithValue("@password", rawPassword);
     }
 
-    private void insertEmployeeDetails(EmployeeModel employee
-      , string logguedId, Guid personId, SqlTransaction transaction)
+    private void addEmployeeParameters(SqlCommand cmd, EmployeeModel employee
+      , string loggedId)
     {
-      var hireDate = new DateTime(employee.hireYear, employee.hireMonth
-        , employee.hireDay);
+      cmd.Parameters.AddWithValue("@hireDay", employee.hireDay);
+      cmd.Parameters.AddWithValue("@hireMonth", employee.hireMonth);
+      cmd.Parameters.AddWithValue("@hireYear", employee.hireYear);
+      cmd.Parameters.AddWithValue("@role"
+        , (object?)employee.role ?? DBNull.Value);
 
-      var cmd = new SqlCommand(@"
-                INSERT INTO [dbo].[Empleado]
-                ([idPersonaFisica], [rol], [fechaContratacion ]
-                , [idEmpleadorContratador])
-                VALUES (@idPersonaFisica, @rol, @fechaContratacion
-                , @idEmpleadorContratador)",
-                transaction.Connection, transaction);
-
-      cmd.Parameters.AddWithValue("@idPersonaFisica", personId);
-      cmd.Parameters.AddWithValue("@rol"
-         , employee.role ?? (object)DBNull.Value);
-      cmd.Parameters.Add("@fechaContratacion"
-        , SqlDbType.Date).Value = hireDate;
-      cmd.Parameters.AddWithValue("@idEmpleadorContratador", logguedId);
-      if (cmd.ExecuteNonQuery() < 1)
-        throw new Exception("Insert failed: assignCompanyToEmployer.");
     }
 
-    private void insertEmployeeContractDetails(EmployeeModel employee
-  , Guid naturalPersonId, SqlTransaction transaction)
+    private void addContractParameters(SqlCommand cmd, EmployeeModel employee)
     {
-      var creationDate = new DateTime(employee.creationYear
-        , employee.creationMonth, employee.creationDay);
+      cmd.Parameters.AddWithValue("@creationDay", employee.creationDay);
+      cmd.Parameters.AddWithValue("@creationMonth", employee.creationMonth);
+      cmd.Parameters.AddWithValue("@creationYear", employee.creationYear);
+      cmd.Parameters.AddWithValue("@reportsHours", employee.reportsHours);
+      cmd.Parameters.AddWithValue("@salary", employee.salary);
+      cmd.Parameters.AddWithValue("@typeContract", employee.typeContract);
 
-      var cmd = new SqlCommand(@"
-                INSERT INTO [dbo].[Contrato]
-                ([reportaHoras], [fechaCreacion], [salarioBruto]
-                , [tipoContrato], [idEmpleado])
-                VALUES (@reportaHoras, @fechaCreacion, @salarioBruto
-                , @tipoContrato, @idEmpleado)",
-                transaction.Connection, transaction);
-
-      cmd.Parameters.AddWithValue("@reportaHoras", employee.reportsHours);
-      cmd.Parameters.Add("@fechaCreacion"
-        , SqlDbType.Date).Value = creationDate;
-      cmd.Parameters.AddWithValue("@salarioBruto", employee.salary);
-      cmd.Parameters.AddWithValue("@tipoContrato", employee.typeContract);
-      cmd.Parameters.AddWithValue("@idEmpleado", naturalPersonId);
-      if (cmd.ExecuteNonQuery() < 1)
-        throw new Exception("Insert failed: assignCompanyToEmployer.");
     }
   }
 }
