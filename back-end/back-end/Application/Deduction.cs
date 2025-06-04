@@ -18,7 +18,7 @@ namespace back_end.Application
         private const string FRIENDS_API_JSON_RETURN_KEY = "monthlyCost";
         private const string GEEMS_API_JSON_RETURN_KEY = "amountToCharge";
 
-        private const string VORLAGENERSTELLER_API_URL = 
+        private const string VORLAGENERSTELLER_API_URL =
             "https://mediseguro-vorlagenersteller-d4hmbvf7frg7aqan.southcentralus-01.azurewebsites.net/api/MediSeguroMonto";
         private const string FRIENDS_API_URL =
             "https://poliza-friends-grg0h9g5crf2hwh8.southcentralus-01.azurewebsites.net/api/LifeInsurance";
@@ -97,8 +97,8 @@ namespace back_end.Application
         private double convertStringToDouble(string value)
         {
             var convertedValue = 0.0;
-            if (!double.TryParse(value, out convertedValue) 
-                || Double.IsNaN(convertedValue) || Double.IsInfinity(convertedValue) 
+            if (!double.TryParse(value, out convertedValue)
+                || Double.IsNaN(convertedValue) || Double.IsInfinity(convertedValue)
                 || Double.IsNegative(convertedValue))
             {
                 throw new Exception("The string does not represent a positive proper double number.");
@@ -187,12 +187,12 @@ namespace back_end.Application
                 case JsonValueKind.Number:
                     return rootElement.GetDouble();
                 case JsonValueKind.Object:
-                    if (rootElement.TryGetProperty(FRIENDS_API_JSON_RETURN_KEY, out var monthlyCostProp) 
+                    if (rootElement.TryGetProperty(FRIENDS_API_JSON_RETURN_KEY, out var monthlyCostProp)
                         && monthlyCostProp.ValueKind == JsonValueKind.Number)
                     {
                         return monthlyCostProp.GetDouble();
                     }
-                    if (rootElement.TryGetProperty(GEEMS_API_JSON_RETURN_KEY, out var amountToChargeProp) 
+                    if (rootElement.TryGetProperty(GEEMS_API_JSON_RETURN_KEY, out var amountToChargeProp)
                         && amountToChargeProp.ValueKind == JsonValueKind.Number)
                     {
                         return amountToChargeProp.GetDouble();
