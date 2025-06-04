@@ -8,7 +8,6 @@
         public required DateOnly birthDate { get; set; }
         public required double rentTax { get; set; }
         public required double rawGrossSalary { get; set; }
-        public required double rentTax { get; set; }
         public required double computedGrossSalary { get; set; }
         public required double ccssEmployeeDeduction { get; set; }
         public required double ccssEmployerDeduction { get; set; }
