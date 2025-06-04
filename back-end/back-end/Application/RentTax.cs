@@ -20,10 +20,8 @@ namespace back_end.Application
       calculateRentTaxes(List<PayrollEmployeeModel> payrollEmployees
       , DateOnly endDate)
     {
-
       for (int i = 0; i < payrollEmployees.Count; ++i)
       {
-
         if (payrollEmployees[i].hiringType !=
           HIRING_TYPE_EXCLUDED_FROM_RENT_TAX)
         {
@@ -45,13 +43,13 @@ namespace back_end.Application
 
       if (isTheEndOfTheMonth(endDate))
       {
-        payrollEmployee.rentTax =
-          calculateEndOfMonthTax(payrollEmployee, endDate);
+        payrollEmployee.rentTax = calculateEndOfMonthTax(payrollEmployee
+          , endDate);
       }
       else
       {
-        payrollEmployee.rentTax =
-          calculateProjectedTax(payrollEmployee.computedGrossSalary);
+        payrollEmployee.rentTax = calculateProjectedTax(payrollEmployee
+          , endDate);
       }
 
       return payrollEmployee;
@@ -74,23 +72,22 @@ namespace back_end.Application
 
       double fullTax = calculateFullRentTax(grossSalary);
 
-      double alreadyDiscounted = sumPreviousSalaries(
-          employee.previousComputedGrossSalaries,
-          endDate.AddMonths(-1)
-      );
+      double previousTax = calculateFullRentTax(accumulatedSalaries);
 
-      return fullTax - alreadyDiscounted;
+      return fullTax - previousTax;
     }
 
-    private double calculateProjectedTax(double partialSalary)
+
+
+    private double calculateProjectedTax(PayrollEmployeeModel employee
+      , DateOnly endDate)
     {
-      double projectedSalary = partialSalary * 2;
-
-      if (projectedSalary <= TIER_1_LIMIT)
-        return 0;
-
-      double projectedTax = calculateFullRentTax(projectedSalary);
-      return projectedTax / 2;
+      int monthsWorked = Math.Max(1
+        , endDate.Month - employee.hiringDate.Month + 1);
+      double projectedAnnualSalary = (employee.computedGrossSalary * 12) /
+        monthsWorked;
+      double projectedTax = calculateFullRentTax(projectedAnnualSalary);
+      return projectedTax / 12;
     }
 
     private double calculateFullRentTax(double salary)
@@ -105,18 +102,20 @@ namespace back_end.Application
       tax += calculateExcessTax(salary, TIER_4_LIMIT, TIER_5_RATE);
       return tax;
     }
+
     private bool isTheEndOfTheMonth(DateOnly endDate)
     {
       return !(endDate.Month == endDate.AddDays(7).Month);
     }
 
     private double sumPreviousSalaries(List<PayrollPreviousComputedGrossSalary>
-      salaries, DateOnly minimumDate)
+      salaries, DateOnly maximumDate)
     {
       return salaries
-          .Where(s => s.startDate > minimumDate)
+          .Where(s => s.startDate <= maximumDate)
           .Sum(s => s.amount);
     }
+
 
     private double calculateTierTax(double salary, double lowerLimit
       , double upperLimit, double rate)
