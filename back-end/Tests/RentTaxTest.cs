@@ -197,7 +197,8 @@ namespace Tests
 
         hiringType = "tiempoCompleto",
         computedGrossSalary = 922_000,
-        previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
+        previousComputedGrossSalaries =
+          new List<PayrollPreviousComputedGrossSalary>()
       };
 
       var result = _rentTax.calculateRentTaxes(
@@ -228,7 +229,8 @@ namespace Tests
 
         hiringType = "tiempoCompleto",
         computedGrossSalary = 6_000_000,
-        previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
+        previousComputedGrossSalaries =
+          new List<PayrollPreviousComputedGrossSalary>()
       };
 
       var result = _rentTax.calculateRentTaxes(
@@ -259,12 +261,13 @@ namespace Tests
 
         hiringType = "tiempoCompleto",
         computedGrossSalary = 1_000_000,
-        previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>
+        previousComputedGrossSalaries =
+          new List<PayrollPreviousComputedGrossSalary>
     {
       new PayrollPreviousComputedGrossSalary
       {
         amount = 2_000_000,
-        startDate = new DateOnly(2025, 7, 1) // después de junio
+        startDate = new DateOnly(2025, 7, 1)
       }
     }
       };
@@ -274,7 +277,6 @@ namespace Tests
         new DateOnly(2025, 6, 30)
       );
 
-      // Solo se toma en cuenta el salario actual (no los acumulados futuros)
       var expectedTax = result[0].rentTax;
       Assert.That(expectedTax, Is.EqualTo(result[0].rentTax));
     }
