@@ -28,7 +28,7 @@
               <td>{{ fixNameSpacing(employee.employeeName) }}</td>
               <td>{{ formatDate(planilla.payrollStartDate) }} -
                 {{ formatDate(planilla.payrollEndDate) }}</td>
-              <td>₡{{ employee.employeeGrossSalary }}</td>
+              <td>₡{{ formatAmount(employee.employeeGrossSalary) }}</td>
               <td>
                 <div class="small" v-for="(ded, j) in
                   employee.employeeDeductions" :key="j">
@@ -39,7 +39,7 @@
                   Total: ₡{{ calculateDeductions(employee.employeeDeductions) }}
                 </div>
               </td>
-              <td><strong>₡{{ employee.employeeNetSalary }}</strong></td>
+              <td><strong>₡{{ formatAmount(employee.employeeNetSalary) }}</strong></td>
             </tr>
           </template>
         </tbody>
@@ -154,9 +154,14 @@ export default {
     },
     calculateDeductions(employeeDeductions) {
       if (!employeeDeductions) return '0.00';
-      const total = employeeDeductions.reduce((sum, d) => sum +
-        d.deductionAmount, 0);
-      return total.toFixed(2);
+
+      const total = employeeDeductions.reduce((sum, d) => sum
+        + d.deductionAmount, 0);
+
+      return total.toLocaleString('es-CR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     },
     formatDeductionType(deductionType) {
       if (!deductionType) return '';
