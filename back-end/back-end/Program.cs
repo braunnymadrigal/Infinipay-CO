@@ -88,6 +88,8 @@ builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
 builder.Services.AddScoped<IRentTax, RentTax>();
 builder.Services.AddScoped<EmployeeBenefitRepository>();
 builder.Services.AddScoped<CompanyBenefitRepository>();
+builder.Services.AddScoped<ICompanyBenefitCommand, CompanyBenefitCommand>();
+
 
 builder.Services.AddScoped<IBenefitQuery<EmployeeBenefitDTO>
   , EmployeeBenefitQuery>();

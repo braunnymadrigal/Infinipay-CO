@@ -1,4 +1,4 @@
-CREATE PROCEDURE StoreBenefit
+CREATE OR ALTER PROCEDURE StoreBenefit
 	@User VARCHAR(100),
 	@FormulaType VARCHAR(10),
 	@UrlApi VARCHAR(256) = NULL,
@@ -8,7 +8,7 @@ CREATE PROCEDURE StoreBenefit
 	@Name VARCHAR(100),
 	@MinTime decimal(4,2) = 0,
 	@Description VARCHAR(256),
-	@ElegibleEmployees VARCHAR(9) = 'todos'
+	@ElegibleEmployees VARCHAR(14) = 'todos'
 AS
 BEGIN
 	-- Create Audit

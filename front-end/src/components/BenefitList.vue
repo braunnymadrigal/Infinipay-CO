@@ -35,7 +35,12 @@
           <td>{{ truncateString(benefit.benefit.description, 150) }}</td>
           <td>{{ benefit.benefit.minEmployeeTime + " meses" }}</td>
           <td>{{ benefit.benefit.elegibleEmployees }}</td>
-          <td>{{ benefit.benefit.paramOneAPI }}</td>
+          <td>
+            {{
+              benefit.benefit.paramOneAPI +
+              formatDeductionType(benefit.benefit.deductionType)
+            }}
+          </td>
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button
@@ -95,6 +100,16 @@ export default {
         this.benefits = response.data;
       } catch (error) {
         console.error("Error obteniendo los beneficios:", error);
+      }
+    },
+    formatDeductionType(deductionType) {
+      switch (deductionType) {
+        case "montoFijo":
+          return "₡";
+        case "porcentaje":
+          return "%";
+        default:
+          return "";
       }
     },
   },
