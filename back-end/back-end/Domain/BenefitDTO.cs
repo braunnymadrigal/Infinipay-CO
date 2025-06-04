@@ -22,7 +22,9 @@ namespace back_end.Models
 
     public DateTime creationDate { get; set; }
 
-    public short benefitsPerEmployee {  get; set; }
+    public short benefitsPerEmployee { get; set; }
+
+    public Guid? companyId { get; set; }
 
     public string? userCreator { get; set; }
 
