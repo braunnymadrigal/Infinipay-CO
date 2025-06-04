@@ -51,10 +51,11 @@
             required
           >
             <option disabled value="">Seleccione una opción</option>
+            <option value="tiempoCompleto">Tiempo Completo</option>
+            <option value="medioTiempo">Medio Tiempo</option>
+            <option value="horas">Por Horas</option>
+            <option value="servicios">Servicios Profesionales</option>
             <option value="todos">Todos</option>
-            <option value="semanal">Semanal</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="mensual">Mensual</option>
           </select>
         </div>
 
@@ -237,7 +238,6 @@ export default {
             form.paramThreeAPI !== null ? String(form.paramThreeAPI) : null,
         },
       };
-      console.log("Nuevo beneficio:", newBenefit);
       this.$api
         .createCompanyBenefit(newBenefit)
         .then(() => {

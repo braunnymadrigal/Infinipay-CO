@@ -13,16 +13,18 @@ namespace back_end.Controllers
     [ApiController]
     public class CompanyBenefitController : ControllerBase
     {
-        private readonly CompanyBenefitQuery _companybenefitQuery;
-        private readonly CompanyBenefitCommand _companybenefitCommand;
+        private readonly IBenefitQuery<CompanyBenefitDTO> companybenefitQuery;
+        private readonly ICompanyBenefitCommand companybenefitCommand;
 
-        public CompanyBenefitController()
+        public CompanyBenefitController(
+            IBenefitQuery<CompanyBenefitDTO> companybenefitQuery, 
+            ICompanyBenefitCommand companybenefitCommand)
         {
-            _companybenefitQuery = new CompanyBenefitQuery();
-            _companybenefitCommand = new CompanyBenefitCommand();
+            this.companybenefitQuery = companybenefitQuery;
+            this.companybenefitCommand = companybenefitCommand;
         }
 
-        private string GetLoggedUserClaim(string claimType)
+        private string getLoggedUserClaim(string claimType)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
@@ -37,55 +39,72 @@ namespace back_end.Controllers
             return "";
         }
 
+        private string getLoggedUserNickname()
+        {
+            var loggedUser = getLoggedUserClaim(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(loggedUser))
+            {
+                loggedUser = "";
+            }
+
+            return loggedUser;
+        }
+
         [Authorize(Roles = "empleador, administrador")]
         [HttpGet]
-        public ActionResult<List<CompanyBenefitDTO>> GetAllCompanyBenefits()
+        public ActionResult<List<CompanyBenefitDTO>> getAll()
         {
-            var loggedUserNickname = GetLoggedUserClaim(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(loggedUserNickname))
+            try
             {
-                return BadRequest("No se pudo obtener el nombre de usuario desde el token/cookie");
-            }
-            var benefits = _companybenefitQuery.getBenefits(loggedUserNickname);
-            if (benefits == null || benefits.Count == 0)
-            {
+                var loggedUserNickname = getLoggedUserNickname();
+
+                if (string.IsNullOrEmpty(loggedUserNickname))
+                {
+                return NotFound(
+                    "No se pudo obtener el nombre de usuario");
+                }
+
+                var benefits = companybenefitQuery.getBenefits(loggedUserNickname);
+
+                if (benefits == null)
+                {
                 return NotFound("Beneficios no encontrados");
+                }
+
+                return Ok(benefits);
             }
-            return Ok(benefits);
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                message = "Error obteniendo beneficios",
+                details = ex.Message
+                });
+            }
         }
 
         [Authorize(Roles = "empleador,administrador")]
         [HttpPost]
-        public ActionResult<bool> CreateBenefit(CompanyBenefitDTO benefit)
+        public ActionResult<bool> CreateBenefit([FromBody] CompanyBenefitDTO benefit)
         {
             try
             {
                 if (benefit == null)
                     return BadRequest("Datos inválidos.");
 
-                var loggedUserNickname = GetLoggedUserClaim(ClaimTypes.NameIdentifier);
-                
-                if (loggedUserNickname == null)
+                var loggedUserNickname = getLoggedUserClaim(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrWhiteSpace(loggedUserNickname))
                 {
-                    return BadRequest(
-                        "No se pudo obtener el nombre de usuario desde el token/cookie");
+                    return NotFound("No se pudo obtener el identificador" +
+                        " del usuario.");
                 }
-                _companybenefitCommand.CreateBenefit(benefit, loggedUserNickname);
-                return Ok(new
-                {
-                    message = "Beneficio creado exitosamente."
-                });
+                companybenefitCommand.CreateBenefit(benefit, loggedUserNickname);
+                return Ok(true);
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("BENEFICIO_DUPLICADO"))
-                {
-                    return Conflict(new
-                    {
-                        message = "Error: ya existe un beneficio registrado con ese nombre."
-                    });
-                }
-
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     message = "Error creando el beneficio.",

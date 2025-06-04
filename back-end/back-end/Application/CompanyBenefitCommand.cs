@@ -1,25 +1,41 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using back_end.Repositories;
+﻿using back_end.Repositories;
 using back_end.Models;
 
 namespace back_end.Application
 {
-  public class CompanyBenefitCommand : IBenefitCommand<CompanyBenefitDTO>
+  public class CompanyBenefitCommand : ICompanyBenefitCommand
   {
-    private readonly CompanyBenefitRepository _companyBenefitRepository;
+    private readonly CompanyBenefitRepository companyBenefitRepository;
 
-    public CompanyBenefitCommand()
+    public CompanyBenefitCommand(CompanyBenefitRepository companyBenefitRepository)
     {
-      _companyBenefitRepository = new CompanyBenefitRepository();
+      this.companyBenefitRepository = companyBenefitRepository;
     }
 
-    public void CreateBenefit(CompanyBenefitDTO benefitWrapper
-      , string loggedUserId)
+    public void CreateBenefit(CompanyBenefitDTO benefit
+      , string loggedUserNickname)
     {
-      _companyBenefitRepository.CreateBenefit(benefitWrapper, loggedUserId);
+      if (string.IsNullOrWhiteSpace(loggedUserNickname))
+      {
+        throw new ArgumentException("loggedUserNickname is required");
+      }
+
+      if (benefit == null)
+      {
+        throw new ArgumentNullException(nameof(benefit));
+      }
+      try 
+      {
+                Console.WriteLine("Creando beneficio enviando a repository...");
+        companyBenefitRepository.CreateBenefit(benefit, loggedUserNickname);
+      }
+      catch (Exception ex)
+      {
+        if (ex.Message.Contains("BENEFICIO_DUPLICADO"))
+                    throw new Exception("Ya existe un beneficio registrado con ese nombre.");
+        throw new Exception("Error inesperado creando beneficio." +
+                    " Detalles: " + ex.Message);
+      }
     }
 
   }
