@@ -69,7 +69,16 @@ export default {
           authHeader()
         );
       },
-
+      
+			generateEmployeePayroll(payload = {}) {
+				return axios.post(`${apiBaseURL}/PayrollOrchestrator`
+				, payload, authHeader());
+			},
+      
+			showEmployeesPayroll() {
+				return axios.get(`${apiBaseURL}/PayrollOrchestrator`, authHeader());
+			},
+      
       getEmployeeById(employeeId) {
         return axios.get(`${apiBaseURL}/Employee/${employeeId}`, authHeader());
       },
@@ -81,6 +90,25 @@ export default {
           authHeader()
         );
       },
+      
+      getEmployeeHoursContract() {
+				return axios.get(`${apiBaseURL}/EmployeeHours`, authHeader());
+			},
+
+			getEmployeeHours(startDate, endDate) {
+				return axios.get(`${apiBaseURL}/EmployeeHours/Hours`, {
+					params: {
+						startDate,
+						endDate
+					},
+					...authHeader(),
+				});
+			},
+
+			registerEmployeeHours(employeeHoursWorked) {
+				return axios.post(`${apiBaseURL}/EmployeeHours`, employeeHoursWorked
+					, authHeader());
+			},
     };
   },
 };

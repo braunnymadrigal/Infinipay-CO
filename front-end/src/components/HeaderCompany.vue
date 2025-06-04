@@ -11,40 +11,53 @@
       <nav class="navbar navbar-expand-lg rounded custom-navbar">
         <div class="container-fluid">
           <div class="d-flex">
-          
+
             <router-link to="/MyProfile"
                          class="mx-2"
                          style="color: #405d72">Perfil</router-link>
-                         
+
             <router-link to="/MyCompany"
                          class="mx-2"
-                         style="color: #405d72">Empresa</router-link>             
+                         style="color: #405d72">Empresa</router-link>
 
-            <router-link 
-                         to="/BenefitList"
+            <router-link to="/EmployeeTimesheet"
                          class="mx-2"
-                         style="color: #405d72">Beneficios Empresa
+                         style="color: #405d72">Registrar Horas</router-link>
+
+            <router-link to="/BenefitList"
+                         class="mx-2"
+                         style="color: #405d72">
+              Beneficios Empresa
             </router-link>
 
-            <router-link
-                         to="/AssignedBenefitList"
+            <router-link to="/AssignedBenefitList"
                          class="mx-2"
-                         style="color: #405d72">Beneficios Empleados
+                         style="color: #405d72">
+              Beneficios Empleados
 
             </router-link>
-            
+
             <router-link to="/EmployeesList" class="mx-2"
-                style="color: #405d72">Empleados</router-link>
-            
+                         style="color: #405d72">Empleados</router-link>
+
             <router-link to="/CompanyList" class="mx-2"
-              style="color: #405d72;">Empresas
+                         style="color: #405d72;">
+              Empresas
+            </router-link>
+
+            <router-link to="/GeneratePayroll" class="mx-2"
+              style="color: #405d72;">Generar Planilla
+            </router-link>
+
+            <router-link to="/ShowPayrollResults" class="mx-2"
+              style="color: #405d72;">Resultados Planilla
             </router-link>
 
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
             </a>
 
-            </div>
+          </div>
           </div>
         </nav>
       </header>
