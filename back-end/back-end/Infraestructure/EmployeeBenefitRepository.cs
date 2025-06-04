@@ -226,7 +226,7 @@ namespace back_end.Repositories
         VALUES(@BeneficioId, @PersonaFisicaId)";
     }
 
-    public bool assignBenefit(AssignBenefitRequest request
+    public bool assignBenefit(AssignBenefitReq request
       , string loggedUserNickname)
     {
       string query = assignBenefitQuery();

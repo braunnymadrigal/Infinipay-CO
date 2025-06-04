@@ -42,7 +42,7 @@ export default {
       },
 
       login(userCredential) {
-        return axios.post(`${apiBaseURL}/Login/Login`, {
+        return axios.post(`${apiBaseURL}/Login`, {
           NicknameOrEmail: userCredential.userId,
           Password: userCredential.userPassword,
         });
@@ -70,6 +70,18 @@ export default {
         );
       },
 
+      getEmployeeById(employeeId) {
+        return axios.get(`${apiBaseURL}/Employee/${employeeId}`, authHeader());
+      },
+
+      updateEmployee(employeeData, employeeId) {
+        return axios.put(
+          `${apiBaseURL}/Employee/${employeeId}`,
+          employeeData,
+          authHeader()
+        );
+      },
+
       benefitAPI(benefit) {
         return axios.get(benefit.urlAPI, {
           params: {
@@ -83,18 +95,11 @@ export default {
       getCompanyBenefits() {
         return axios.get(`${apiBaseURL}/CompanyBenefit`, authHeader());
       },
+
       createCompanyBenefit(benefitData) {
         return axios.post(
           `${apiBaseURL}/CompanyBenefit`,
           benefitData,
-          authHeader()
-        );
-      },
-
-      updateEmployee(employeeData, employeeId) {
-        return axios.put(
-          `${apiBaseURL}/Employee/${employeeId}`,
-          employeeData,
           authHeader()
         );
       },

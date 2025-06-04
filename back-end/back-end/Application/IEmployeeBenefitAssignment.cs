@@ -4,7 +4,7 @@ namespace back_end.Application
 {
   public interface IEmployeeBenefitAssignment
   {
-    public bool assignBenefit(AssignBenefitRequest request
+    public bool assignBenefit(AssignBenefitReq request
       , string loggedUserNickname);
   }
 }
