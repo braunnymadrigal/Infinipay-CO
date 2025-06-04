@@ -1,0 +1,2 @@
+ALTER TABLE [dbo].[DeduccionAPago]
+ALTER COLUMN [idDeduccion] UNIQUEIDENTIFIER NULL;
