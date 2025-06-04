@@ -16,7 +16,8 @@ builder.Services.AddCors(options =>
                       policy.WithOrigins("http://localhost:8081", "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials();
+                        .AllowCredentials()
+                        .WithExposedHeaders("WWW-Authenticate");
                     });
 });
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -75,6 +76,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Dependency inyection here
+builder.Services.AddScoped<AbstractConnectionRepository
+  , ConnectionRepository>();
 builder.Services.AddScoped<IEmployeeHoursRepository, EmployeeHoursRepository>();
 builder.Services.AddScoped<IEmployeeHoursQuery, EmployeeHoursQuery>();
 builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
@@ -90,10 +93,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
 
