@@ -138,6 +138,99 @@ namespace Tests
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
+        [Test]
+        public void Test_BiweeklyGrossSalaryComputation_HiredBeforeStartDate()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 1000.0;
+            employees[0].hiringDate = new DateOnly(2020, 1, 1);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 15);
+            var expectedResult = 500.0;
+
+            // Act
+            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_BiweeklyGrossSalaryComputation_HiredOnStartDate()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 900.0;
+            employees[0].hiringDate = new DateOnly(2025, 6, 1);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 15);
+            var expectedResult = 450.0;
+
+            // Act
+            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_BiweeklyGrossSalaryComputation_HiredAfterStartDate()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 900.0;
+            employees[0].hiringDate = new DateOnly(2025, 6, 10);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 15);
+            var expectedWorkedDays = 6;
+            var expectedResult = (900.0 / 15.0) * expectedWorkedDays;
+
+            // Act
+            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_BiweeklyGrossSalaryComputation_HiredOnLastDay()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 600.0;
+            employees[0].hiringDate = new DateOnly(2025, 6, 15);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 15);
+            var expectedResult = (600.0 / 15.0);
+
+            // Act
+            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_BiweeklyGrossSalaryComputation_DecimalPrecision()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 1234.56;
+            employees[0].hiringDate = new DateOnly(2025, 6, 5);
+            startDate = new DateOnly(2025, 6, 1);
+            endDate = new DateOnly(2025, 6, 15);
+            var expectedWorkedDays = 11;
+            var expectedResult = (1234.56 / 15.0) * expectedWorkedDays;
+
+            // Act
+            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult).Within(0.01));
+        }
+
+
 
 
         //[Test]
