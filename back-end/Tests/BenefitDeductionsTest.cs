@@ -17,7 +17,8 @@ namespace Tests
         public void Setup()
         {
             deduction = new Deduction();
-            employees = new List<PayrollEmployeeModel> {
+            employees = new List<PayrollEmployeeModel> 
+            {
                 new PayrollEmployeeModel
                 {
                     id = "",
@@ -33,7 +34,26 @@ namespace Tests
                     hoursDate = DateOnly.MinValue,
                     hoursNumber = 0,
                     companyAssociation = "",
-                    deductions = new List<PayrollDeductionModel>(),
+                    deductions = new List<PayrollDeductionModel>
+                    {
+                        new PayrollDeductionModel
+                        {
+                            id = "",
+                            dependantNumber = 0,
+                            formulaType = "",
+                            apiUrl = "",
+                            apiMethod = "",
+                            param1Value = "",
+                            param2Value = "",
+                            param3Value = "",
+                            param1Key = "",
+                            param2Key = "",
+                            param3Key = "",
+                            header1Key = "",
+                            header1Value = "",
+                            resultAmount = 0.0
+                        }
+                    },
                     previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
                 }
             };
