@@ -6,6 +6,7 @@
         public required string gender { get; set; }
         public required string fullName { get; set; }
         public required DateOnly birthDate { get; set; }
+        public required double rentTax { get; set; }
         public required double rawGrossSalary { get; set; }
         public required double rentTax { get; set; }
         public required double computedGrossSalary { get; set; }

@@ -34,6 +34,7 @@ namespace back_end.Infraestructure
       var dataTablePerson = obtainPersonInfo();
       var dataTableAddress = obtainAddress();
       var dataTableNatural = obtainNaturalPersonInfo();
+      var dataTableUsernames = obtainUsernames();
       var dataTableEmployee = obtainEmployeeDetails(logguedId);
       var result = new List<EmployeeListModel>();
       foreach (var person in dataTablePerson)
@@ -41,7 +42,8 @@ namespace back_end.Infraestructure
         var address = dataTableAddress.FirstOrDefault(d => d.id == person.id);
         var natural = dataTableNatural.FirstOrDefault(n => n.id == person.id);
         var employee = dataTableEmployee.FirstOrDefault(e => e.id == person.id);
-        if (address != null && natural != null && employee != null)
+        var user = dataTableUsernames.FirstOrDefault(u => u.id == person.id);
+        if (address != null && natural != null && employee != null && user != null)
         {
           result.Add(new EmployeeListModel
           {
@@ -53,6 +55,7 @@ namespace back_end.Infraestructure
             canton = address.canton,
             district = address.district,
             otherSigns = address.otherSigns,
+            nickname = user.nickname,
             firstName = natural.firstName,
             secondName = natural.secondName,
             firstLastName = natural.firstLastName,
@@ -155,6 +158,24 @@ namespace back_end.Infraestructure
         });
       }
       return employeeDetails;
+    }
+    public List<EmployeeListModel> obtainUsernames()
+    {
+      var usernames = new List<EmployeeListModel>();
+      string query = @"
+        SELECT 
+           idPersonaFisica, nickname 
+        FROM Usuario";
+      DataTable table = getQueryTable(query);
+      foreach (DataRow rows in table.Rows)
+      {
+        usernames.Add(new EmployeeListModel
+        {
+          id = Guid.Parse(rows["idPersonaFisica"].ToString()),
+          nickname = Convert.ToString(rows["nickname"])
+        });
+      }
+      return usernames;
     }
   }
 }

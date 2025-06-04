@@ -1,5 +1,6 @@
 ﻿using back_end.Infraestructure;
 using back_end.Domain;
+using back_end.Application;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -12,10 +13,14 @@ namespace back_end.API
   public class EmployeeController : ControllerBase
   {
     private readonly EmployeeRepository _employeeRepository;
+    private readonly IEmployeeCommand _employeeCommand;
+    private readonly IEmployeeQuery _employeeQuery;
 
     public EmployeeController()
     {
       _employeeRepository = new EmployeeRepository();
+      _employeeCommand = new EmployeeCommand();
+      _employeeQuery = new EmployeeQuery();
     }
 
     [Authorize(Roles = "empleador,administrador")]
@@ -83,6 +88,67 @@ namespace back_end.API
         return StatusCode(StatusCodes.Status500InternalServerError
           , new { message = "Error creando empleado", details = ex.Message });
       }
+    }
+
+    [Authorize(Roles = "empleador,administrador")]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EmployeeModel>> GetEmployee(Guid id)
+    {
+      try
+      {
+
+        var employee = _employeeQuery.GetEmployee(id);
+        if (employee == null)
+        {
+          return NotFound(new { message = "Empleado no encontrado" });
+        }
+        return Ok(employee);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError
+          , new { message = "Error obteniendo empleado", details = ex.Message });
+      }
+    }
+
+    [Authorize(Roles = "empleador,administrador")]
+    [HttpPut("{id}")]
+    public async Task<ActionResult<bool>> UpdateEmployee(Guid id, EmployeeModel employee)
+    {
+      try
+      {
+        if (employee == null)
+        {
+          return BadRequest();
+        }
+        var loggedUsername = GetLoggedUsername();
+        if (string.IsNullOrEmpty(loggedUsername))
+        {
+          return Unauthorized(new { message = "Usuario no autenticado" });
+        }
+        _employeeCommand.UpdateEmployeeData(employee, id, loggedUsername);
+        return Ok(true);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError
+          , new { message = "Error actualizando empleado", details = ex.Message });
+      }
+    }
+
+    private string GetLoggedUsername() {
+      string loggedId = "";
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (identity != null)
+        {
+          var userClaims = identity.Claims;
+          var sid = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+          if (sid != null)
+          {
+            loggedId = sid;
+          }
+        }
+      return loggedId;
     }
   }
 }

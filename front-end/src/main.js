@@ -1,5 +1,5 @@
 ﻿import { createApp } from "vue";
-import ApiPlugin from './plugins/api';
+import ApiPlugin from "./plugins/api";
 import App from "./App.vue";
 import "primeicons/primeicons.css";
 
@@ -22,6 +22,7 @@ import CompanyList from "./components/CompanyList.vue";
 import BenefitDetails from "./components/BenefitDetails.vue";
 import GeneratePayroll from "./components/GeneratePayroll.vue";
 import ShowPayrollResults from "./components/ShowPayrollResults.vue";
+import UpdateEmployeeForm from "./components/UpdateEmployeeForm.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -64,11 +65,17 @@ const router = createRouter({
     },
     { path: "/EmployeesList", name: "EmployeesList", component: EmployeesList },
     { path: "/CompanyList", name: "CompanyList", component: CompanyList },
+    
     { path: "/GeneratePayroll", name: "GeneratePayroll"
       , component: GeneratePayroll },
-
+    
     { path: "/ShowPayrollResults", name: "ShowPayrollResults"
       , component: ShowPayrollResults },
+    {
+      path: "/EmployeeUpdate/:id",
+      name: "EmployeeUpdate",
+      component: UpdateEmployeeForm,
+    },
   ],
 });
 
@@ -76,4 +83,4 @@ const app = createApp(App);
 app.use(router);
 app.use(VueCookies, { expires: "7d" });
 app.use(ApiPlugin);
-app.mount('#app');
+app.mount("#app");
