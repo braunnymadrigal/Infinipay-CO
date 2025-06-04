@@ -25,6 +25,7 @@ namespace Tests
             {
                 new PayrollEmployeeModel
                 {
+                    fullName = "Test Employee",
                     id = "",
                     gender = "",
                     birthDate = DateOnly.MinValue,
