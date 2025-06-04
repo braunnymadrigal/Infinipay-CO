@@ -53,7 +53,7 @@ namespace back_end.Controllers
 
         [Authorize(Roles = "empleador, administrador")]
         [HttpGet]
-        public ActionResult<List<CompanyBenefitDTO>> getAll()
+        public async Task<ActionResult<List<CompanyBenefitDTO>>> getAll()
         {
             try
             {
@@ -84,9 +84,34 @@ namespace back_end.Controllers
             }
         }
 
+        [Authorize(Roles = "empleador, administrador")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CompanyBenefitDTO>> getById(Guid id)
+        {
+            try
+            {     
+                var benefit = companybenefitQuery.getBenefitById(id);
+
+                if (benefit == null)
+                {
+                    return NotFound("Beneficio no encontrado");
+                }
+
+                return Ok(benefit);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "Error obteniendo beneficio",
+                    details = ex.Message
+                });
+            }
+        }
+
         [Authorize(Roles = "empleador,administrador")]
         [HttpPost]
-        public ActionResult<bool> CreateBenefit([FromBody] CompanyBenefitDTO benefit)
+        public async Task<ActionResult<bool>> CreateBenefit([FromBody] CompanyBenefitDTO benefit)
         {
             try
             {
@@ -108,6 +133,35 @@ namespace back_end.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     message = "Error creando el beneficio.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        [Authorize(Roles = "empleador,administrador")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<bool>> UpdateBenefit(Guid id, [FromBody] CompanyBenefitDTO benefit)
+        {
+            try
+            {
+                if (benefit == null || id == Guid.Empty)
+                    return BadRequest("Datos inválidos.");
+
+                var loggedUserNickname = getLoggedUserClaim(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrWhiteSpace(loggedUserNickname))
+                {
+                    return NotFound("Usuario no autenticado");
+                }
+
+                companybenefitCommand.UpdateBenefit(id, benefit, loggedUserNickname);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "Error actualizando el beneficio.",
                     details = ex.Message
                 });
             }

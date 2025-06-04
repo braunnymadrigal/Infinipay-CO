@@ -24,6 +24,7 @@ import GeneratePayroll from "./components/GeneratePayroll.vue";
 import ShowPayrollResults from "./components/ShowPayrollResults.vue";
 import EmployeeTimesheet from "./components/EmployeeTimesheet.vue";
 import UpdateEmployeeForm from "./components/UpdateEmployeeForm.vue";
+import UpdateBenefitForm from "./components/UpdateBenefitForm.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -81,6 +82,11 @@ const router = createRouter({
       path: "/EmployeeUpdate/:id",
       name: "EmployeeUpdate",
       component: UpdateEmployeeForm,
+    },
+    {
+      path: "/BenefitUpdate/:id",
+      name: "BenefitUpdate",
+      component: UpdateBenefitForm,
     },
   ],
 });

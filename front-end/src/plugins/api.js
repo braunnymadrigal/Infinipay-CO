@@ -137,6 +137,21 @@ export default {
           authHeader()
         );
       },
+
+      getCompanyBenefitById(benefitId) {
+        return axios.get(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          authHeader()
+        );
+      },
+
+      updateCompanyBenefit(benefitData, benefitId) {
+        return axios.put(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          benefitData,
+          authHeader()
+        );
+      },
     };
   },
 };
