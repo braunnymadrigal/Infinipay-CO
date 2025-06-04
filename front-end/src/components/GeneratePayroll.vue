@@ -104,7 +104,7 @@ export default {
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
       ],
-      availableYears: Array.from({ length: 5 }, (_, i) => currentYear - 2 + i),
+      availableYears: Array.from({ length: currentYear - 2009 }, (_, i) => 2010 + i),
       startDate: {
         day: 1,
         month: 1,
