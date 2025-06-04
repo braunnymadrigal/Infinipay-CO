@@ -58,6 +58,88 @@ namespace Tests
             Assert.That(expectedResult, Is.EqualTo(result));
         }
 
+        [Test]
+        public void Test_WeeklyGrossSalaryComputation_ZeroRawSalary()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 0.0;
+            employees[0].hoursNumber = 40;
+            var expectedResult = 0.0;
+
+            // Act
+            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_WeeklyGrossSalaryComputation_OneHour()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 25.0;
+            employees[0].hoursNumber = 1;
+            var expectedResult = 25.0;
+
+            // Act
+            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_WeeklyGrossSalaryComputation_HighHours()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 10.0;
+            employees[0].hoursNumber = 100;
+            var expectedResult = 1000.0;
+
+            // Act
+            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void Test_WeeklyGrossSalaryComputation_DecimalPrecision()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 13.333;
+            employees[0].hoursNumber = 3;
+            var expectedResult = 39.999;
+
+            // Act
+            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult).Within(0.001));
+        }
+
+        [Test]
+        public void Test_WeeklyGrossSalaryComputation_NegativeHours()
+        {
+            // Arrange
+            employees[0].rawGrossSalary = 20.0;
+            employees[0].hoursNumber = -5;
+            var expectedResult = -100.0;
+
+            // Act
+            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
+            var result = resultList[0].computedGrossSalary;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+
+
         //[Test]
         //public void Test_Print_Stub()
         //{
