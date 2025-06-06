@@ -35,6 +35,7 @@
             id="BenefitDescription"
             maxlength="300"
             pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"
+            required
             placeholder="Sólo se permiten espacios, letras y acentos del abecedario español."
             rows="4"
           ></textarea>
