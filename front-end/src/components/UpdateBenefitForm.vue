@@ -9,6 +9,7 @@
     <h2 class="text-center" style="color: #758694">Datos del beneficio</h2>
     <div class="">
       <form @submit.prevent="submitForm">
+
         <div class="mb-3">
           <label for="BenefitName" class="form-label">Nombre</label>
           <input
@@ -177,6 +178,13 @@
             Cancelar</router-link
           >
         </div>
+
+        <div v-if="alertMessage" :class="['alert', alertType === 'success'
+          ? 'alert-success' : 'alert-danger']" role="alert"
+          style="margin-bottom: 20px;">
+          {{ alertMessage }}
+        </div>
+
       </form>
     </div>
   </div>
@@ -195,6 +203,8 @@ export default {
   },
   data() {
     return {
+      alertMessage: "",
+      alertType: "",
       benefitform: {
         benefit: {
           id: null,
@@ -214,19 +224,23 @@ export default {
   },
   methods: {
     fetchBenefitData() {
+      this.alertMessage = "";
+      this.alertType = "";
       this.$api
         .getCompanyBenefitById(this.$route.params.id)
         .then((response) => {
           this.benefitform.benefit = response.data.benefit;
         })
-        .catch((error) => {
-          console.error("Error al obtener los datos del beneficio:", error);
-          alert(
+        .catch(() => {
+          this.alertMessage =
             "No se pudo cargar el beneficio. Por favor, inténtalo de nuevo."
-          );
+          ;
+          this.alertType = "danger";
         });
     },
     submitForm() {
+      this.alertMessage = "";
+      this.alertType = "";
       const newBenefit = {
         benefit: {
           name: this.benefitform.benefit.name,
@@ -252,13 +266,17 @@ export default {
       this.$api
         .updateCompanyBenefit(newBenefit, this.benefitform.benefit.id)
         .then(() => {
-          this.$router.push("../BenefitList");
+          this.alertMessage =
+            "Se editó correctamente el beneficio.";
+          this.alertType = "success";
+          setTimeout(() => {
+            this.$router.push("../BenefitList");
+          }, 2500);
         })
-        .catch((error) => {
-          console.error("Error al actualizar el beneficio:", error);
-          alert(
-            "No se pudo actualizar el beneficio. Por favor, inténtalo de nuevo."
-          );
+        .catch(() => {
+          this.alertMessage =
+            "No se pudo actualizar el beneficio. Por favor, inténtalo de nuevo.";
+          this.alertType = "danger";
         });
     },
   },

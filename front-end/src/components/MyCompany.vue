@@ -224,7 +224,6 @@
     </div>
   </div> 
 
-  <!-- FOOTER -->
   <MainFooter/>
 </template>
 
@@ -264,7 +263,7 @@
       },
 
       editExample() {
-        alert("Próximamente llegará la opción 'Editar'.");
+        //alert("Próximamente llegará la opción 'Editar'.");
       },
 
       getCompany() {

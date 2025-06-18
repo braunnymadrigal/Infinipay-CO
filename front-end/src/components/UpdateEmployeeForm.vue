@@ -455,6 +455,13 @@
             Confirmar cambios
           </button>
         </div>
+
+        <div v-if="alertMessage" :class="['alert', alertType === 'success'
+          ? 'alert-success' : 'alert-danger']" role="alert"
+          style="margin-bottom: 20px;">
+          {{ alertMessage }}
+        </div>
+        
       </form>
     </div>
   </div>
@@ -471,6 +478,8 @@ export default {
   },
   data() {
     return {
+      alertMessage: "",
+      alertType: "",
       showPopup: false,
       employee: {
         firstName: "",
@@ -529,6 +538,8 @@ export default {
     },
 
     fetchEmployeeData() {
+      this.alertMessage = "";
+      this.alertType = "";
       this.$api
         .getEmployeeById(this.$route.params.id)
         .then((response) => {
@@ -565,8 +576,11 @@ export default {
           this.showPopup = true;
           if (error.response) {
             const message = error.response.data?.message || "Error desconocido";
-            alert(message);
-            this.$router.push("MyProfile");
+            this.alertMessage = message;
+            this.alertType = "danger";
+            setTimeout(() => {
+              this.$router.push("MyProfile");
+            }, 2500);
           }
         });
     },
@@ -605,16 +619,21 @@ export default {
         .updateEmployee(employeeData, this.$route.params.id)
         .then(() => {
           this.showPopup = false;
-          alert("¡Empleado actualizado exitosamente!");
-          this.$router.push("../EmployeesList");
+          this.alertMessage = "¡Empleado actualizado exitosamente!";
+          this.alertType = "success";
+          setTimeout(() => {
+            this.$router.push("../EmployeesList");
+          }, 2500);
         })
         .catch((error) => {
           this.showPopup = true;
-          console.error("Error:", error);
           if (error.response) {
             const message = error.response.data?.message || "Error desconocido";
-            alert(message);
-            this.$router.push("../EmployeesList");
+            this.alertMessage = message;
+            this.alertType = "danger";
+            setTimeout(() => {
+              this.$router.push("../EmployeesList");
+            }, 2500);
           }
         });
     },
