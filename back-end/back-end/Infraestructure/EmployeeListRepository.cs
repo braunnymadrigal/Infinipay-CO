@@ -29,13 +29,21 @@ namespace back_end.Infraestructure
       return queryTable;
     }
 
-    public List<EmployeeListModel> obtainEmployeeInfo(string logguedId)
+    public List<EmployeeListModel> obtainEmployeeInfo(string logguedId, string role)
     {
+      string employerId = logguedId;
+
+      if (role == "administrador" || role == "supervisor")
+      {
+        employerId = GetEmployerIdOfAdminOrSupervisor(logguedId).ToString();
+      }
+
       var dataTablePerson = obtainPersonInfo();
       var dataTableAddress = obtainAddress();
       var dataTableNatural = obtainNaturalPersonInfo();
       var dataTableUsernames = obtainUsernames();
-      var dataTableEmployee = obtainEmployeeDetails(logguedId);
+      var dataTableEmployee = obtainEmployeeDetails(employerId);
+
       var result = new List<EmployeeListModel>();
       foreach (var person in dataTablePerson)
       {
@@ -68,6 +76,25 @@ namespace back_end.Infraestructure
       }
       return result;
     }
+
+    public Guid GetEmployerIdOfAdminOrSupervisor(string logguedId)
+    {
+      string query = $@"
+      SELECT 
+          idEmpleadorContratador
+      FROM Empleado
+      WHERE idPersonaFisica = '{logguedId}';";
+
+      DataTable table = getQueryTable(query);
+
+      if (table.Rows.Count > 0)
+      {
+        return Guid.Parse(table.Rows[0]["idEmpleadorContratador"].ToString());
+      }
+
+      return Guid.Empty;
+    }
+
     public List<EmployeeListModel> obtainPersonInfo()
     {
       var persons = new List<EmployeeListModel>();
