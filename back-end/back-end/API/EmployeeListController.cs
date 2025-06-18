@@ -23,18 +23,19 @@ namespace back_end.API
     public List<EmployeeListModel> Get()
     {
       string logguedId = "";
+      string role = "";
+
       var identity = HttpContext.User.Identity as ClaimsIdentity;
       if (identity != null)
       {
         var userClaims = identity.Claims;
-        var sid = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
-        if (sid != null)
-        {
-          logguedId = sid;
-        }
+        logguedId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+        role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value;
       }
-      var employees = _employeeListRepository.obtainEmployeeInfo(logguedId);
+
+      var employees = _employeeListRepository.obtainEmployeeInfo(logguedId, role);
       return employees;
     }
+
   }
 }
