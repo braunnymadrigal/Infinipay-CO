@@ -81,6 +81,10 @@ export default {
       showEmployeesPayroll() {
         return axios.get(`${apiBaseURL}/PayrollOrchestrator`, authHeader());
       },
+      
+      showEmployeeReport() {
+        return axios.get(`${apiBaseURL}/EmployeeReport`, authHeader());
+      },
 
       getEmployeeById(employeeId) {
         return axios.get(`${apiBaseURL}/Employee/${employeeId}`, authHeader());
