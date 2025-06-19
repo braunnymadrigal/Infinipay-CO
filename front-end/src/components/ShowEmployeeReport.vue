@@ -1,6 +1,14 @@
 <template>
   <div>
     <HeaderCompany />
+
+    <div v-if="showPopup" @click.stop 
+      class="d-flex justify-content-center my-5 py-5">
+      <div class="display-1 text-danger" style="padding: 150px;">
+        No tiene permisos para acceder a los reportes de empleados del pago de planilla.
+      </div>
+    </div>
+
     <div class="container mt-4">
       <h1 class="text-center mb-4" style="color: #405D72;">
         Reportes de pagos de planilla
@@ -119,6 +127,7 @@ export default {
     return {
       report: null,
       loading: true,
+      showPopup: false,
       alertMessage: "",
       alertType: "",
       selectedPeriodKey: "",
@@ -187,6 +196,7 @@ export default {
       return map[type] || type;
     },
     async fetchPayroll() {
+      this.showPopup = false;
       this.loading = true;
       this.alertMessage = "";
       this.alertType = "";
@@ -205,9 +215,7 @@ export default {
         }
       } catch (err) {
         this.alertType = "danger";
-        this.alertMessage = err.response?.status === 403
-          ? "No tiene permisos para acceder a los reportes del empleado de pagos de planilla."
-          : `Error del servidor: ${err.response?.data?.message || err.message}`;
+        this.showPopup = true;
       } finally {
         this.loading = false;
       }
