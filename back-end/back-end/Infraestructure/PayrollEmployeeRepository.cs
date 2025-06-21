@@ -189,47 +189,47 @@ namespace back_end.Infraestructure
 
         private string createPayrollTableQuery()
         {
-            var query = "SELECT * FROM "
-            + "( "
-            + "SELECT "
-            + "p.id id, p.fechaNacimiento birthDate, "
-            + "pf.genero gender, pf.primerNombre firstName, pf.segundoNombre middleName,pf.primerApellido lastName1,pf.segundoApellido lastName2,"
-            + "e.fechaContratacion hiringDate, "
-            + "c.salarioBruto salary, c.tipoContrato hiringType, "
-            + "h.fecha hoursDate, h.horasTrabajadas hoursNumber, "
-            + "j.nombreAsociacion companyAssociation, "
-            + "bp.cantidadDependientes dependantNumber, "
-            + "d.id deductionId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, "
-            + "f.paramDos param2Value, f.paramTres param3Value, "
-            + "a.paramUnoClave param1Key, a.paramDosClave param2Key, "
-            + "a.paramTresClave param3Key, a.metodo apiMethod, "
-            + "a.headerUnoValor header1Value, a.headerUnoClave header1Key, "
-            + "dp.salarioBruto previousComputedGrossSalary, "
-            + "pla.id payrollId, pla.estado payrollState, pla.fechaInicio payrollStartDate "
-            + "FROM Persona p "
-            + "INNER JOIN Empleado e on e.idPersonaFisica = p.id "
-            + "INNER JOIN PersonaFisica pf on pf.id = p.id "
-            + "INNER JOIN Contrato as c on c.idEmpleado = e.idPersonaFisica "
-            + "LEFT JOIN Horas as h on h.idEmpleado = e.idPersonaFisica "
-            + "and h.[fecha] = ( "
-            + "     SELECT fechaHoras "
-            + "     FROM function_getEmployeeCurrentHours(e.[idPersonaFisica], @startDate, @endDate) "
-            + "     ) "
-            + "INNER JOIN Empleador o on o.idPersonaFisica = e.idEmpleadorContratador "
-            + "INNER JOIN PersonaJuridica j on j.id = o.idPersonaJuridica "
-            + "LEFT JOIN BeneficioPorEmpleado bp on bp.idEmpleado = p.id "
-            + "LEFT JOIN Beneficio b on b.id = bp.idBeneficio "
-            + "LEFT JOIN Deduccion d on d.idBeneficio = b.id "
-            + "LEFT JOIN Formula f on f.id = d.idFormula "
-            + "LEFT JOIN ApiExterna a on a.idFormula = f.id "
-            + "LEFT JOIN DetallePago dp on dp.idEmpleado = e.idPersonaFisica "
-            + "LEFT JOIN Planilla pla on pla.id = dp.idPlanilla "
-            + "WHERE e.idEmpleadorContratador = @employerId and e.fechaDespido is null "
-            + ") payroll "
-            + "WHERE(payroll.payrollState = 'completado' or payroll.payrollState is NULL) AND "
-            + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) AND "
-            + "(payroll.hiringDate <= @endDate) "
-            + "ORDER BY payroll.id, payroll.deductionId, payroll.payrollStartDate";
+            var query = @"
+                SELECT
+	                p.id id, p.fechaNacimiento birthDate,
+	                pf.genero gender, 
+	                e.fechaContratacion hiringDate,
+	                c.salarioBruto salary, c.tipoContrato hiringType,
+	                j.nombreAsociacion companyAssociation,
+	                bp.cantidadDependientes dependantNumber,
+	                d.id deductionId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, 
+	                f.paramDos param2Value, f.paramTres param3Value, 
+	                a.paramUnoClave param1Key, a.paramDosClave param2Key, 
+	                a.paramTresClave param3Key, a.metodo apiMethod, 
+	                a.headerUnoValor header1Value, a.headerUnoClave header1Key,
+	                dp.salarioBruto previousComputedGrossSalary,
+	                pla.estado payrollState, pla.fechaInicio payrollStartDate,
+	                pla.fechaFin payrollEndDate,
+	                CASE
+		                WHEN pla.fechaInicio < @firstDayOfMonth THEN null
+		                ELSE pla.id
+	                END AS payrollId
+                FROM Persona p
+                INNER JOIN Empleado e on e.idPersonaFisica = p.id
+                INNER JOIN PersonaFisica pf on pf.id = p.id
+                INNER JOIN Contrato as c on c.idEmpleado = e.idPersonaFisica
+                INNER JOIN Empleador o on o.idPersonaFisica = e.idEmpleadorContratador
+                INNER JOIN PersonaJuridica j on j.id = o.idPersonaJuridica
+                LEFT JOIN BeneficioPorEmpleado bp on bp.idEmpleado = p.id
+                LEFT JOIN Beneficio b on b.id = bp.idBeneficio
+                LEFT JOIN Deduccion d on d.idBeneficio = b.id
+                LEFT JOIN Formula f on f.id = d.idFormula
+                LEFT JOIN ApiExterna a on a.idFormula = f.id
+                LEFT JOIN DetallePago dp on dp.idEmpleado = e.idPersonaFisica
+                LEFT JOIN Planilla pla on pla.id = dp.idPlanilla 
+		                  and (pla.estado is null or pla.estado = 'completado') 
+
+                WHERE 
+	                e.idEmpleadorContratador = @employerId and 
+	                e.fechaDespido is null and
+	                e.fechaContratacion <= @endDate
+
+                ORDER BY p.id, d.id, pla.id;";
             return query;
         }
     }
