@@ -1,6 +1,6 @@
 ﻿namespace back_end.Domain
 {
-    public class PayrollTaxesModel
+    public class PayrollTaxModel
     {
         public double employeeCcssSem { get; set; }
         public double employeeCcssIvm { get; set; }
