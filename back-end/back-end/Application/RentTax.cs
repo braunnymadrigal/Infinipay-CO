@@ -78,7 +78,7 @@ namespace back_end.Application
 
         private bool isTheEndOfTheMonth(DateOnly endDate)
         {
-            return !(endDate.Month == endDate.AddDays(7).Month);
+            return (endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month));
         }
 
         private double sumPreviousSalaries(List<double> salaries)
