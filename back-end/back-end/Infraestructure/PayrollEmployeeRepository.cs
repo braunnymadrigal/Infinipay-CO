@@ -1,13 +1,12 @@
 ﻿using System.Data;
-using back_end.Application;
 using back_end.Domain;
 using Microsoft.Data.SqlClient;
-using System.Diagnostics;
+
 namespace back_end.Infraestructure
 {
     public class PayrollEmployeeRepository : IPayrollEmployeeRepository
     {
-        private const int MONTHS_TO_SUBSTRACT = -1;
+        private const int FIRST_DAY_OF_ANY_MONTH = 1;
         private const int PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX = -1;
 
         private readonly AbstractConnectionRepository connectionRepository;
@@ -20,15 +19,15 @@ namespace back_end.Infraestructure
             this.utilityRepository = utilityRepository;
         }
 
-        public List<PayrollEmployeeModel> getPayrollEmployees(string employerId, DateOnly startDate, DateOnly endDate)
+        public List<PayrollEmployeeModel> getPayrollEmployees(PayrollEmployerModel payrollEmployer)
         {
-            var command = createPayrollEmployeeTableCommand(employerId, startDate, endDate);
+            var command = createPayrollEmployeeTableCommand(payrollEmployer);
             var dataTable = connectionRepository.ExecuteQuery(command);
-            var payrollEmployees = transformDataTablePayrollEmployeeList(dataTable);
+            var payrollEmployees = transformDataTableIntoPayrollEmployeeList(dataTable);
             return payrollEmployees;
         }
 
-        private List<PayrollEmployeeModel> transformDataTablePayrollEmployeeList(DataTable dataTable)
+        private List<PayrollEmployeeModel> transformDataTableIntoPayrollEmployeeList(DataTable dataTable)
         {
             checkDataTableCorrectness(dataTable);
             var payrollEmployees = new List<PayrollEmployeeModel>();
@@ -68,43 +67,22 @@ namespace back_end.Infraestructure
         {
             var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
             var birthDate = utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
-            var firstName = utilityRepository.ConvertDatabaseValueToString(dataRow["firstName"]);
-            var middleName = utilityRepository.ConvertDatabaseValueToString(dataRow["middleName"]);
-            var lastName1 = utilityRepository.ConvertDatabaseValueToString(dataRow["lastName1"]);
-            var lastName2 = utilityRepository.ConvertDatabaseValueToString(dataRow["lastName2"]);
-            if (firstName != "" || middleName != "" || lastName1 != "" || lastName2 != "")
-            {
-              id = $"{id} ({firstName} {middleName} {lastName1} {lastName2})";
-            }
-            var fullName = $"{firstName} {middleName} {lastName1} {lastName2}".Trim();
-            fullName = System.Text.RegularExpressions.Regex.Replace(fullName, @"\s+", " ");
             var gender = utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
-            var salary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
-            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
+            var name = utilityRepository.ConvertDatabaseValueToString(dataRow["name"]);
             var hiringDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringDate"]);
-            var hoursDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursDate"]);
-            var hoursNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursNumber"]);
+            var rawGrossSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
+            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
             var companyAssociaton = utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
-            var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
-            var actualHoursNumber = hoursNumber != "" ? Convert.ToInt32(hoursNumber) : 0;
             var newPayrollEmployee = new PayrollEmployeeModel
             {
                 id = id,
                 birthDate = DateOnly.FromDateTime(Convert.ToDateTime(birthDate)),
-                fullName = fullName,
                 gender = gender,
-                rawGrossSalary = Convert.ToDouble(salary),
-                computedGrossSalary = 0,
-                rentTax = 0,
-                ccssEmployeeDeduction = 0,
-                ccssEmployerDeduction = 0,
-                hiringType = hiringType,
+                name = name,
                 hiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
-                hoursDate = actualHoursDate,
-                hoursNumber = actualHoursNumber,
+                rawGrossSalary = Convert.ToDouble(rawGrossSalary),
+                hiringType = hiringType,
                 companyAssociation = companyAssociaton,
-                deductions = new List<PayrollDeductionModel>(),
-                previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
             };
             payrollEmployees.Add(newPayrollEmployee);
             return payrollEmployees;
@@ -143,7 +121,6 @@ namespace back_end.Infraestructure
                     param3Key = param3Key,
                     header1Value = header1Value,
                     header1Key = header1Key,
-                    resultAmount = 0
                 };
                 payrollEmployees[payrollEmployeesIndex].deductions.Add(newDeduction);
             }
@@ -157,13 +134,7 @@ namespace back_end.Infraestructure
             if (payrollId != "")
             {
                 var previousSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
-                var startDate = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollStartDate"]);
-                var newPreviousComputedGrossSalary = new PayrollPreviousComputedGrossSalary
-                {
-                    amount = Convert.ToDouble(previousSalary),
-                    startDate = DateOnly.FromDateTime(Convert.ToDateTime(startDate))
-                };
-                payrollEmployees[payrollEmployeesIndex].previousComputedGrossSalaries.Add(newPreviousComputedGrossSalary);
+                payrollEmployees[payrollEmployeesIndex].previousComputedGrossSalaries.Add(Convert.ToDouble(previousSalary));
             }
             return payrollEmployees;
         }
@@ -172,18 +143,19 @@ namespace back_end.Infraestructure
         {
             if (dataTable.Rows.Count <= 0)
             {
-                throw new Exception("Payroll employee table could not be extracted.");
+                throw new Exception("PayrollEmployeeRepository: The query did not return values.");
             }
         }
 
-        private SqlCommand createPayrollEmployeeTableCommand(string employerId, DateOnly startDate, DateOnly endDate)
+        private SqlCommand createPayrollEmployeeTableCommand(PayrollEmployerModel payrollEmployer)
         {
             var query = createPayrollTableQuery();
             var command = new SqlCommand(query, connectionRepository.connection);
-            command.Parameters.AddWithValue("@employerId", employerId);
-            command.Parameters.AddWithValue("@startDate", startDate);
-            command.Parameters.AddWithValue("@endDate", endDate);
-            command.Parameters.AddWithValue("@endDateMinusOneMonth", startDate.AddMonths(MONTHS_TO_SUBSTRACT));
+            command.Parameters.AddWithValue("@employerId", payrollEmployer.id);
+            command.Parameters.AddWithValue("@endDate", payrollEmployer.endDate);
+            var firstDayOfMonth = new DateOnly(payrollEmployer.endDate.Year, 
+                payrollEmployer.endDate.Month, FIRST_DAY_OF_ANY_MONTH);
+            command.Parameters.AddWithValue("@firstDayOfMonth", firstDayOfMonth);
             return command;
         }
 
@@ -192,8 +164,11 @@ namespace back_end.Infraestructure
             var query = @"
                 SELECT
 	                p.id id, p.fechaNacimiento birthDate,
-	                pf.genero gender, pf.primerNombre firstName,
-                    pf.segundoNombre middleName, pf.primerApellido lastName1, pf.segundoApellido lastName2,
+	                pf.genero gender,
+	                CONCAT_WS(
+		                ' ', pf.primerNombre, pf.segundoNombre, pf.primerApellido,
+                        pf.segundoApellido
+	                ) [name],
 	                e.fechaContratacion hiringDate,
 	                c.salarioBruto salary, c.tipoContrato hiringType,
 	                j.nombreAsociacion companyAssociation,
@@ -205,8 +180,6 @@ namespace back_end.Infraestructure
 	                a.paramTresClave param3Key, a.metodo apiMethod,
 	                a.headerUnoValor header1Value, a.headerUnoClave header1Key,
 	                dp.salarioBruto previousComputedGrossSalary,
-	                pla.estado payrollState, pla.fechaInicio payrollStartDate,
-	                pla.fechaFin payrollEndDate,
 	                CASE
 		                WHEN pla.fechaInicio < @firstDayOfMonth THEN null
 		                ELSE pla.id
