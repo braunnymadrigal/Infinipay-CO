@@ -6,54 +6,37 @@ namespace back_end.Application
 {
     public class GrossSalary : IGrossSalary
     {
-        private const int WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 7;
-        private const int BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 15;
-        private const int MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 30;
+        private const string BIWEEKLY_PAYMENT_TYPE = "quincenal";
+        private const string MONTHLY_PAYMENT_TYPE = "mensual";
 
-        private int numberOfWorkedDays;
-        private IContextGrossSalaryComputation contextGrossSalaryComputation;
+        private IContextGrossSalaryComputation _contextGrossSalaryComputation;
 
         public GrossSalary(IContextGrossSalaryComputation contextGrossSalaryComputation)
         {
-            this.contextGrossSalaryComputation = contextGrossSalaryComputation;
+            _contextGrossSalaryComputation = contextGrossSalaryComputation;
         }
 
         public List<PayrollEmployeeModel> computeAllGrossSalaries(List<PayrollEmployeeModel> 
-            payrollEmployees, DateOnly startDate, DateOnly endDate)
+            payrollEmployees, PayrollEmployerModel payrollEmployer)
         {
-            setNumberOfWorkedDays(startDate, endDate);
-            SetGrossSalaryComputationStrategy();
-            payrollEmployees = contextGrossSalaryComputation.ComputeGrossSalary(payrollEmployees, 
-                startDate, endDate);
+            setGrossSalaryComputationStrategy(payrollEmployer.paymentType);
+            payrollEmployees = _contextGrossSalaryComputation.computeGrossSalary(payrollEmployees, 
+                payrollEmployer.startDate, payrollEmployer.endDate);
             return payrollEmployees;
         }
 
-        private void SetGrossSalaryComputationStrategy()
+        private void setGrossSalaryComputationStrategy(string paymentType)
         {
-            switch (numberOfWorkedDays)
+            switch (paymentType)
             {
-                case WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK:
-                    contextGrossSalaryComputation.SetStrategy(new WeeklyGrossSalaryComputation());
+                case BIWEEKLY_PAYMENT_TYPE:
+                    _contextGrossSalaryComputation.setStrategy(new BiweeklyGrossSalaryComputation());
                     break;
-                case BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK:
-                    contextGrossSalaryComputation.SetStrategy(new BiweeklyGrossSalaryComputation());
-                    break;
-                case MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK:
-                    contextGrossSalaryComputation.SetStrategy(new MonthlyGrossSalaryComputation());
+                case MONTHLY_PAYMENT_TYPE:
+                    _contextGrossSalaryComputation.setStrategy(new MonthlyGrossSalaryComputation());
                     break;
                 default:
-                    throw new Exception("Improper Strategy is tried to be set");
-            }
-        }
-
-        private void setNumberOfWorkedDays(DateOnly startDate, DateOnly endDate)
-        {
-            var rawNumberOfDays = endDate.DayNumber - startDate.DayNumber;
-            numberOfWorkedDays = rawNumberOfDays <= BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK
-                ? BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK : MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK;
-            if (rawNumberOfDays <= WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
-            {
-                numberOfWorkedDays = WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK;
+                    throw new Exception("GrossSalary: Improper strategy have been specified.");
             }
         }
     }

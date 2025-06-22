@@ -6,7 +6,7 @@ namespace back_end.Application
     {
         private const int MAXIMUM_DAYS_OF_WORK = 30;
 
-        public List<PayrollEmployeeModel> ComputeGrossSalary(List<PayrollEmployeeModel> payrollEmployees, 
+        public List<PayrollEmployeeModel> computeGrossSalary(List<PayrollEmployeeModel> payrollEmployees, 
             DateOnly startDate, DateOnly endDate)
         {
             foreach (var payrollEmployee in payrollEmployees)
