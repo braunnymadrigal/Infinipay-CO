@@ -9,20 +9,20 @@ namespace back_end.Infraestructure
         private const int FIRST_DAY_OF_ANY_MONTH = 1;
         private const int PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX = -1;
 
-        private readonly AbstractConnectionRepository connectionRepository;
-        private readonly IUtilityRepository utilityRepository;
+        private readonly AbstractConnectionRepository _connectionRepository;
+        private readonly IUtilityRepository _utilityRepository;
 
         public PayrollEmployeeRepository(AbstractConnectionRepository connectionRepository
             , IUtilityRepository utilityRepository)
         {
-            this.connectionRepository = connectionRepository;
-            this.utilityRepository = utilityRepository;
+            _connectionRepository = connectionRepository;
+            _utilityRepository = utilityRepository;
         }
 
         public List<PayrollEmployeeModel> getPayrollEmployees(PayrollEmployerModel payrollEmployer)
         {
             var command = createPayrollEmployeeTableCommand(payrollEmployer);
-            var dataTable = connectionRepository.ExecuteQuery(command);
+            var dataTable = _connectionRepository.ExecuteQuery(command);
             var payrollEmployees = transformDataTableIntoPayrollEmployeeList(dataTable);
             return payrollEmployees;
         }
@@ -37,9 +37,9 @@ namespace back_end.Infraestructure
             var payrollIds = new HashSet<string>();
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
-                var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
-                var payrollId = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
+                var id = _utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
+                var deductionId = _utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
+                var payrollId = _utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
                 if (previousId != id)
                 {
                     ++payrollEmployeesIndex;
@@ -65,14 +65,14 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> addPayrollEmployeeModel(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
-            var birthDate = utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
-            var gender = utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
-            var name = utilityRepository.ConvertDatabaseValueToString(dataRow["name"]);
-            var hiringDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringDate"]);
-            var rawGrossSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
-            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
-            var companyAssociaton = utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
+            var id = _utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
+            var birthDate = _utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
+            var gender = _utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
+            var name = _utilityRepository.ConvertDatabaseValueToString(dataRow["name"]);
+            var hiringDate = _utilityRepository.ConvertDatabaseValueToString(dataRow["hiringDate"]);
+            var rawGrossSalary = _utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
+            var hiringType = _utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
+            var companyAssociaton = _utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
             var newPayrollEmployee = new PayrollEmployeeModel
             {
                 id = id,
@@ -91,21 +91,21 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> addPayrollDeductionModel(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
+            var deductionId = _utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
             if (deductionId != "")
             {
-                var dependantNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["dependantNumber"]);
-                var formulaType = utilityRepository.ConvertDatabaseValueToString(dataRow["formulaType"]);
-                var apiUrl = utilityRepository.ConvertDatabaseValueToString(dataRow["apiUrl"]);
-                var apiMethod = utilityRepository.ConvertDatabaseValueToString(dataRow["apiMethod"]);
-                var param1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Value"]);
-                var param2Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Value"]);
-                var param3Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Value"]);
-                var param1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Key"]);
-                var param2Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Key"]);
-                var param3Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Key"]);
-                var header1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Value"]);
-                var header1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Key"]);
+                var dependantNumber = _utilityRepository.ConvertDatabaseValueToString(dataRow["dependantNumber"]);
+                var formulaType = _utilityRepository.ConvertDatabaseValueToString(dataRow["formulaType"]);
+                var apiUrl = _utilityRepository.ConvertDatabaseValueToString(dataRow["apiUrl"]);
+                var apiMethod = _utilityRepository.ConvertDatabaseValueToString(dataRow["apiMethod"]);
+                var param1Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["param1Value"]);
+                var param2Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["param2Value"]);
+                var param3Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["param3Value"]);
+                var param1Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["param1Key"]);
+                var param2Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["param2Key"]);
+                var param3Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["param3Key"]);
+                var header1Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["header1Value"]);
+                var header1Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["header1Key"]);
                 var newDeduction = new PayrollDeductionModel
                 {
                     id = deductionId,
@@ -130,10 +130,10 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> addPreviousComputedSalary(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var payrollId = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
+            var payrollId = _utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
             if (payrollId != "")
             {
-                var previousSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
+                var previousSalary = _utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
                 payrollEmployees[payrollEmployeesIndex].previousComputedGrossSalaries.Add(Convert.ToDouble(previousSalary));
             }
             return payrollEmployees;
@@ -150,7 +150,7 @@ namespace back_end.Infraestructure
         private SqlCommand createPayrollEmployeeTableCommand(PayrollEmployerModel payrollEmployer)
         {
             var query = createPayrollTableQuery();
-            var command = new SqlCommand(query, connectionRepository.connection);
+            var command = new SqlCommand(query, _connectionRepository.connection);
             command.Parameters.AddWithValue("@employerId", payrollEmployer.id);
             command.Parameters.AddWithValue("@endDate", payrollEmployer.endDate);
             var firstDayOfMonth = new DateOnly(payrollEmployer.endDate.Year, 
