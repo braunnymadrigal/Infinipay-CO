@@ -192,7 +192,8 @@ namespace back_end.Infraestructure
             var query = @"
                 SELECT
 	                p.id id, p.fechaNacimiento birthDate,
-	                pf.genero gender, 
+	                pf.genero gender, pf.primerNombre firstName,
+                    pf.segundoNombre middleName, pf.primerApellido lastName1, pf.segundoApellido lastName2,
 	                e.fechaContratacion hiringDate,
 	                c.salarioBruto salary, c.tipoContrato hiringType,
 	                j.nombreAsociacion companyAssociation,
