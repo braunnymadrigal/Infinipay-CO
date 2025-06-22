@@ -5,16 +5,16 @@ namespace back_end.Application
 {
     public class PayrollEmployee : IPayrollEmployee
     {
-        private readonly IPayrollEmployeeRepository payrollEmployeeRepository;
+        private readonly IPayrollEmployeeRepository _payrollEmployeeRepository;
 
         public PayrollEmployee(IPayrollEmployeeRepository payrollEmployeeRepository)
         {
-            this.payrollEmployeeRepository = payrollEmployeeRepository;
+            _payrollEmployeeRepository = payrollEmployeeRepository;
         }
 
         public List<PayrollEmployeeModel> getPayrollEmployees(PayrollEmployerModel payrollEmployer)
         {
-            var payrollEmployees = payrollEmployeeRepository.getPayrollEmployees(payrollEmployer);
+            var payrollEmployees = _payrollEmployeeRepository.getPayrollEmployees(payrollEmployer);
             return payrollEmployees;
         }
     }
