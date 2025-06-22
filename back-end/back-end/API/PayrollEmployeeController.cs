@@ -1,6 +1,7 @@
 ﻿using back_end.Application;
 using back_end.Domain;
 using back_end.Infraestructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.API
@@ -18,7 +19,8 @@ namespace back_end.API
                 , new UtilityRepository()));
         }
 
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpPost]
         public IActionResult GetPayrollEmployees(PayrollEmployerModel payrollEmployer)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
