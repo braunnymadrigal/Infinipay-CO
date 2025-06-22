@@ -22,7 +22,7 @@ namespace back_end.Infraestructure
 
         public List<PayrollEmployeeModel> getPayrollEmployees(string employerId, DateOnly startDate, DateOnly endDate)
         {
-      var command = createPayrollEmployeeTableCommand(employerId, startDate, endDate);
+            var command = createPayrollEmployeeTableCommand(employerId, startDate, endDate);
             var dataTable = connectionRepository.ExecuteQuery(command);
             var payrollEmployees = transformDataTablePayrollEmployeeList(dataTable);
             return payrollEmployees;
@@ -30,7 +30,7 @@ namespace back_end.Infraestructure
 
         private List<PayrollEmployeeModel> transformDataTablePayrollEmployeeList(DataTable dataTable)
         {
-      checkDataTableCorrectness(dataTable);
+            checkDataTableCorrectness(dataTable);
             var payrollEmployees = new List<PayrollEmployeeModel>();
             var payrollEmployeesIndex = PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX;
             var previousId = "";
