@@ -209,19 +209,18 @@
           </div>
         </div>
 
-        <div v-if="showError"
-             class="alert alert-danger alert-dismissable fade show">
-          {{errorMessage}}
-          <button type="button" class="btn-close" @click="showError = false">
-          </button>
-        </div>
-
         <div class="d-flex justify-content-center">
           <button type="submit" class="btn btn-secondary"
                   style="background-color: #405D72; color: white;
             border: transparent;">
             Continuar
           </button>
+        </div>
+
+        <div v-if="alertMessage" :class="['alert', alertType === 'success'
+          ? 'alert-success' : 'alert-danger']" role="alert"
+          style="margin-bottom: 20px;">
+          {{ alertMessage }}
         </div>
       </form>
     </div>
@@ -237,6 +236,8 @@ export default {
   },
   data() {
     return {
+      alertMessage: "",
+      alertType: "",
       idNumber: '',
       phoneNumber: '',
       email: '',
@@ -261,8 +262,6 @@ export default {
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
       ],
       years: this.generateYears(),
-      showError: false,
-      errorMessage: '',
     };
   },
   methods: {
@@ -275,6 +274,8 @@ export default {
       return years;
     },
     submitForm: function () {
+      this.alertMessage = "";
+      this.alertType = "";
       const employerData = {
         idNumber: this.idNumber,
         phoneNumber: this.phoneNumber,
@@ -298,20 +299,17 @@ export default {
       this.$api.registerEmployer(employerData)
       .then((response) => {
         if (response.data === true) {
-          this.$router.push('/RegisterCompany');
+          this.alertMessage = "¡Empleador registrado correctamente!";
+          this.alertMessage = "success";
+          setTimeout(() => {
+            this.$router.push('/RegisterCompany');
+          }, 2500);
         } else {
-          this.errorMessage = "No se pudo registrar el empleador. \
+          this.alertMessage = "No se pudo registrar el empleador. \
             Verifica los datos ingresados.";
-          this.showError = true;
+          this.alertType = "danger";
         }
       })
-      .catch((error) => {
-        if (error.response) {
-          this.errorMessage = error.response.data?.message ||
-            "Error desconocido";
-          this.showError = true;
-        }
-      });
     }
   }
 };

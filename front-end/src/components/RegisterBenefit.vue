@@ -10,6 +10,7 @@
     <div class="">
       <form @submit.prevent="submitForm">
         <div class="mb-3">
+
           <label for="BenefitName" class="form-label">Nombre</label>
           <input
             type="text"
@@ -179,6 +180,12 @@
           >
         </div>
       </form>
+
+      <div v-if="alertMessage" :class="['alert', alertType === 'success'
+        ? 'alert-success' : 'alert-danger']" role="alert"
+        style="margin-bottom: 20px;">
+        {{ alertMessage }}
+      </div>
     </div>
   </div>
 
@@ -196,6 +203,8 @@ export default {
   },
   data() {
     return {
+      alertMessage: "",
+      alertType: "",
       newBenefitForm: {
         name: "",
         description: "",
@@ -211,6 +220,8 @@ export default {
   },
   methods: {
     submitForm() {
+      this.alertMessage = "";
+      this.alertType = "";
       const form = this.newBenefitForm;
 
       if (
@@ -220,7 +231,8 @@ export default {
         form.deductionType === "" ||
         form.paramOneAPI === null
       ) {
-        alert("Por favor, completa todos los campos requeridos.");
+        this.alertMessage = "Por favor, completa todos los campos requeridos.";
+        this.alertType = "danger";
         return;
       }
 
@@ -242,14 +254,17 @@ export default {
       this.$api
         .createCompanyBenefit(newBenefit)
         .then(() => {
-          alert("Beneficio creado exitosamente.");
-          this.$router.push("/BenefitList");
+          this.alertMessage ="Beneficio creado exitosamente.";
+          this.alertType = "success";
+          setTimeout(() => {
+            this.$router.push("/BenefitList");
+          }, 2500);
         })
         .catch((error) => {
           console.error("Error al crear el beneficio:", error);
-          alert(
-            "Hubo un error al crear el beneficio. Por favor, inténtalo de nuevo."
-          );
+          this.alertMessage = 
+            "Hubo un error al crear el beneficio. Por favor, inténtalo de nuevo.";
+          this.alertType = "danger";
         });
     },
   },

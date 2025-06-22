@@ -377,6 +377,12 @@
             Crear
           </button>
         </div>
+
+        <div v-if="alertMessage" :class="['alert', alertType === 'success'
+          ? 'alert-success' : 'alert-danger']" role="alert"
+          style="margin-bottom: 20px;">
+          {{ alertMessage }}
+        </div>
       </form>
     </div>
   </div>
@@ -393,6 +399,8 @@ export default {
   },
   data() {
     return {
+      alertMessage: "",
+      alertType: "",
       showPopup: false,
       firstName: '',
       secondName: '',
@@ -443,6 +451,8 @@ export default {
   },
 
     submitForm() {
+      this.alertMessage = "";
+      this.alertType = "";
      const employeeData = {
         firstName: this.firstName,
         secondName: this.secondName,
@@ -473,19 +483,21 @@ export default {
       };
 
     this.$api.registerEmployee(employeeData)
-    .then((response) => {
+    .then(() => {
       this.showPopup = false;
-      console.log("Respuesta del servidor:", response.data);
-      alert("¡Empleado registrado exitosamente!");
-      this.$router.push('MyProfile');
+      this.alertMessage ="¡Empleado registrado exitosamente!";
+      setTimeout(() => {
+          this.$router.push('MyProfile');
+      }, 2500);
     })
     .catch((error) => {
       this.showPopup = true;
-      console.error("Error:", error);
       if (error.response) {
         const message = error.response.data?.message || "Error desconocido";
-        alert(message);
-        this.$router.push('MyProfile');
+        this.alertMessage =(message);
+        setTimeout(() => {
+          this.$router.push('MyProfile');
+      }, 2500);
       }
     });
   }

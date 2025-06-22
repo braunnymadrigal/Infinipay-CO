@@ -199,6 +199,12 @@
             Registrar
           </button>
         </div>
+
+        <div v-if="alertMessage" :class="['alert', alertType === 'success'
+          ? 'alert-success' : 'alert-danger']" role="alert"
+          style="margin-bottom: 20px;">
+          {{ alertMessage }}
+        </div>
       </form>
     </div>
   </div>
@@ -241,6 +247,8 @@
 export default {
   data() {
     return {
+      alertMessage: "",
+      alertType: "",
       legalName: '',
       description: '',
       idNumber: '',
@@ -275,6 +283,8 @@ export default {
       return years;
     },
     submitForm() {
+      this.alertMessage = "";
+      this.alertType = "";
       const companyData = {
         legalName: this.legalName,
         associationName: this.associationName,
@@ -298,21 +308,20 @@ export default {
       .then(function(response) {
         console.log("Respuesta del servidor:", response.data);
         if (response.data === true) {
-          alert('¡Empresa registrada exitosamente!');
-          this.$router.push('/'); // De momento redirigir a la página principal
+          this.alertMessage ='¡Empresa registrada exitosamente!';
+          this.alertType = "success";
+          setTimeout(() => {
+            this.$router.push('/');
+          }, 2500);
         } else {
-          alert(
-            "No se pudo registrar el empleador. Verifica los datos ingresados."
-          );
-        }
+            this.alertMessage =
+              "No se pudo registrar el empleador. Verifica los datos ingresados.";
+            this.alertType = "danger";
+            setTimeout(() => {
+              this.$router.push('/');
+            }, 2500);
+          }
       }.bind(this))
-      .catch(function(error) {
-        console.error("Error:", error);
-        if (error.response) {
-          const message = error.response.data?.message || "Error desconocido";
-          alert(message);
-        }
-      });
     }
   }
 };

@@ -150,11 +150,6 @@ export default {
         }
       } catch (error) {
         this.showPopup = true;
-        console.error("Error:", error);
-        if (error.response) {
-          const message = error.response.data?.message || "Error desconocido";
-          alert(message);
-        }
       }
     },
 
