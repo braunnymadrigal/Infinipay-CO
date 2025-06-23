@@ -279,7 +279,7 @@ export default {
     },
 
     editExample() {
-      alert("Próximamente llegará la opción 'Editar'.");
+      //alert("Próximamente llegará la opción 'Editar'.");
     },
 
     getProfile() {
