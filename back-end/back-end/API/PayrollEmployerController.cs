@@ -19,22 +19,22 @@ namespace back_end.API
                 , new UtilityRepository()));
         }
 
-        //[AllowAnonymous]
-        //[HttpPost]
-        //public IActionResult GetPayrollEmployees(PayrollEmployerModel payrollEmployer)
-        //{
-        //    IActionResult iActionResult = BadRequest("Unknown error.");
-        //    try
-        //    {
-        //        var payrollEmployees = payrollEmployee.getPayrollEmployees(payrollEmployer);
-        //        iActionResult = Ok(payrollEmployees);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        iActionResult = NotFound(e.Message);
-        //    }
-        //    return iActionResult;
-        //}
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult GetPayrollEmployeer(string id, DateOnly startDate, DateOnly endDate)
+        {
+            IActionResult iActionResult = BadRequest("Unknown error.");
+            try
+            {
+                var payrollEmployerModel = payrollEmployer.getPayrollEmployer(id, startDate, endDate);
+                iActionResult = Ok(payrollEmployerModel);
+            }
+            catch (Exception e)
+            {
+                iActionResult = NotFound(e.Message);
+            }
+            return iActionResult;
+        }
 
         [Authorize(Roles = "empleador")]
         [HttpGet]
