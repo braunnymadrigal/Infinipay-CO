@@ -5,12 +5,10 @@
         public PayrollEmployerModel()
         {
             id = string.Empty;
-            companyId = string.Empty;
             paymentType = string.Empty;
         }
 
         public string id { get; set; }
-        public string companyId { get; set; }
         public string paymentType { get; set; }
         public DateOnly startDate { get; set; }
         public DateOnly endDate { get; set; }
