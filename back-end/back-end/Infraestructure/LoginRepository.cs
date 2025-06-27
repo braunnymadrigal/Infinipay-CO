@@ -118,7 +118,8 @@ namespace back_end.Infraestructure
                         + "FULL OUTER JOIN [Usuario] u on u.idPersonaFisica = p.id "
                         + "FULL OUTER JOIN [Empleado] e on e.idPersonaFisica = p.id "
                         + "FULL OUTER JOIN [Empleador] o on o.idPersonaFisica = p.id "
-                        + "WHERE u.nickname = @nickname;";
+                        + "WHERE u.nickname = @nickname and "
+                        + "p.borrado = 0;";
             return query;
         }
 
@@ -136,7 +137,8 @@ namespace back_end.Infraestructure
                         + "FULL OUTER JOIN [Usuario] u on u.idPersonaFisica = p.id "
                         + "FULL OUTER JOIN [Empleado] e on e.idPersonaFisica = p.id "
                         + "FULL OUTER JOIN [Empleador] o on o.idPersonaFisica = p.id "
-                        + "WHERE p.correoElectronico = @email; ";
+                        + "WHERE p.correoElectronico = @email and "
+                        + "p.borrado = 0;";
             return query;
         }
     }
