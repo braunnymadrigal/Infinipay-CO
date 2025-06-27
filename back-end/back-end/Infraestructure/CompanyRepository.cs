@@ -63,7 +63,8 @@ namespace back_end.Infraestructure
         JOIN Direccion d ON d.idPersona = p.id
         JOIN Auditoria a ON a.id = p.idAuditoria
         JOIN Empleador e ON e.idPersonaJuridica = pj.id
-        JOIN Usuario u ON u.idPersonaFisica = e.idPersonaFisica";
+        JOIN Usuario u ON u.idPersonaFisica = e.idPersonaFisica
+        WHERE pj.borrado = 0";
 
             var table = getQueryTable(query);
             var companies = new List<CompanyModel>();
