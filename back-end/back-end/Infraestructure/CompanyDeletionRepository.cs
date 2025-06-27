@@ -34,7 +34,7 @@ namespace back_end.Infraestructure
         public void deleteCompany(string employerEmail)
         {
             var command = getDeleteCompanyCommand(employerEmail);
-            _connectionRepository.ExecuteCommand(command);
+            _connectionRepository.ExecuteStoredProcedure(command);
         }
 
         private SqlCommand getEmployerEmailCommand(string companyName)
@@ -111,7 +111,6 @@ namespace back_end.Infraestructure
         {
             var storedProcedure = "sp_deleteCompany";
             var command = new SqlCommand(storedProcedure, _connectionRepository.connection);
-            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@mailEmployer", employerEmail);
             return command;
         }
