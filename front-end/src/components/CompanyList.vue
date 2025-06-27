@@ -36,7 +36,7 @@
 
           <td>
             <div class="d-flex justify-content-center gap-2">
-              <button v-on:click="eliminar" class="btn btn-danger btn-sm">
+              <button v-on:click="deleteCompany(index)" class="btn btn-danger btn-sm">
                 Eliminar
               </button>
               <button
@@ -85,6 +85,17 @@ export default {
       }
       return str;
     },
+    deleteCompany(index) {
+      this.$api
+        .deleteCompany(this.companies[index].legalName)
+        .then((response) => {
+          console.log(response);
+          this.getCompanyList();
+        })
+        .catch((error) => {
+          console.error("Error deleting country:", error);
+        });
+    }
   },
   mounted() {
     this.getCompanyList();

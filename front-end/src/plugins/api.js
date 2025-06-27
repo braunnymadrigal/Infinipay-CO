@@ -152,6 +152,13 @@ export default {
           authHeader()
         );
       },
+
+      deleteCompany(companyName) {
+        return axios.delete(
+          `${apiBaseURL}/CompanyDeletion?companyName=${companyName}`,
+          authHeader()
+        );
+      }
     };
   },
 };
