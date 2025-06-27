@@ -18,7 +18,7 @@ namespace back_end.Application
             _companyDeletionRepository.deleteCompany(employerEmail);
             employeesEmail.Add(employerEmail);
             sendEmails(employeesEmail);
-            return new List<string>();
+            return employeesEmail;
         }
 
         private void sendEmails(List<string> emails)
