@@ -8,5 +8,6 @@ namespace back_end.Application
       , string loggedUserNickname);
     public void UpdateBenefit(Guid id, CompanyBenefitDTO benefit
       , string loggedUserNickname);
+    public Task DeleteBenefit(Guid id, string loggedUserNickname);
   }
 }

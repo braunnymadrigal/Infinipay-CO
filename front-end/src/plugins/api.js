@@ -161,8 +161,7 @@ export default {
       },
 
       sendEmail(email) {
-        return axios.post(`${apiBaseURL}/Email`
-          , email, authHeader());
+        return axios.post(`${apiBaseURL}/Email`, email, authHeader());
       },
 
       getCompanyType() {
@@ -175,6 +174,13 @@ export default {
 
       showEmployeeReport() {
         return axios.get(`${apiBaseURL}/EmployeeReport`, authHeader());
+      },
+
+      deleteCompanyBenefit(benefitId) {
+        return axios.delete(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          authHeader()
+        );
       },
     };
   },
