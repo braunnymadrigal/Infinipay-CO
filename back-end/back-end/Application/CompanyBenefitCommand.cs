@@ -94,6 +94,34 @@ namespace back_end.Application
       }
     }
 
+    public void DeleteBenefit(Guid id, string loggedUserNickname) {
+      if (string.IsNullOrWhiteSpace(loggedUserNickname))
+      {
+        throw new ArgumentException("loggedUserNickname is required");
+      }
+      if (id == Guid.Empty)
+      {
+        throw new ArgumentNullException("id is required");
+      }
+      try {
+        var benefit = companyBenefitRepository.getBenefitById(id);
+        if (benefit == null)
+        {
+          throw new Exception("Beneficio no encontrado.");
+        }
+        var employeesWithBenefit = companyBenefitRepository.getEmployeesWithBenefit(id);
+        if (employeesWithBenefit.Count > 0)
+        {
+          Console.WriteLine(string.Join(", ", employeesWithBenefit));
+          // Llamar al metodo para enviar el correo electrónico 
+          // for each employee ...
+        }
+        companyBenefitRepository.DeleteBenefit(id, loggedUserNickname);
+      } catch (Exception ex) {
+        throw new Exception("Error al borrar el beneficio: " + ex.Message);
+      }
+    }
+
     public bool IsElegibleEmployeesValid(CompanyBenefitDTO benefit)
     {
       if (string.IsNullOrWhiteSpace(benefit.benefit.elegibleEmployees))

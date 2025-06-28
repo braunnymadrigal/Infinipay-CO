@@ -44,6 +44,7 @@
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button
+                @click="deleteBenefit(benefit.benefit.id)"
                 class="btn btn-danger btn-sm"
                 style="width: 70px; border: transparent"
               >
@@ -111,6 +112,13 @@ export default {
           return "%";
         default:
           return "";
+      }
+    },
+    async deleteBenefit(benefitId) {
+      try {
+        await this.$api.deleteCompanyBenefit(benefitId);
+      } catch (error) {
+        console.error("Error borrando el beneficio", error);
       }
     },
   },

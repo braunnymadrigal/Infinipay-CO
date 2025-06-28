@@ -154,12 +154,18 @@ export default {
       },
 
       sendEmail(email) {
-        return axios.post(`${apiBaseURL}/Email`
-          , email, authHeader());
+        return axios.post(`${apiBaseURL}/Email`, email, authHeader());
       },
 
       getCompanyType() {
         return axios.get(`${apiBaseURL}/PayrollEmployer`, authHeader());
+      },
+
+      deleteCompanyBenefit(benefitId) {
+        return axios.delete(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          authHeader()
+        );
       },
     };
   },

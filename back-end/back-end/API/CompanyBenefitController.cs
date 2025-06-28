@@ -166,5 +166,30 @@ namespace back_end.Controllers
                 });
             }
         }
+
+        [Authorize(Roles = "empleador,administrador")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> DeleteBenefit(Guid id)
+        {
+            try {
+
+                var loggedUserNickname = getLoggedUserClaim(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrWhiteSpace(loggedUserNickname))
+                {
+                    return NotFound("Usuario no autenticado");
+                }
+                companybenefitCommand.DeleteBenefit(id, loggedUserNickname);
+                return Ok(true);
+            }
+            catch(Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "Error borrando el beneficio.",
+                    details = ex.Message
+                });
+            }
+
+        }
     }
 }
