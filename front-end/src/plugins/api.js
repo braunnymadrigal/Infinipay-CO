@@ -152,6 +152,11 @@ export default {
           authHeader()
         );
       },
+
+      sendEmail(email) {
+        return axios.post(`${apiBaseURL}/Email`
+          , email, authHeader());
+      }
     };
   },
 };
