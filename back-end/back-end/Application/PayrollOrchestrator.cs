@@ -2,7 +2,7 @@
 
 namespace back_end.Application
 {
-  public class PayrollOrchestrator
+  public class PayrollOrchestrator : IPayrollOrchestrator
   {
     private readonly IPayrollEmployer payrollEmployer;
     private readonly IPayrollEmployee payrollEmployee;
