@@ -89,7 +89,18 @@ export default {
       this.$api
         .deleteCompany(this.companies[index].legalName)
         .then((response) => {
-          console.log(response);
+          const emailData = new FormData();
+          const emailSubject = "Borrado de la empresa “" + 
+            this.companies[index].legalName + "”.";
+          const emailMessage = "Muchas gracias por usar el sistema.";
+
+          emailData.append("recipients", response.data);
+          emailData.append("subject", emailSubject)
+          emailData.append("message", emailMessage);
+
+          var errorMsg = this.$api.sendEmail(emailData);
+          console.log(errorMsg);
+
           this.getCompanyList();
         })
         .catch((error) => {
