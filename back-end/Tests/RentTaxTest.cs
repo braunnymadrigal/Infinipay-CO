@@ -1,290 +1,111 @@
-﻿//using back_end.Application;
-//using back_end.Domain;
+﻿using AutoFixture;
+using back_end.Application;
+using back_end.Domain;
 
-//namespace Tests
-//{
-//  public class RentTaxTest
-//  {
-//    private RentTax _rentTax;
+namespace Tests
+{
+    public class RentTaxTest
+    {
+        private const string HIRING_TYPE_EXCLUDED_FROM_RENT_TAX = "servicios";
 
-//    [SetUp]
-//    public void Setup()
-//    {
-//      _rentTax = new RentTax();
-//    }
+        private Fixture _fixture;
+        private IRentTax _rentTax;
 
-//    [Test]
-//    public void ExcludedEmployee_ShouldHaveZeroRentTax()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
-//        hiringType = "servicios",
-//        computedGrossSalary = 1_000_000,
-//        previousComputedGrossSalaries =
-//        new List<PayrollPreviousComputedGrossSalary>()
-//      };
+        [SetUp]
+        public void Setup()
+        {
+            _fixture = new Fixture();
+            _rentTax = new RentTax();
+        }
 
-//      var result =
-//        _rentTax.calculateRentTaxes(new List<PayrollEmployeeModel> { employee }
-//        , new DateOnly(2025, 6, 30));
+        [Test]
+        public void CalculateRentTaxes_DoesNotCalculateTax_WhenHiringTypeIsExcluded()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.hiringType, HIRING_TYPE_EXCLUDED_FROM_RENT_TAX)
+                .With(m => m.computedGrossSalary, 1_000_000)
+                .With(m => m.taxes, new PayrollTaxModel { employeeRent = 0 })
+                .Without(m => m.previousComputedGrossSalaries)
+                .CreateMany(1)
+                .ToList();
 
-//      Assert.That(result[0].rentTax, Is.EqualTo(0));
-//    }
+            var result = _rentTax.calculateRentTaxes(employees, new DateOnly(2025, 6, 30));
 
-//    [Test]
-//    public void EmployeeBelowTier1_ShouldHaveZeroRentTax()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
+            Assert.That(result[0].taxes.employeeRent, Is.EqualTo(0));
+        }
 
-//        hiringType = "tiempoCompleto",
-//        computedGrossSalary = 900_000,
-//        previousComputedGrossSalaries =
-//        new List<PayrollPreviousComputedGrossSalary>()
-//      };
+        [Test]
+        public void CalculateRentTaxes_DoesNotCalculateTax_WhenSalaryBelowTier1()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.hiringType, "tiempoCompleto")
+                .With(m => m.computedGrossSalary, 900_000)
+                .With(m => m.taxes, new PayrollTaxModel { employeeRent = 0 })
+                .Without(m => m.previousComputedGrossSalaries)
+                .CreateMany(1)
+                .ToList();
 
-//      var result =
-//        _rentTax.calculateRentTaxes(new List<PayrollEmployeeModel> { employee }
-//        , new DateOnly(2025, 6, 30));
+            var result = _rentTax.calculateRentTaxes(employees, new DateOnly(2025, 6, 30));
 
-//      Assert.That(result[0].rentTax, Is.EqualTo(0));
-//    }
+            Assert.That(result[0].taxes.employeeRent, Is.EqualTo(0));
+        }
 
-//    [Test]
-//    public void EmployeeAboveTier1_ShouldHaveCorrectRentTax()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
+        [Test]
+        public void CalculateRentTaxes_ReturnsPositiveTax_WhenSalaryAboveTier1()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.hiringType, "medioTiempo")
+                .With(m => m.computedGrossSalary, 1_400_000)
+                .With(m => m.taxes, new PayrollTaxModel { employeeRent = 0 })
+                .Without(m => m.previousComputedGrossSalaries)
+                .CreateMany(1)
+                .ToList();
 
-//        hiringType = "medioTiempo",
-//        computedGrossSalary = 1_400_000,
-//        previousComputedGrossSalaries =
-//        new List<PayrollPreviousComputedGrossSalary>()
-//      };
+            var result = _rentTax.calculateRentTaxes(employees, new DateOnly(2025, 6, 30));
 
-//      var result =
-//        _rentTax.calculateRentTaxes(new List<PayrollEmployeeModel> { employee }
-//        , new DateOnly(2025, 6, 30));
+            Assert.That(result[0].taxes.employeeRent, Is.GreaterThan(0));
+        }
 
-//      Assert.That(result[0].rentTax, Is.GreaterThan(0));
-//    }
+        [Test]
+        public void CalculateRentTaxes_ReturnsPositiveTax_WhenPartialMonth()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.hiringType, "horas")
+                .With(m => m.computedGrossSalary, 1_200_000)
+                .With(m => m.taxes, new PayrollTaxModel { employeeRent = 0 })
+                .Without(m => m.previousComputedGrossSalaries)
+                .CreateMany(1)
+                .ToList();
 
-//    [Test]
-//    public void PartialMonthCalculation_ShouldProjectTaxCorrectly()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
+            var result = _rentTax.calculateRentTaxes(employees, new DateOnly(2025, 6, 15));
 
-//        hiringType = "horas",
-//        computedGrossSalary = 1_200_000,
-//        previousComputedGrossSalaries =
-//        new List<PayrollPreviousComputedGrossSalary>()
-//      };
+            Assert.That(result[0].taxes.employeeRent, Is.GreaterThan(0));
+        }
 
-//      var result =
-//        _rentTax.calculateRentTaxes(new List<PayrollEmployeeModel> { employee }
-//        , new DateOnly(2025, 6, 15));
+        [Test]
+        public void CalculateRentTaxes_DoesNotCalculateTax_WhenSalaryAtTier1Limit()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.hiringType, "tiempoCompleto")
+                .With(m => m.computedGrossSalary, 922_000)
+                .With(m => m.taxes, new PayrollTaxModel { employeeRent = 0 })
+                .Without(m => m.previousComputedGrossSalaries)
+                .CreateMany(1)
+                .ToList();
 
-//      Assert.That(result[0].rentTax, Is.GreaterThan(0));
-//    }
+            var result = _rentTax.calculateRentTaxes(employees, new DateOnly(2025, 6, 30));
 
-//    [Test]
-//    public void EndOfMonth_ShouldUseAccumulatedSalaries()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
-
-//        hiringType = "tiempoCompleto",
-//        computedGrossSalary = 2_000_000,
-//        previousComputedGrossSalaries =
-//          new List<PayrollPreviousComputedGrossSalary>
-//          {
-//            new PayrollPreviousComputedGrossSalary
-//            {
-//              amount = 2_000_000,
-//              startDate = new DateOnly(2025, 5, 1)
-//            }
-//          }
-//      };
-
-//      var result =
-//        _rentTax.calculateRentTaxes(new List<PayrollEmployeeModel> { employee }
-//        , new DateOnly(2025, 6, 30));
-
-//      Assert.That(result[0].rentTax, Is.GreaterThan(0));
-//    }
-
-//    [Test]
-//    public void SalaryAtTier1Limit_ShouldHaveZeroRentTax()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
-
-//        hiringType = "tiempoCompleto",
-//        computedGrossSalary = 922_000,
-//        previousComputedGrossSalaries =
-//          new List<PayrollPreviousComputedGrossSalary>()
-//      };
-
-//      var result = _rentTax.calculateRentTaxes(
-//        new List<PayrollEmployeeModel> { employee },
-//        new DateOnly(2025, 6, 30)
-//      );
-
-//      Assert.That(result[0].rentTax, Is.EqualTo(0));
-//    }
-
-//    [Test]
-//    public void SalaryAboveAllTiers_ShouldHaveTier5Tax()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee2",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
-
-//        hiringType = "tiempoCompleto",
-//        computedGrossSalary = 6_000_000,
-//        previousComputedGrossSalaries =
-//          new List<PayrollPreviousComputedGrossSalary>()
-//      };
-
-//      var result = _rentTax.calculateRentTaxes(
-//        new List<PayrollEmployeeModel> { employee },
-//        new DateOnly(2025, 6, 30)
-//      );
-
-//      Assert.That(result[0].rentTax, Is.GreaterThan(0));
-//    }
-
-//    [Test]
-//    public void FutureAccumulatedSalary_ShouldBeIgnored()
-//    {
-//      var employee = new PayrollEmployeeModel
-//      {
-//        fullName = "Test Employee3",
-//        id = "",
-//        gender = "",
-//        birthDate = DateOnly.MinValue,
-//        rentTax = 0,
-//        rawGrossSalary = 0,
-//        ccssEmployeeDeduction = 0,
-//        ccssEmployerDeduction = 0,
-//        hiringDate = DateOnly.MinValue,
-//        hoursDate = DateOnly.MinValue,
-//        hoursNumber = 0,
-//        companyAssociation = "",
-//        deductions = new List<PayrollDeductionModel>(),
-
-//        hiringType = "tiempoCompleto",
-//        computedGrossSalary = 1_000_000,
-//        previousComputedGrossSalaries =
-//          new List<PayrollPreviousComputedGrossSalary>
-//    {
-//      new PayrollPreviousComputedGrossSalary
-//      {
-//        amount = 2_000_000,
-//        startDate = new DateOnly(2025, 7, 1)
-//      }
-//    }
-//      };
-
-//      var result = _rentTax.calculateRentTaxes(
-//        new List<PayrollEmployeeModel> { employee },
-//        new DateOnly(2025, 6, 30)
-//      );
-
-//      var expectedTax = result[0].rentTax;
-//      Assert.That(expectedTax, Is.EqualTo(result[0].rentTax));
-//    }
-
-//  }
-//}
+            Assert.That(result[0].taxes.employeeRent, Is.EqualTo(0));
+        }
+    }
+}
