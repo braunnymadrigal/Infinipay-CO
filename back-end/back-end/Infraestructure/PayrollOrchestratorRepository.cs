@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using back_end.Domain;
+﻿using back_end.Domain;
 using back_end.Infraestructure;
 using Microsoft.Data.SqlClient;
 
@@ -33,7 +32,6 @@ public class PayrollOrchestratorRepository
 
       var employerLegalId = obtainEmployerLegalId(employerId, connection
         , transaction);
-
       var auditTime = DateTime.UtcNow;
 
       var auditId = insertAuditData(employerUsername, auditTime
@@ -55,7 +53,6 @@ public class PayrollOrchestratorRepository
       throw new Exception("SavePayrollData failed: " + ex.Message, ex);
     }
   }
-
   private string obtainEmployerUsername(string employerId
     , SqlConnection connection, SqlTransaction transaction)
   {
@@ -86,28 +83,52 @@ public class PayrollOrchestratorRepository
       SqlConnection connection,
       SqlTransaction transaction)
   {
-    insertEmployeeOfPayroll(payrollId, employee.EmployeeId, connection
-      , transaction);
+    insertEmployeeOfPayroll(payrollId, employee.EmployeeId, connection, transaction);
 
     var paymentDetails = insertPaymentDetails(payrollId, employee, startDate
       , endDate, connection, transaction);
 
-    if (employee.RentTax > 0)
-      insertDeduction(null, paymentDetails, employee.RentTax, "renta"
-        , connection, transaction);
+    var taxes = employee.EmployeeTaxes;
+    var employerTaxes = employee.EmployerTaxes;
 
-    if (employee.CcssTax > 0)
-      insertDeduction(null, paymentDetails, employee.CcssTax, "ccssEmpleado"
-        , connection, transaction);
+    void InsertEmployeeTax(string tipo, double monto)
+    {
+      if (monto > 0)
+        insertDeduction(null, paymentDetails, monto, tipo, connection
+          , transaction);
+    }
+
+    InsertEmployeeTax("empleado_renta", taxes.employeeRent);
+    InsertEmployeeTax("empleado_ccss_ivm", taxes.employeeCcssIvm);
+    InsertEmployeeTax("empleado_ccss_sem", taxes.employeeCcssSem);
+    InsertEmployeeTax("empleado_lpt_bpop", taxes.employeeLptBpop);
 
     foreach (var ded in employee.Deductions)
     {
       if (Guid.TryParse(ded.id, out var parsedId))
       {
         insertDeduction(parsedId, paymentDetails, ded.resultAmount
-          , "beneficio", connection, transaction);
+          , "empleado_beneficio", connection, transaction);
       }
     }
+
+    void InsertEmployerTax(string tipo, double monto)
+    {
+      if (monto > 0)
+        insertDeduction(null, paymentDetails, monto, tipo, connection
+          , transaction);
+    }
+
+    InsertEmployerTax("empleador_ccss_sem", employerTaxes.employerCcssSem);
+    InsertEmployerTax("empleador_ccss_ivm", employerTaxes.employerCcssIvm);
+    InsertEmployerTax("empleador_otras_bpop", employerTaxes.employerOthersBpop);
+    InsertEmployerTax("empleador_otras_familiares", employerTaxes.employerOthersFamily);
+    InsertEmployerTax("empleador_otras_imas", employerTaxes.employerOthersImas);
+    InsertEmployerTax("empleador_otras_ina", employerTaxes.employerOthersIna);
+    InsertEmployerTax("empleador_lpt_bpop", employerTaxes.employerLptBpop);
+    InsertEmployerTax("empleador_lpt_fcl", employerTaxes.employerLptFcl);
+    InsertEmployerTax("empleador_lpt_opc", employerTaxes.employerLptOpc);
+    InsertEmployerTax("empleador_lpt_ins", employerTaxes.employerLptIns);
   }
 
   private Guid insertAuditData(string employerUsername, DateTime auditDate
@@ -117,7 +138,7 @@ public class PayrollOrchestratorRepository
     var command = new SqlCommand(@"
         INSERT INTO Auditoria (id, fechaCreacion, usuarioCreador)
         VALUES (@id, @fechaCreacion, @usuarioCreador)", connection
-          , transaction);
+        , transaction);
     command.Parameters.AddWithValue("@id", id);
     command.Parameters.AddWithValue("@fechaCreacion", auditDate);
     command.Parameters.AddWithValue("@usuarioCreador", employerUsername);
@@ -126,23 +147,19 @@ public class PayrollOrchestratorRepository
   }
 
   private Guid insertPayroll(Guid auditId, Guid employerLegalPersonId
-    , DateOnly startDate, DateOnly endDate, SqlConnection connection
-    , SqlTransaction transaction)
+    , DateOnly startDate, DateOnly endDate, SqlConnection connection, SqlTransaction transaction)
   {
     var id = Guid.NewGuid();
     var command = new SqlCommand(@"
         INSERT INTO Planilla (id, idAuditoria, idPersonaJuridica, fechaInicio, fechaFin, estado)
         VALUES (@id, @idAuditoria, @idPersonaJuridica, @fechaInicio, @fechaFin, @estado)"
-          , connection, transaction);
+, connection, transaction);
     command.Parameters.AddWithValue("@id", id);
     command.Parameters.AddWithValue("@idAuditoria", auditId);
-    command.Parameters.AddWithValue("@idPersonaJuridica"
-      , employerLegalPersonId);
-    command.Parameters.AddWithValue("@fechaInicio"
-      , startDate.ToDateTime(TimeOnly.MinValue));
-    command.Parameters.AddWithValue("@fechaFin"
-      , endDate.ToDateTime(TimeOnly.MinValue));
-    command.Parameters.AddWithValue("@estado", "en progreso");
+    command.Parameters.AddWithValue("@idPersonaJuridica", employerLegalPersonId);
+    command.Parameters.AddWithValue("@fechaInicio", startDate.ToDateTime(TimeOnly.MinValue));
+    command.Parameters.AddWithValue("@fechaFin", endDate.ToDateTime(TimeOnly.MinValue));
+    command.Parameters.AddWithValue("@estado", "completado");
     command.ExecuteNonQuery();
     return id;
   }
@@ -158,28 +175,31 @@ public class PayrollOrchestratorRepository
     command.ExecuteNonQuery();
   }
 
-  private Guid insertPaymentDetails(Guid payrollId
-    , EmployeePayrollResult employee, DateOnly startDate, DateOnly endDate
-    , SqlConnection connection, SqlTransaction transaction)
+  private Guid insertPaymentDetails(Guid payrollId,
+    EmployeePayrollResult employee,
+    DateOnly startDate,
+    DateOnly endDate,
+    SqlConnection connection,
+    SqlTransaction transaction)
   {
     var id = Guid.NewGuid();
     var command = new SqlCommand(@"
-        INSERT INTO DetallePago (id, idPlanilla, idEmpleado, fechaInicio, fechaFin, salarioBruto, salarioNeto)
-        VALUES (@id, @idPlanilla, @idEmpleado, @fechaInicio, @fechaFin, @salarioBruto, @salarioNeto)"
-        , connection, transaction);
+      INSERT INTO DetallePago (id, idPlanilla, idEmpleado, fechaInicio, fechaFin, salarioBruto, salarioNeto)
+      VALUES (@id, @idPlanilla, @idEmpleado, @fechaInicio, @fechaFin, @salarioBruto, @salarioNeto)",
+      connection, transaction);
+
     command.Parameters.AddWithValue("@id", id);
     command.Parameters.AddWithValue("@idPlanilla", payrollId);
     command.Parameters.AddWithValue("@idEmpleado", employee.EmployeeId);
-    command.Parameters.AddWithValue("@fechaInicio"
-      , startDate.ToDateTime(TimeOnly.MinValue));
-    command.Parameters.AddWithValue("@fechaFin"
-      , endDate.ToDateTime(TimeOnly.MinValue));
-    command.Parameters.AddWithValue("@salarioBruto"
-      , employee.ComputedGrossSalary);
+    command.Parameters.AddWithValue("@fechaInicio", startDate.ToDateTime(TimeOnly.MinValue));
+    command.Parameters.AddWithValue("@fechaFin", endDate.ToDateTime(TimeOnly.MinValue));
+    command.Parameters.AddWithValue("@salarioBruto", employee.ComputedGrossSalary);
     command.Parameters.AddWithValue("@salarioNeto", employee.NetSalary);
+
     command.ExecuteNonQuery();
     return id;
   }
+
 
   private void insertDeduction(Guid? deductionId, Guid paymentDetailId
     , double paymentAmount, string deductionType, SqlConnection connection
@@ -293,16 +313,20 @@ public class PayrollOrchestratorRepository
 
       if (!filteredEmployees.ContainsKey(paymentDetailsId))
       {
+
         filteredEmployees[paymentDetailsId] = createEmployeeResult(row);
         payrollMap[payrollId].payrollEmployees.Add(filteredEmployees[paymentDetailsId]);
       }
 
-      if (row["monto"] != null && row["tipo"] != null)
+      string tipo = (string)row["tipo"];
+      if (!tipo.StartsWith("empleador_"))
       {
+        string displayName = DeductionDisplayNames.ContainsKey(tipo)
+          ? DeductionDisplayNames[tipo] : tipo;
         filteredEmployees[paymentDetailsId].addDeduction(new DeductionResult
         {
           deductionAmount = (decimal)row["monto"],
-          deductionType = (string)row["tipo"]
+          deductionType = displayName
         });
       }
     }
@@ -330,8 +354,30 @@ public class PayrollOrchestratorRepository
     return new EmployeeResult
     {
       employeeName = completeName,
-      employeeGrossSalary = (decimal)row["salarioBruto"],
+      employeeComputedGrossSalary = (decimal)row["salarioBruto"],
       employeeNetSalary = (decimal)row["salarioNeto"]
     };
   }
+
+  private static readonly Dictionary<string, string>
+    DeductionDisplayNames = new()
+    {
+
+      ["empleado_ccss_ivm"] = "Invalidez, Vejez y Muerte (IVM)",
+      ["empleado_ccss_sem"] = "Seguro de Enfermedad y Maternidad (SEM)",
+      ["empleado_renta"] = "Impuesto de Renta",
+      ["empleado_lpt_bpop"] = "Aporte Trabajador Banco Popular",
+
+      ["empleador_ccss_ivm"] = "Invalidez, Vejez y Muerte (IVM)",
+      ["empleador_ccss_sem"] = "Seguro de Enfermedad y Maternidad (SEM)",
+      ["empleador_lpt_bpop"] = "Cuota Patronal Banco Popular (0.25%)",
+      ["empleador_lpt_opc"] = "Fondo de Pensiones Complementarias (0.50%)",
+      ["empleador_lpt_fcl"] = "Fondo de Capitalización Laboral (FCL) (3.00%)",
+      ["empleador_lpt_ins"] = "INS (1.00%)",
+      ["empleador_otras_ina"] = "INA (1.50%)",
+      ["empleador_otras_imas"] = "IMAS (0.50%) ",
+      ["empleador_otras_familiares"] = "Asignaciones Familiares  (5.00%)",
+      ["empleador_otras_bpop"] = "Aporte Banco Popular (0.25%)"
+    };
+
 }
