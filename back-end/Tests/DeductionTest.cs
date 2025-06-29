@@ -1,174 +1,295 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Security.Cryptography;
-//using System.Text;
-//using System.Threading.Tasks;
-//using back_end.Application;
-//using back_end.Domain;
+﻿using AutoFixture;
+using back_end.Application;
+using back_end.Domain;
 
-//namespace Tests
-//{
-//    class DeductionTest
-//    {
-//        private const string GEEMS_API_URL =
-//            "https://asociacion-geems-c3dfavfsapguhxbp.southcentralus-01.azurewebsites.net/api/public/calculator/calculate";
+namespace Tests
+{
+    class DeductionTest
+    {
+        private const string GEEMS_API_URL = "https://asociacion-geems-c3dfavfsapguhxbp.southcentralus-01.azurewebsites.net/api/public/calculator/calculate";
+        private const string FORMULA_TYPE_FIXED_AMOUNT = "montoFijo";
+        private const string FORMULA_TYPE_PERCENTAGE = "porcentaje";
+        private const string FORMULA_TYPE_API = "api";
+        private const string PAYMENT_TYPE_BIWEEKLY = "quincenal";
+        private const string PAYMENT_TYPE_MONTHLY = "mensual";
 
-//        IDeduction deduction;
-//        List<PayrollEmployeeModel> employees;
+        private const string EXCEPTION_UNSUPPORTED_FORMULA_TYPE = "Deduction: type of deduction is not supported.";
+        private const string EXCEPTION_UNSUPPORTED_PAYMENT_TYPE = "Deduction: Payment type not supported.";
+        private const string EXCEPTION_STRING_IS_NOT_A_DOUBLE = "The string does not represent a positive proper double number.";
+        private const string EXCEPTION_UNSUPPORTED_API_URL = "Unknown API can not be used.";
 
-//        [SetUp]
-//        public void Setup()
-//        {
-//            deduction = new Deduction();
-//            employees = new List<PayrollEmployeeModel> 
-//            {
-//                new PayrollEmployeeModel
-//                {
-//                    fullName = "Test Employee",
-//                    id = "",
-//                    gender = "",
-//                    birthDate = DateOnly.MinValue,
-//                    rentTax = 0.0,
-//                    rawGrossSalary = 0.0,
-//                    computedGrossSalary = 0.0,
-//                    ccssEmployeeDeduction = 0.0,
-//                    ccssEmployerDeduction = 0.0,
-//                    hiringDate = DateOnly.MinValue,
-//                    hiringType = "",
-//                    hoursDate = DateOnly.MinValue,
-//                    hoursNumber = 0,
-//                    companyAssociation = "",
-//                    deductions = new List<PayrollDeductionModel>
-//                    {
-//                        new PayrollDeductionModel
-//                        {
-//                            id = "",
-//                            dependantNumber = 0,
-//                            formulaType = "",
-//                            apiUrl = "",
-//                            apiMethod = "",
-//                            param1Value = "",
-//                            param2Value = "",
-//                            param3Value = "",
-//                            param1Key = "",
-//                            param2Key = "",
-//                            param3Key = "",
-//                            header1Key = "",
-//                            header1Value = "",
-//                            resultAmount = 0.0
-//                        }
-//                    },
-//                    previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
-//                }
-//            };
-//        }
+        private Fixture _fixture;
+        private IDeduction _deduction;
 
-//        [Test]
-//        public void Test_Deduction_InvalidFormula()
-//        {
-//            employees[0].deductions[0].formulaType = "a";
-//            Assert.ThrowsAsync<Exception>(async () =>
-//            {
-//                await deduction.computeDeductions(employees);
-//            });
-//        }
+        [SetUp]
+        public void Setup()
+        {
+            _fixture = new Fixture();
+            _deduction = new Deduction();
+        }
 
-//        [Test]
-//        public async Task Test_Deduction_FixedAmountValid()
-//        {
-//            employees[0].deductions[0].formulaType = "montoFijo";
-//            employees[0].deductions[0].param1Value = "2500.50";
-//            var expectedResult = 2500.50;
-//            var resultList = await deduction.computeDeductions(employees);
-//            var result = resultList[0].deductions[0].resultAmount;
-//            Assert.That(result, Is.EqualTo(expectedResult));
-//        }
+        [Test]
+        public void CalculateDeductions_ThrowsException_WhenUnsupportedFormulaType()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, "invalid")
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
 
-//        [Test]
-//        public void Test_Deduction_FixedAmountNotNumber()
-//        {
-//            employees[0].deductions[0].formulaType = "montoFijo";
-//            employees[0].deductions[0].param1Value = "abc";
-//            Assert.ThrowsAsync<Exception>(async () =>
-//            {
-//                await deduction.computeDeductions(employees);
-//            });
-//        }
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, string.Empty);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_UNSUPPORTED_FORMULA_TYPE));
+        }
 
-//        [Test]
-//        public void Test_Deduction_FixedAmountNegative()
-//        {
-//            employees[0].deductions[0].formulaType = "montoFijo";
-//            employees[0].deductions[0].param1Value = "-100";
-//            Assert.ThrowsAsync<Exception>(async () =>
-//            {
-//                await deduction.computeDeductions(employees);
-//            });
-//        }
+        [Test]
+        public void CalculateDeductions_ThrowsException_WhenUnsupportedPaymentType()
+        {
+            var fixedAmount = 2500.50;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_FIXED_AMOUNT)
+                        .With(d => d.param1Value, fixedAmount.ToString())
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
 
-//        [Test]
-//        public async Task Test_Deduction_PercentageValid()
-//        {
-//            employees[0].computedGrossSalary = 1000.0;
-//            employees[0].deductions[0].formulaType = "porcentaje";
-//            employees[0].deductions[0].param1Value = "10";
-//            var expectedResult = 100.0;
-//            var resultList = await deduction.computeDeductions(employees);
-//            var result = resultList[0].deductions[0].resultAmount;
-//            Assert.That(result, Is.EqualTo(expectedResult));
-//        }
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, string.Empty);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_UNSUPPORTED_PAYMENT_TYPE));
+        }
 
-//        [Test]
-//        public void Test_Deduction_PercentageNotNumber()
-//        {
-//            employees[0].computedGrossSalary = 1000.0;
-//            employees[0].deductions[0].formulaType = "porcentaje";
-//            employees[0].deductions[0].param1Value = "notANumber";
-//            Assert.ThrowsAsync<Exception>(async () =>
-//            {
-//                await deduction.computeDeductions(employees);
-//            });
-//        }
+        [Test]
+        public async Task CalculateDeductions_ReturnsHalvedAmount_WhenValidFixedAmountBiweekly()
+        {
+            var fixedAmount = 2500.50;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_FIXED_AMOUNT)
+                        .With(d => d.param1Value, fixedAmount.ToString())
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
 
-//        [Test]
-//        public void Test_Deduction_PercentageNegative()
-//        {
-//            employees[0].computedGrossSalary = 1000.0;
-//            employees[0].deductions[0].formulaType = "porcentaje";
-//            employees[0].deductions[0].param1Value = "-2.5";
-//            Assert.ThrowsAsync<Exception>(async () =>
-//            {
-//                await deduction.computeDeductions(employees);
-//            });
-//        }
+            var result = await _deduction.calculateDeductions(employees, PAYMENT_TYPE_BIWEEKLY);
 
-//        [Test]
-//        public void Test_Deduction_ApiInvalidUrl()
-//        {
-//            employees[0].deductions[0].formulaType = "api";
-//            employees[0].deductions[0].apiUrl = "a";
-//            Assert.ThrowsAsync<Exception>(async () =>
-//            {
-//                await deduction.computeDeductions(employees);
-//            });
-//        }
+            Assert.That(result[0].deductions[0].resultAmount, Is.EqualTo(fixedAmount / 2));
+        }
 
-//        [Test]
-//        public async Task Test_Deduction_ApiValid()
-//        {
-//            employees[0].deductions[0].formulaType = "api";
-//            employees[0].deductions[0].apiUrl = GEEMS_API_URL;
-//            employees[0].deductions[0].header1Key = "API-KEY";
-//            employees[0].deductions[0].header1Value = "Tralalerotralala";
-//            employees[0].deductions[0].param1Key = "associationName";
-//            employees[0].deductions[0].param2Key = "employeeSalary";
-//            employees[0].deductions[0].resultAmount = -777.777;
-//            employees[0].computedGrossSalary = 30000.25;
-//            employees[0].companyAssociation = "a";
-//            var resultList = await deduction.computeDeductions(employees);
-//            var result = resultList[0].deductions[0].resultAmount;
-//            Assert.That(result, Is.GreaterThan(-777.777));
-//        }
-//    }
-//}
+        [Test]
+        public async Task CalculateDeductions_ReturnsTotalAmount_WhenValidFixedAmountMonthly()
+        {
+            var fixedAmount = 2500.50;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_FIXED_AMOUNT)
+                        .With(d => d.param1Value, fixedAmount.ToString())
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var result = await _deduction.calculateDeductions(employees, PAYMENT_TYPE_MONTHLY);
+
+            Assert.That(result[0].deductions[0].resultAmount, Is.EqualTo(fixedAmount));
+        }
+
+        [Test]
+        public void CalculateDeductions_ThrowsException_WhenNegativeFixedAmount()
+        {
+            var fixedAmount = -2500.50;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_FIXED_AMOUNT)
+                        .With(d => d.param1Value, fixedAmount.ToString())
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, PAYMENT_TYPE_MONTHLY);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_STRING_IS_NOT_A_DOUBLE));
+        }
+
+        [Test]
+        public void CalculateDeductions_ThrowsException_WhenNotNumberFixedAmount()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_FIXED_AMOUNT)
+                        .With(d => d.param1Value, string.Empty)
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, PAYMENT_TYPE_MONTHLY);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_STRING_IS_NOT_A_DOUBLE));
+        }
+
+        [Test]
+        public async Task CalculateDeducions_ReturnsAmount_WhenValidPercentage()
+        {
+            var salary = 1000.0;
+            var percentage = 10;
+            var expectedResult = 100.0;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.computedGrossSalary, salary)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_PERCENTAGE)
+                        .With(d => d.param1Value, percentage.ToString())
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var result = await _deduction.calculateDeductions(employees, PAYMENT_TYPE_BIWEEKLY);
+
+            Assert.That(result[0].deductions[0].resultAmount, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void CalculateDeducions_ThrowsException_WhenNegativePercentage()
+        {
+            var salary = 1000.0;
+            var percentage = -10;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.computedGrossSalary, salary)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_PERCENTAGE)
+                        .With(d => d.param1Value, percentage.ToString())
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, PAYMENT_TYPE_BIWEEKLY);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_STRING_IS_NOT_A_DOUBLE));
+        }
+
+        [Test]
+        public void CalculateDeducions_ThrowsException_WhenNotNumberPercentage()
+        {
+            var salary = 1000.0;
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.computedGrossSalary, salary)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_PERCENTAGE)
+                        .With(d => d.param1Value, string.Empty)
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, PAYMENT_TYPE_BIWEEKLY);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_STRING_IS_NOT_A_DOUBLE));
+        }
+
+        [Test]
+        public void CalculateDeductions_ThrowsException_WhenUnsupportedApiUrl()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_API)
+                        .With(d => d.apiUrl, string.Empty)
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var exception = Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _deduction.calculateDeductions(employees, PAYMENT_TYPE_MONTHLY);
+            });
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_UNSUPPORTED_API_URL));
+        }
+
+        [Test]
+        public async Task CalculateDeductions_ReturnsAmount_WhenSupportedApiUrl()
+        {
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .With(m => m.computedGrossSalary, 30000.25)
+                .With(m => m.companyAssociation, "a")
+                .With(m => m.deductions, new List<PayrollDeductionModel>
+                {
+                    _fixture.Build<PayrollDeductionModel>()
+                        .With(d => d.formulaType, FORMULA_TYPE_API)
+                        .With(d => d.apiUrl, GEEMS_API_URL)
+                        .With(d => d.header1Key, "API-KEY")
+                        .With(d => d.header1Value, "Tralalerotralala")
+                        .With(d => d.param1Key, "associationName")
+                        .With(d => d.param2Key, "employeeSalary")
+                        .With(d => d.resultAmount, Double.MinValue)
+                        .Create()
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var result = await _deduction.calculateDeductions(employees, PAYMENT_TYPE_BIWEEKLY);
+
+            Assert.That(result[0].deductions[0].resultAmount, Is.GreaterThan(Double.MinValue));
+        }
+    }
+}
