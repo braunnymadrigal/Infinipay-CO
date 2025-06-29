@@ -1,6 +1,7 @@
-import { createApp } from "vue";
+﻿import { createApp } from "vue";
 import ApiPlugin from "./plugins/api";
 import App from "./App.vue";
+import UtilitiesPlugin from "./plugins/utilities";
 import "primeicons/primeicons.css";
 
 import { createRouter, createWebHistory } from "vue-router";
@@ -101,4 +102,5 @@ const app = createApp(App);
 app.use(router);
 app.use(VueCookies, { expires: "7d" });
 app.use(ApiPlugin);
+app.use(UtilitiesPlugin);
 app.mount("#app");

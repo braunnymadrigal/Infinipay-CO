@@ -158,6 +158,11 @@ export default {
           `${apiBaseURL}/CompanyDeletion?companyName=${companyName}`,
           authHeader()
         );
+      },
+
+      sendEmail(email) {
+        return axios.post(`${apiBaseURL}/Email`
+          , email, authHeader());
       }
     };
   },

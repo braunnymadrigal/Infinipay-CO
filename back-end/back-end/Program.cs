@@ -89,7 +89,9 @@ builder.Services.AddScoped<IRentTax, RentTax>();
 builder.Services.AddScoped<EmployeeBenefitRepository>();
 builder.Services.AddScoped<CompanyBenefitRepository>();
 builder.Services.AddScoped<ICompanyBenefitCommand, CompanyBenefitCommand>();
-
+builder.Services.AddScoped<IEmailCommand, EmailCommand>();
+builder.Services.Configure<EmailCommand>(
+  builder.Configuration.GetSection("Email"));
 
 builder.Services.AddScoped<IBenefitQuery<EmployeeBenefitDTO>
   , EmployeeBenefitQuery>();
@@ -99,6 +101,10 @@ builder.Services.AddScoped<IBenefitQuery<CompanyBenefitDTO>
 
 builder.Services.AddScoped<IEmployeeBenefitAssignment
   , EmployeeBenefitAssignment>();
+
+builder.Services.AddScoped<IEmailQueryRepository, EmailQueryRepository>();
+builder.Services.AddScoped<IEmailCommandRepository, EmailCommandRepository>();
+
 
 var app = builder.Build();
 
