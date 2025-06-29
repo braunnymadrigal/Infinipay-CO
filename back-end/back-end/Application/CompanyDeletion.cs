@@ -17,16 +17,7 @@ namespace back_end.Application
             var employeesEmail = _companyDeletionRepository.getEmployeesEmail(companyName);
             _companyDeletionRepository.deleteCompany(employerEmail);
             employeesEmail.Add(employerEmail);
-            sendEmails(employeesEmail);
             return employeesEmail;
-        }
-
-        private void sendEmails(List<string> emails)
-        {
-            for (var i = 0; i < emails.Count; ++i)
-            {
-                //
-            }
         }
     }
 }
