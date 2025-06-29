@@ -4,6 +4,7 @@ namespace back_end.Application
 {
     public interface IDeduction
     {
-        Task<List<PayrollEmployeeModel>> computeDeductions(List<PayrollEmployeeModel> payrollEmployees);
+        Task<List<PayrollEmployeeModel>> calculateDeductions(List<PayrollEmployeeModel> 
+            payrollEmployees, string paymentType);
     }
 }

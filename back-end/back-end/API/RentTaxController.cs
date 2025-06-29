@@ -16,7 +16,6 @@ namespace back_end.API
       rentTax = new RentTax();
     }
 
-    [Authorize(Roles = "empleador")]
     [HttpPost]
     public IActionResult ComputeRentTaxes(List<PayrollEmployeeModel>
       payrollEmployees, DateOnly endDate)

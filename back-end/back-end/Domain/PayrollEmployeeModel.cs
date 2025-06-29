@@ -2,21 +2,29 @@
 {
     public class PayrollEmployeeModel
     {
-        public required string id { get; set; }
-        public required string gender { get; set; }
-        public required string fullName { get; set; }
-        public required DateOnly birthDate { get; set; }
-        public required double rentTax { get; set; }
-        public required double rawGrossSalary { get; set; }
-        public required double computedGrossSalary { get; set; }
-        public required double ccssEmployeeDeduction { get; set; }
-        public required double ccssEmployerDeduction { get; set; }
-        public required DateOnly hiringDate { get; set; }
-        public required string hiringType { get; set; }
-        public required DateOnly hoursDate { get; set; }
-        public required int hoursNumber { get; set; }
-        public required string companyAssociation { get; set; }
-        public required List<PayrollDeductionModel> deductions { get; set; }
-        public required List<PayrollPreviousComputedGrossSalary> previousComputedGrossSalaries { get; set; }
+        public PayrollEmployeeModel()
+        {
+            id = string.Empty;
+            name = string.Empty;
+            gender = string.Empty;
+            hiringType = string.Empty;
+            companyAssociation = string.Empty;
+            taxes = new PayrollTaxModel();
+            deductions = new List<PayrollDeductionModel>();
+            previousComputedGrossSalaries = new List<double>();
+        }
+
+        public string id { get; set; }
+        public string name { get; set; }
+        public string gender { get; set; }
+        public DateOnly birthDate { get; set; }
+        public DateOnly hiringDate { get; set; }
+        public string hiringType { get; set; }
+        public string companyAssociation { get; set; }
+        public double rawGrossSalary { get; set; }
+        public double computedGrossSalary { get; set; }
+        public PayrollTaxModel taxes { get; set; }
+        public List<PayrollDeductionModel> deductions { get; set; }
+        public List<double> previousComputedGrossSalaries { get; set; }
     }
 }

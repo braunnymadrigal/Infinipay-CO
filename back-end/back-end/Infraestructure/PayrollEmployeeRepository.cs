@@ -1,36 +1,35 @@
 ﻿using System.Data;
-using back_end.Application;
 using back_end.Domain;
 using Microsoft.Data.SqlClient;
-using System.Diagnostics;
+
 namespace back_end.Infraestructure
 {
     public class PayrollEmployeeRepository : IPayrollEmployeeRepository
     {
-        private const int MONTHS_TO_SUBSTRACT = -1;
+        private const int FIRST_DAY_OF_ANY_MONTH = 1;
         private const int PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX = -1;
 
-        private readonly AbstractConnectionRepository connectionRepository;
-        private readonly IUtilityRepository utilityRepository;
+        private readonly AbstractConnectionRepository _connectionRepository;
+        private readonly IUtilityRepository _utilityRepository;
 
         public PayrollEmployeeRepository(AbstractConnectionRepository connectionRepository
             , IUtilityRepository utilityRepository)
         {
-            this.connectionRepository = connectionRepository;
-            this.utilityRepository = utilityRepository;
+            _connectionRepository = connectionRepository;
+            _utilityRepository = utilityRepository;
         }
 
-        public List<PayrollEmployeeModel> getPayrollEmployees(string employerId, DateOnly startDate, DateOnly endDate)
+        public List<PayrollEmployeeModel> getPayrollEmployees(PayrollEmployerModel payrollEmployer)
         {
-      var command = createPayrollEmployeeTableCommand(employerId, startDate, endDate);
-            var dataTable = connectionRepository.ExecuteQuery(command);
-            var payrollEmployees = transformDataTablePayrollEmployeeList(dataTable);
+            var command = createPayrollEmployeeTableCommand(payrollEmployer);
+            var dataTable = _connectionRepository.ExecuteQuery(command);
+            var payrollEmployees = transformDataTableIntoPayrollEmployeeList(dataTable);
             return payrollEmployees;
         }
 
-        private List<PayrollEmployeeModel> transformDataTablePayrollEmployeeList(DataTable dataTable)
+        private List<PayrollEmployeeModel> transformDataTableIntoPayrollEmployeeList(DataTable dataTable)
         {
-      checkDataTableCorrectness(dataTable);
+            checkDataTableCorrectness(dataTable);
             var payrollEmployees = new List<PayrollEmployeeModel>();
             var payrollEmployeesIndex = PAYROLL_EMPLOYEE_LIST_INITIAL_INDEX;
             var previousId = "";
@@ -38,9 +37,9 @@ namespace back_end.Infraestructure
             var payrollIds = new HashSet<string>();
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
-                var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
-                var payrollId = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
+                var id = _utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
+                var deductionId = _utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
+                var payrollId = _utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
                 if (previousId != id)
                 {
                     ++payrollEmployeesIndex;
@@ -66,45 +65,24 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> addPayrollEmployeeModel(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var id = utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
-            var birthDate = utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
-            var firstName = utilityRepository.ConvertDatabaseValueToString(dataRow["firstName"]);
-            var middleName = utilityRepository.ConvertDatabaseValueToString(dataRow["middleName"]);
-            var lastName1 = utilityRepository.ConvertDatabaseValueToString(dataRow["lastName1"]);
-            var lastName2 = utilityRepository.ConvertDatabaseValueToString(dataRow["lastName2"]);
-            if (firstName != "" || middleName != "" || lastName1 != "" || lastName2 != "")
-            {
-              id = $"{id} ({firstName} {middleName} {lastName1} {lastName2})";
-            }
-            var fullName = $"{firstName} {middleName} {lastName1} {lastName2}".Trim();
-            fullName = System.Text.RegularExpressions.Regex.Replace(fullName, @"\s+", " ");
-            var gender = utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
-            var salary = utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
-            var hiringType = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
-            var hiringDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hiringDate"]);
-            var hoursDate = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursDate"]);
-            var hoursNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["hoursNumber"]);
-            var companyAssociaton = utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
-            var actualHoursDate = hoursDate != "" ? DateOnly.FromDateTime(Convert.ToDateTime(hoursDate)) : DateOnly.MinValue;
-            var actualHoursNumber = hoursNumber != "" ? Convert.ToInt32(hoursNumber) : 0;
+            var id = _utilityRepository.ConvertDatabaseValueToString(dataRow["id"]);
+            var birthDate = _utilityRepository.ConvertDatabaseValueToString(dataRow["birthDate"]);
+            var gender = _utilityRepository.ConvertDatabaseValueToString(dataRow["gender"]);
+            var name = _utilityRepository.ConvertDatabaseValueToString(dataRow["name"]);
+            var hiringDate = _utilityRepository.ConvertDatabaseValueToString(dataRow["hiringDate"]);
+            var rawGrossSalary = _utilityRepository.ConvertDatabaseValueToString(dataRow["salary"]);
+            var hiringType = _utilityRepository.ConvertDatabaseValueToString(dataRow["hiringType"]);
+            var companyAssociaton = _utilityRepository.ConvertDatabaseValueToString(dataRow["companyAssociation"]);
             var newPayrollEmployee = new PayrollEmployeeModel
             {
                 id = id,
                 birthDate = DateOnly.FromDateTime(Convert.ToDateTime(birthDate)),
-                fullName = fullName,
                 gender = gender,
-                rawGrossSalary = Convert.ToDouble(salary),
-                computedGrossSalary = 0,
-                rentTax = 0,
-                ccssEmployeeDeduction = 0,
-                ccssEmployerDeduction = 0,
-                hiringType = hiringType,
+                name = name,
                 hiringDate = DateOnly.FromDateTime(Convert.ToDateTime(hiringDate)),
-                hoursDate = actualHoursDate,
-                hoursNumber = actualHoursNumber,
+                rawGrossSalary = Convert.ToDouble(rawGrossSalary),
+                hiringType = hiringType,
                 companyAssociation = companyAssociaton,
-                deductions = new List<PayrollDeductionModel>(),
-                previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
             };
             payrollEmployees.Add(newPayrollEmployee);
             return payrollEmployees;
@@ -113,21 +91,21 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> addPayrollDeductionModel(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var deductionId = utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
+            var deductionId = _utilityRepository.ConvertDatabaseValueToString(dataRow["deductionId"]);
             if (deductionId != "")
             {
-                var dependantNumber = utilityRepository.ConvertDatabaseValueToString(dataRow["dependantNumber"]);
-                var formulaType = utilityRepository.ConvertDatabaseValueToString(dataRow["formulaType"]);
-                var apiUrl = utilityRepository.ConvertDatabaseValueToString(dataRow["apiUrl"]);
-                var apiMethod = utilityRepository.ConvertDatabaseValueToString(dataRow["apiMethod"]);
-                var param1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Value"]);
-                var param2Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Value"]);
-                var param3Value = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Value"]);
-                var param1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param1Key"]);
-                var param2Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param2Key"]);
-                var param3Key = utilityRepository.ConvertDatabaseValueToString(dataRow["param3Key"]);
-                var header1Value = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Value"]);
-                var header1Key = utilityRepository.ConvertDatabaseValueToString(dataRow["header1Key"]);
+                var dependantNumber = _utilityRepository.ConvertDatabaseValueToString(dataRow["dependantNumber"]);
+                var formulaType = _utilityRepository.ConvertDatabaseValueToString(dataRow["formulaType"]);
+                var apiUrl = _utilityRepository.ConvertDatabaseValueToString(dataRow["apiUrl"]);
+                var apiMethod = _utilityRepository.ConvertDatabaseValueToString(dataRow["apiMethod"]);
+                var param1Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["param1Value"]);
+                var param2Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["param2Value"]);
+                var param3Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["param3Value"]);
+                var param1Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["param1Key"]);
+                var param2Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["param2Key"]);
+                var param3Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["param3Key"]);
+                var header1Value = _utilityRepository.ConvertDatabaseValueToString(dataRow["header1Value"]);
+                var header1Key = _utilityRepository.ConvertDatabaseValueToString(dataRow["header1Key"]);
                 var newDeduction = new PayrollDeductionModel
                 {
                     id = deductionId,
@@ -143,7 +121,6 @@ namespace back_end.Infraestructure
                     param3Key = param3Key,
                     header1Value = header1Value,
                     header1Key = header1Key,
-                    resultAmount = 0
                 };
                 payrollEmployees[payrollEmployeesIndex].deductions.Add(newDeduction);
             }
@@ -153,17 +130,11 @@ namespace back_end.Infraestructure
         private List<PayrollEmployeeModel> addPreviousComputedSalary(List<PayrollEmployeeModel> payrollEmployees
             , int payrollEmployeesIndex, DataRow dataRow)
         {
-            var payrollId = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
+            var payrollId = _utilityRepository.ConvertDatabaseValueToString(dataRow["payrollId"]);
             if (payrollId != "")
             {
-                var previousSalary = utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
-                var startDate = utilityRepository.ConvertDatabaseValueToString(dataRow["payrollStartDate"]);
-                var newPreviousComputedGrossSalary = new PayrollPreviousComputedGrossSalary
-                {
-                    amount = Convert.ToDouble(previousSalary),
-                    startDate = DateOnly.FromDateTime(Convert.ToDateTime(startDate))
-                };
-                payrollEmployees[payrollEmployeesIndex].previousComputedGrossSalaries.Add(newPreviousComputedGrossSalary);
+                var previousSalary = _utilityRepository.ConvertDatabaseValueToString(dataRow["previousComputedGrossSalary"]);
+                payrollEmployees[payrollEmployeesIndex].previousComputedGrossSalaries.Add(Convert.ToDouble(previousSalary));
             }
             return payrollEmployees;
         }
@@ -172,64 +143,68 @@ namespace back_end.Infraestructure
         {
             if (dataTable.Rows.Count <= 0)
             {
-                throw new Exception("Payroll employee table could not be extracted.");
+                throw new Exception("PayrollEmployeeRepository: The query did not return values.");
             }
         }
 
-        private SqlCommand createPayrollEmployeeTableCommand(string employerId, DateOnly startDate, DateOnly endDate)
+        private SqlCommand createPayrollEmployeeTableCommand(PayrollEmployerModel payrollEmployer)
         {
             var query = createPayrollTableQuery();
-            var command = new SqlCommand(query, connectionRepository.connection);
-            command.Parameters.AddWithValue("@employerId", employerId);
-            command.Parameters.AddWithValue("@startDate", startDate);
-            command.Parameters.AddWithValue("@endDate", endDate);
-            command.Parameters.AddWithValue("@endDateMinusOneMonth", startDate.AddMonths(MONTHS_TO_SUBSTRACT));
+            var command = new SqlCommand(query, _connectionRepository.connection);
+            command.Parameters.AddWithValue("@employerId", payrollEmployer.id);
+            command.Parameters.AddWithValue("@endDate", payrollEmployer.endDate);
+            var firstDayOfMonth = new DateOnly(payrollEmployer.endDate.Year, 
+                payrollEmployer.endDate.Month, FIRST_DAY_OF_ANY_MONTH);
+            command.Parameters.AddWithValue("@firstDayOfMonth", firstDayOfMonth);
             return command;
         }
 
         private string createPayrollTableQuery()
         {
-            var query = "SELECT * FROM "
-            + "( "
-            + "SELECT "
-            + "p.id id, p.fechaNacimiento birthDate, "
-            + "pf.genero gender, pf.primerNombre firstName, pf.segundoNombre middleName,pf.primerApellido lastName1,pf.segundoApellido lastName2,"
-            + "e.fechaContratacion hiringDate, "
-            + "c.salarioBruto salary, c.tipoContrato hiringType, "
-            + "h.fecha hoursDate, h.horasTrabajadas hoursNumber, "
-            + "j.nombreAsociacion companyAssociation, "
-            + "bp.cantidadDependientes dependantNumber, "
-            + "d.id deductionId, f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value, "
-            + "f.paramDos param2Value, f.paramTres param3Value, "
-            + "a.paramUnoClave param1Key, a.paramDosClave param2Key, "
-            + "a.paramTresClave param3Key, a.metodo apiMethod, "
-            + "a.headerUnoValor header1Value, a.headerUnoClave header1Key, "
-            + "dp.salarioBruto previousComputedGrossSalary, "
-            + "pla.id payrollId, pla.estado payrollState, pla.fechaInicio payrollStartDate "
-            + "FROM Persona p "
-            + "INNER JOIN Empleado e on e.idPersonaFisica = p.id "
-            + "INNER JOIN PersonaFisica pf on pf.id = p.id "
-            + "INNER JOIN Contrato as c on c.idEmpleado = e.idPersonaFisica "
-            + "LEFT JOIN Horas as h on h.idEmpleado = e.idPersonaFisica "
-            + "and h.[fecha] = ( "
-            + "     SELECT fechaHoras "
-            + "     FROM function_getEmployeeCurrentHours(e.[idPersonaFisica], @startDate, @endDate) "
-            + "     ) "
-            + "INNER JOIN Empleador o on o.idPersonaFisica = e.idEmpleadorContratador "
-            + "INNER JOIN PersonaJuridica j on j.id = o.idPersonaJuridica "
-            + "LEFT JOIN BeneficioPorEmpleado bp on bp.idEmpleado = p.id "
-            + "LEFT JOIN Beneficio b on b.id = bp.idBeneficio "
-            + "LEFT JOIN Deduccion d on d.idBeneficio = b.id "
-            + "LEFT JOIN Formula f on f.id = d.idFormula "
-            + "LEFT JOIN ApiExterna a on a.idFormula = f.id "
-            + "LEFT JOIN DetallePago dp on dp.idEmpleado = e.idPersonaFisica "
-            + "LEFT JOIN Planilla pla on pla.id = dp.idPlanilla "
-            + "WHERE e.idEmpleadorContratador = @employerId and e.fechaDespido is null "
-            + ") payroll "
-            + "WHERE(payroll.payrollState = 'completado' or payroll.payrollState is NULL) AND "
-            + "(payroll.payrollStartDate > @endDateMinusOneMonth or payroll.payrollStartDate is NULL) AND "
-            + "(payroll.hiringDate <= @endDate) "
-            + "ORDER BY payroll.id, payroll.deductionId, payroll.payrollStartDate";
+            var query = @"
+                SELECT
+	                p.id id, p.fechaNacimiento birthDate,
+	                pf.genero gender,
+	                CONCAT_WS(
+		                ' ', pf.primerNombre, pf.segundoNombre, pf.primerApellido,
+                        pf.segundoApellido
+	                ) [name],
+	                e.fechaContratacion hiringDate,
+	                c.salarioBruto salary, c.tipoContrato hiringType,
+	                j.nombreAsociacion companyAssociation,
+	                bp.cantidadDependientes dependantNumber,
+	                d.id deductionId, d.nombre deductionName,
+                    f.tipoFormula formulaType, f.urlAPI apiUrl, f.paramUno param1Value,
+	                f.paramDos param2Value, f.paramTres param3Value,
+	                a.paramUnoClave param1Key, a.paramDosClave param2Key,
+	                a.paramTresClave param3Key, a.metodo apiMethod,
+	                a.headerUnoValor header1Value, a.headerUnoClave header1Key,
+	                dp.salarioBruto previousComputedGrossSalary,
+	                CASE
+		                WHEN pla.fechaInicio < @firstDayOfMonth THEN null
+		                ELSE pla.id
+	                END AS payrollId
+                FROM Persona p
+                INNER JOIN Empleado e on e.idPersonaFisica = p.id
+                INNER JOIN PersonaFisica pf on pf.id = p.id
+                INNER JOIN Contrato as c on c.idEmpleado = e.idPersonaFisica
+                INNER JOIN Empleador o on o.idPersonaFisica = e.idEmpleadorContratador
+                INNER JOIN PersonaJuridica j on j.id = o.idPersonaJuridica
+                LEFT JOIN BeneficioPorEmpleado bp on bp.idEmpleado = p.id
+                LEFT JOIN Beneficio b on b.id = bp.idBeneficio
+                LEFT JOIN Deduccion d on d.idBeneficio = b.id
+                LEFT JOIN Formula f on f.id = d.idFormula
+                LEFT JOIN ApiExterna a on a.idFormula = f.id
+                LEFT JOIN DetallePago dp on dp.idEmpleado = e.idPersonaFisica
+                LEFT JOIN Planilla pla on pla.id = dp.idPlanilla 
+		                  and (pla.estado is null or pla.estado = 'completado') 
+
+                WHERE 
+	                e.idEmpleadorContratador = @employerId and 
+	                e.fechaDespido is null and
+	                e.fechaContratacion <= @endDate
+
+                ORDER BY p.id, d.id, pla.id;";
             return query;
         }
     }

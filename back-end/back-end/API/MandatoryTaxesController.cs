@@ -7,25 +7,24 @@ namespace back_end.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaxCCSSController : GeneralController
+    public class MandatoryTaxesController : GeneralController
     {
-        private readonly ITaxCCSS taxCCSS;
-        public TaxCCSSController()
+        private readonly IMandatoryTaxes mandatoryTaxes;
+
+        public MandatoryTaxesController()
         {
-            taxCCSS = new TaxCCSS();
+            mandatoryTaxes = new MandatoryTaxes();
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult ComputeTaxesCCSS(List<PayrollEmployeeModel> payrollEmployees, 
-            DateOnly endDate)
+        public IActionResult CalculateMandatoryTaxes(List<PayrollEmployeeModel> payrollEmployees)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                payrollEmployees = taxCCSS.computeTaxesCCSS(payrollEmployees, 
-                    endDate);
-                iActionResult = Ok(payrollEmployees);
+                var taxes = mandatoryTaxes.calculateMandatoryTaxes(payrollEmployees);
+                iActionResult = Ok(taxes);
             }
             catch (Exception e)
             {
