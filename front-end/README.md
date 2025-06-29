@@ -1,8 +1,13 @@
-# front-end
+﻿# front-end
 
 ## Project setup
 ```
 npm install
+```
+
+## PDF generator
+```
+npm install html2pdf.js
 ```
 
 ### Compiles and hot-reloads for development
