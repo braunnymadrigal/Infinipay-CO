@@ -161,6 +161,11 @@ export default {
       getCompanyType() {
         return axios.get(`${apiBaseURL}/PayrollEmployer`, authHeader());
       },
+
+      showEmployeeReport() {
+        return axios.get(`${apiBaseURL}/EmployeeReport`, authHeader());
+      },
+
     };
   },
 };
