@@ -163,7 +163,11 @@ export default {
       sendEmail(email) {
         return axios.post(`${apiBaseURL}/Email`
           , email, authHeader());
-      }
+      },
+
+      getCompanyType() {
+        return axios.get(`${apiBaseURL}/PayrollEmployer`, authHeader());
+      },
     };
   },
 };
