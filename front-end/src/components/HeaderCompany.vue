@@ -52,6 +52,11 @@
             <router-link to="/ShowPayrollResults" class="mx-2"
               style="color: #405d72;">Resultados Planilla
             </router-link>
+            
+            <router-link to="/ShowEmployerReport" class="mx-2"
+                         style="color: #405d72;">
+              Reporte Empleador
+            </router-link>
 
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
