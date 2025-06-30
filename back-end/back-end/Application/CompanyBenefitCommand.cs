@@ -6,10 +6,12 @@ namespace back_end.Application
   public class CompanyBenefitCommand : ICompanyBenefitCommand
   {
     private readonly CompanyBenefitRepository companyBenefitRepository;
+    private readonly IEmailCommand emailService;
 
-    public CompanyBenefitCommand(CompanyBenefitRepository companyBenefitRepository)
+    public CompanyBenefitCommand(CompanyBenefitRepository companyBenefitRepository, IEmailCommand emailService)
     {
       this.companyBenefitRepository = companyBenefitRepository;
+      this.emailService = emailService;
     }
 
     public void CreateBenefit(CompanyBenefitDTO benefit
@@ -112,7 +114,7 @@ namespace back_end.Application
         var employeesWithBenefit = companyBenefitRepository.getEmployeesWithBenefit(id);
         if (employeesWithBenefit.Count > 0)
         {
-          Console.WriteLine(string.Join(", ", employeesWithBenefit));
+          
           // Llamar al metodo para enviar el correo electrónico 
           // for each employee ...
         }
@@ -181,6 +183,40 @@ namespace back_end.Application
         "api"
       };
       return opcionesValidas.Contains(deductionType);
+    }
+
+    public async Task<string> sendEmailToEmployees(List<string> employees, string loggedUserNickname, string benefitName)
+    {
+      if (employees == null || employees.Count == 0)
+      {
+        throw new ArgumentException("La lista de empleados no puede estar vacía.");
+      }
+
+      if (string.IsNullOrWhiteSpace(loggedUserNickname))
+      {
+        throw new ArgumentException("El nickname del usuario que envía el correo es requerido.");
+      }
+
+      var emailModel = new EmailModel
+      {
+        recipients = employees,
+        subject = "Nuevo Beneficio Disponible",
+        message = $"Saludos cordiales.\n\n" +
+                  $"Se les informa a todos los empleados que adquirieron el beneficio: '{benefitName}' " +
+                  $", que la empresa ha decidido eliminar este beneficio de su portal. Se les recomienda revisar" +
+                  $" y en caso de tener alguna duda o comentario, contactar con su supervisor o a los medios oficiales" +
+                  $" de la empresa.\n\n" +
+                  $"Saludos.\n\n",
+      };
+
+      try
+      {
+        return await emailService.sendEmail(emailModel);
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error al enviar el correo a los empleados: " + ex.Message);
+      }
     }
 
   }
