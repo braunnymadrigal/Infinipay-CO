@@ -17,53 +17,44 @@ namespace back_end.Application
         private const int MONTHS_IN_A_YEAR = 12;
         private const string HIRING_TYPE_EXCLUDED_FROM_RENT_TAX = "servicios";
 
-        public List<PayrollEmployeeModel> calculateRentTaxes(List<PayrollEmployeeModel> 
-            payrollEmployees, DateOnly endDate)
-        {
-            for (var i = 0; i < payrollEmployees.Count; ++i)
-            {
-                if (payrollEmployees[i].hiringType != HIRING_TYPE_EXCLUDED_FROM_RENT_TAX)
-                {
-                    payrollEmployees[i] = calculateRentTax(payrollEmployees[i], endDate);
-                }
-            }
-            return payrollEmployees;
-        }
+    public List<PayrollEmployeeModel> calculateRentTaxes(List<PayrollEmployeeModel> payrollEmployees, DateOnly endDate)
+    {
+      for (var i = 0; i < payrollEmployees.Count; ++i)
+      {
+        payrollEmployees[i] = calculateRentTax(payrollEmployees[i], endDate);
+      }
+      return payrollEmployees;
+    }
 
-        private PayrollEmployeeModel calculateRentTax(PayrollEmployeeModel
-            payrollEmployee, DateOnly endDate)
-        {
-            if (isTheEndOfTheMonth(endDate))
-            {
-                payrollEmployee.taxes.employeeRent = calculateEndOfMonthTax(payrollEmployee);
-            }
-            else
-            {
-                payrollEmployee.taxes.employeeRent = calculateProjectedTax(payrollEmployee
-                , endDate);
-            }
-            return payrollEmployee;
-        }
 
-        private double calculateEndOfMonthTax(PayrollEmployeeModel employee)
-        {
-            double accumulatedSalaries = sumPreviousSalaries(employee.previousComputedGrossSalaries);
-            double grossSalary = employee.computedGrossSalary + accumulatedSalaries;
-            double fullTax = calculateFullRentTax(grossSalary);
-            double previousTax = calculateFullRentTax(accumulatedSalaries);
-            return fullTax - previousTax;
-        }
+    private PayrollEmployeeModel calculateRentTax(PayrollEmployeeModel payrollEmployee, DateOnly endDate)
+    {
+      if (payrollEmployee.hiringType == HIRING_TYPE_EXCLUDED_FROM_RENT_TAX)
+      {
+        payrollEmployee.taxes.employeeRent = 0.0;
+        return payrollEmployee;
+      }
 
-        private double calculateProjectedTax(PayrollEmployeeModel employee, DateOnly endDate)
-        {
-            var monthsWorked = Math.Max(1, endDate.Month - employee.hiringDate.Month + 1);
-            var projectedAnnualSalary = (employee.computedGrossSalary 
-                * MONTHS_IN_A_YEAR) / monthsWorked;
-            var projectedTax = calculateFullRentTax(projectedAnnualSalary);
-            return projectedTax / MONTHS_IN_A_YEAR;
-        }
+      bool isQuincenal = payrollEmployee.hiringType == "quincenal";
+      bool endOfMonth = isTheEndOfTheMonth(endDate);
 
-        private double calculateFullRentTax(double salary)
+      if (isQuincenal && !endOfMonth)
+      {
+        payrollEmployee.taxes.employeeRent = 0.0;
+        return payrollEmployee;
+      }
+
+      double accumulated = sumPreviousSalaries(payrollEmployee.previousComputedGrossSalaries);
+      double monthlyTotal = accumulated + payrollEmployee.computedGrossSalary;
+      double totalRent = calculateFullRentTax(monthlyTotal);
+      double previousRent = calculateFullRentTax(accumulated);
+
+      payrollEmployee.taxes.employeeRent = totalRent - previousRent;
+
+      return payrollEmployee;
+    }
+
+    private double calculateFullRentTax(double salary)
         {
             var tax = 0.0;
             if (salary > TIER_1_LIMIT)
