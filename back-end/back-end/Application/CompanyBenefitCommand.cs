@@ -96,7 +96,7 @@ namespace back_end.Application
       }
     }
 
-    public void DeleteBenefit(Guid id, string loggedUserNickname) {
+    public async Task DeleteBenefit(Guid id, string loggedUserNickname) {
       if (string.IsNullOrWhiteSpace(loggedUserNickname))
       {
         throw new ArgumentException("loggedUserNickname is required");
@@ -114,9 +114,7 @@ namespace back_end.Application
         var employeesWithBenefit = companyBenefitRepository.getEmployeesWithBenefit(id);
         if (employeesWithBenefit.Count > 0)
         {
-          
-          // Llamar al metodo para enviar el correo electrónico 
-          // for each employee ...
+          await sendEmailToEmployees(employeesWithBenefit, loggedUserNickname, benefit.benefit.name);
         }
         companyBenefitRepository.DeleteBenefit(id, loggedUserNickname);
       } catch (Exception ex) {

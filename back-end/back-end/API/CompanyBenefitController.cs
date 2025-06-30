@@ -179,7 +179,7 @@ namespace back_end.Controllers
                 {
                     return NotFound("Usuario no autenticado");
                 }
-                companybenefitCommand.DeleteBenefit(id, loggedUserNickname);
+                await companybenefitCommand.DeleteBenefit(id, loggedUserNickname);
                 return Ok(true);
             }
             catch(Exception ex) {
