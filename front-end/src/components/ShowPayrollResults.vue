@@ -28,7 +28,7 @@
               <td>{{ fixNameSpacing(employee.employeeName) }}</td>
               <td>{{ formatDate(planilla.payrollStartDate) }} -
                 {{ formatDate(planilla.payrollEndDate) }}</td>
-              <td>₡{{ formatAmount(employee.employeeGrossSalary) }}</td>
+              <td>₡{{ formatAmount(employee.employeeComputedGrossSalary) }}</td>
               <td>
                 <div class="small" v-for="(ded, j) in
                   employee.employeeDeductions" :key="j">
@@ -159,8 +159,8 @@ export default {
         + d.deductionAmount, 0);
 
       return total.toLocaleString('es-CR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       });
     },
     formatDeductionType(deductionType) {
@@ -171,11 +171,13 @@ export default {
       if (t.includes('beneficio')) return 'Beneficios';
       return deductionType.charAt(0).toUpperCase() + deductionType.slice(1);
     },
-    formatAmount(deductionAmount) {
-      if (typeof deductionAmount !== 'number') return deductionAmount;
-      return deductionAmount.toLocaleString('es-CR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+    formatAmount(value) {
+      const number = Number(value || 0);
+      return number.toLocaleString("es-CR", {
+        style: "decimal",
+        useGrouping: true,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       });
     },
     fixNameSpacing(name) {

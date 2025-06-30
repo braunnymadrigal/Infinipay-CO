@@ -7,8 +7,8 @@
     public DateOnly HiringDate { get; set; }
     public string HiringType { get; set; }
     public double ComputedGrossSalary { get; set; }
-    public double RentTax { get; set; }
-    public double CcssTax { get; set; }
+    public PayrollTaxModel EmployeeTaxes { get; set; }
+    public PayrollTaxModel EmployerTaxes { get; set; }
     public List<PayrollDeductionModel> Deductions { get; set; }
     public double TotalDeductions { get; set; }
     public double NetSalary { get; set; }
@@ -22,7 +22,7 @@
   public class EmployeeResult
   {
     public string employeeName { get; set; }
-    public decimal employeeGrossSalary { get; set; }
+    public decimal employeeComputedGrossSalary { get; set; }
     public decimal employeeNetSalary { get; set; }
     public List<DeductionResult> employeeDeductions { get; set; } = new();
 
