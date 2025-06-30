@@ -19,14 +19,12 @@ namespace back_end.API
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult ComputeGrossSalary(List<PayrollEmployeeModel> payrollEmployees, 
-            DateOnly startDate, DateOnly endDate)
+        public IActionResult ComputeGrossSalary(TestGrossSalaryModel testGrossSalaryModel)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var grossSalaries = grossSalary.computeAllGrossSalaries(payrollEmployees, 
-                    startDate, endDate);
+                var grossSalaries = grossSalary.computeAllGrossSalaries(testGrossSalaryModel.payrollEmployees, testGrossSalaryModel.payrollEmployer);
                 iActionResult = Ok(grossSalaries);
             }
             catch (Exception e)

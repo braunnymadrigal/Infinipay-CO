@@ -4,6 +4,6 @@ namespace back_end.Application
 {
     public interface IStrategyGrossSalaryComputation
     {
-        List<PayrollEmployeeModel> ComputeGrossSalary(List<PayrollEmployeeModel> grossSalaries, DateOnly startDate, DateOnly endDate);
+        List<PayrollEmployeeModel> computeGrossSalary(List<PayrollEmployeeModel> grossSalaries, DateOnly startDate, DateOnly endDate);
     }
 }

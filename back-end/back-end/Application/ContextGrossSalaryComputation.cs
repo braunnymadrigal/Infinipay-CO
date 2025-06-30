@@ -4,25 +4,25 @@ namespace back_end.Application
 {
     public class ContextGrossSalaryComputation : IContextGrossSalaryComputation
     {
-        private IStrategyGrossSalaryComputation? strategy;
+        private IStrategyGrossSalaryComputation? _strategy;
 
-        public void SetStrategy(IStrategyGrossSalaryComputation strategy)
+        public void setStrategy(IStrategyGrossSalaryComputation strategy)
         {
-            this.strategy = strategy;
+           _strategy = strategy;
         }
 
-        public List<PayrollEmployeeModel> ComputeGrossSalary(List<PayrollEmployeeModel> payrollEmployees,
+        public List<PayrollEmployeeModel> computeGrossSalary(List<PayrollEmployeeModel> payrollEmployees,
             DateOnly startDate, DateOnly endDate)
         {
-            HandleErrorsProvokedByBadInitialization();
-            return (strategy.ComputeGrossSalary(payrollEmployees, startDate, endDate));
+            handleErrorsProvokedByBadInitialization();
+            return (_strategy.computeGrossSalary(payrollEmployees, startDate, endDate));
         }
 
-        private void HandleErrorsProvokedByBadInitialization()
+        private void handleErrorsProvokedByBadInitialization()
         {
-            if (strategy == null)
+            if (_strategy == null)
             {
-                throw new Exception("ContextGrossSalaryComputation has not been setted correctly.");
+                throw new Exception("ContextGrossSalaryComputation: Strategy is null.");
             }
         }
     }

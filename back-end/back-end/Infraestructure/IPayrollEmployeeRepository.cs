@@ -4,6 +4,6 @@ namespace back_end.Infraestructure
 {
     public interface IPayrollEmployeeRepository
     {
-        List<PayrollEmployeeModel> getPayrollEmployees(string employerId, DateOnly startDate, DateOnly endDate);
+        List<PayrollEmployeeModel> getPayrollEmployees(PayrollEmployerModel payrollEmployer);
     }
 }

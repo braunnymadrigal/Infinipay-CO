@@ -1,4 +1,5 @@
 ﻿using back_end.Application;
+using back_end.Domain;
 using back_end.Infraestructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +19,14 @@ namespace back_end.API
                 , new UtilityRepository()));
         }
 
-        [Authorize(Roles = "empleador")]
-        [HttpGet]
-        public IActionResult GetPayrollEmployees(DateOnly startDate, DateOnly endDate)
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult GetPayrollEmployees(PayrollEmployerModel payrollEmployer)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                var employerId = GetUser().PersonId;
-                var payrollEmployees = payrollEmployee.getPayrollEmployees(employerId, 
-                    startDate, endDate);
+                var payrollEmployees = payrollEmployee.getPayrollEmployees(payrollEmployer);
                 iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)

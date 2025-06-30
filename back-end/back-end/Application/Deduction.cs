@@ -27,37 +27,57 @@ namespace back_end.Application
 
         private const double PERCENTAGE_DIVISOR = 100.0;
 
-        public async Task<List<PayrollEmployeeModel>> computeDeductions(List<PayrollEmployeeModel> payrollEmployees)
+        private const string MONTHLY_PAYMENT_TYPE = "mensual";
+        private const string BIWEEKLY_PAYMENT_TYPE = "quincenal";
+        private const int DEDUCTION_DIVISOR = 2;
+
+        public async Task<List<PayrollEmployeeModel>> calculateDeductions(List<PayrollEmployeeModel> 
+            payrollEmployees, string paymentType)
         {
-            for (int i = 0; i < payrollEmployees.Count; ++i)
+            for (var i = 0; i < payrollEmployees.Count; ++i)
             {
-                var payrollEmployee = payrollEmployees[i];
-                var deductions = payrollEmployee.deductions;
-                for (int j = 0; j < deductions.Count; ++j)
-                {
-                    var deduction = deductions[j];
-                    switch (deduction.formulaType)
-                    {
-                        case DEDUCTION_BY_API:
-                            payrollEmployees[i].deductions[j] = await deductionByApi(deduction, payrollEmployee);
-                            break;
-                        case DEDUCTION_BY_FIXED_AMOUNT:
-                            payrollEmployees[i].deductions[j] = deductionByFixedAmount(deduction);
-                            break;
-                        case DEDUCTION_BY_PERCENTAGE:
-                            payrollEmployees[i].deductions[j] = deductionByPercentage(deduction, payrollEmployees[i].computedGrossSalary);
-                            break;
-                        default:
-                            throw new Exception("A type of deduction is not supported.");
-                    }
-                }
+                payrollEmployees[i] = await calculateAllDeductionsForEmployee(payrollEmployees[i], 
+                    paymentType);
             }
             return payrollEmployees;
         }
 
-        private PayrollDeductionModel deductionByFixedAmount(PayrollDeductionModel deduction)
+        private async Task<PayrollEmployeeModel> calculateAllDeductionsForEmployee(PayrollEmployeeModel 
+            payrollEmployee, string paymentType)
         {
-            deduction.resultAmount = convertStringToDouble(deduction.param1Value);
+            for (var i = 0; i < payrollEmployee.deductions.Count; ++i)
+            {
+                payrollEmployee.deductions[i] =  await calculateSingleDeductionForEmployee(payrollEmployee, 
+                    payrollEmployee.deductions[i], paymentType);
+            }
+            return payrollEmployee;
+        }
+
+        private async Task<PayrollDeductionModel> calculateSingleDeductionForEmployee(PayrollEmployeeModel 
+            payrollEmployee, PayrollDeductionModel deduction, string paymentType)
+        {
+            switch (deduction.formulaType)
+            {
+                case DEDUCTION_BY_API:
+                    deduction = await deductionByApi(deduction, payrollEmployee, paymentType);
+                    break;
+                case DEDUCTION_BY_FIXED_AMOUNT:
+                    deduction = deductionByFixedAmount(deduction, paymentType);
+                    break;
+                case DEDUCTION_BY_PERCENTAGE:
+                    deduction = deductionByPercentage(deduction, payrollEmployee.computedGrossSalary);
+                    break;
+                default:
+                    throw new Exception("Deduction: type of deduction is not supported.");
+            }
+            return deduction;
+        }
+
+        private PayrollDeductionModel deductionByFixedAmount(PayrollDeductionModel deduction, 
+            string paymentType)
+        {
+            var amount = convertStringToDouble(deduction.param1Value);
+            deduction.resultAmount = calculateFixedAmountByPaymentType(amount, paymentType);
             return deduction;
         }
 
@@ -69,7 +89,8 @@ namespace back_end.Application
             return deduction;
         }
 
-        private async Task<PayrollDeductionModel> deductionByApi(PayrollDeductionModel deduction, PayrollEmployeeModel employee)
+        private async Task<PayrollDeductionModel> deductionByApi(PayrollDeductionModel deduction, 
+            PayrollEmployeeModel employee, string paymentType)
         {
             JsonDocument myJsonDoc;
             switch (deduction.apiUrl)
@@ -87,12 +108,24 @@ namespace back_end.Application
                     throw new Exception("Unknown API can not be used.");
             }
             var extractedValue = extractDoubleValue(myJsonDoc.RootElement);
-            deduction.resultAmount = extractedValue;
+            deduction.resultAmount = calculateFixedAmountByPaymentType(extractedValue, paymentType);
             return deduction;
         }
 
-
-
+        private double calculateFixedAmountByPaymentType(double amount, string paymentType)
+        {
+            switch (paymentType)
+            {
+                case MONTHLY_PAYMENT_TYPE:
+                    break;
+                case BIWEEKLY_PAYMENT_TYPE:
+                    amount = amount / DEDUCTION_DIVISOR;
+                    break;
+                default:
+                    throw new Exception("Deduction: Payment type not supported.");
+            }
+            return amount;
+        }
 
         private double convertStringToDouble(string value)
         {

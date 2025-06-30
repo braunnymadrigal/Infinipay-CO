@@ -1,245 +1,344 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Moq;
 using back_end.Application;
 using back_end.Domain;
+using AutoFixture;
 
 namespace Tests
 {
     class GrossSalaryTest
     {
-        IStrategyGrossSalaryComputation weekly;
-        IStrategyGrossSalaryComputation biweekly;
-        IStrategyGrossSalaryComputation monthly;
-        List<PayrollEmployeeModel> employees;
-        DateOnly startDate;
-        DateOnly endDate;
+        private const string EXCEPTION_UNSUPPORTED_PAYMENT_TYPE = "GrossSalary: Improper strategy have been specified.";
+        private const string EXCEPTION_SALARY_BELOW_ZERO = "The computed gross salary can not beless than zero.";
+        private const string EXCEPTION_SALARY_ABOVE_LIMITS = "The computed gross salary can not exceedthe database limitations";
+
+        private Fixture _fixture;
+        private IGrossSalary _grossSalary;
+        private Mock<IContextGrossSalaryComputation> _context;
+        private IStrategyGrossSalaryComputation _biweekly;
+        private IStrategyGrossSalaryComputation _monthly;
 
         [SetUp]
         public void Setup()
         {
-            weekly = new WeeklyGrossSalaryComputation();
-            biweekly = new BiweeklyGrossSalaryComputation();
-            monthly = new MonthlyGrossSalaryComputation();
-            employees = new List<PayrollEmployeeModel> {
-                new PayrollEmployeeModel
-                {
-                    fullName = "Test Employee",
-                    id = "",
-                    gender = "",
-                    birthDate = DateOnly.MinValue,
-                    rentTax = 0.0,
-                    rawGrossSalary = 0.0,
-                    computedGrossSalary = 0.0,
-                    ccssEmployeeDeduction = 0.0,
-                    ccssEmployerDeduction = 0.0,
-                    hiringDate = DateOnly.MinValue,
-                    hiringType = "",
-                    hoursDate = DateOnly.MinValue,
-                    hoursNumber = 0,
-                    companyAssociation = "",
-                    deductions = new List<PayrollDeductionModel>(),
-                    previousComputedGrossSalaries = new List<PayrollPreviousComputedGrossSalary>()
-                }
-            };
+            _fixture = new Fixture();
+            _biweekly = new BiweeklyGrossSalaryComputation();
+            _monthly = new MonthlyGrossSalaryComputation();
+            _context = new Mock<IContextGrossSalaryComputation>();
+            _grossSalary = new GrossSalary(_context.Object);
         }
 
         [Test]
-        public void Test_WeeklyGrossSalaryComputation_0Hours()
+        public void ComputeAllGrossSalaries_ThrowsException_WhenUnsupportedPaymentType()
         {
-            employees[0].hoursNumber = 0;
-            var expectedResult = 0.0;
-            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
-            var result = resultList[0].computedGrossSalary;
-            Assert.That(expectedResult, Is.EqualTo(result));
+            var employer = _fixture.Build<PayrollEmployerModel>()
+                .With(m => m.startDate, DateOnly.MinValue)
+                .With(m => m.endDate, DateOnly.MinValue)
+                .With(m => m.latestEndDate, DateOnly.MinValue)
+                .With(m => m.paymentType, string.Empty)
+                .Create();
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+
+            var exception = Assert.Throws<Exception>(() => _grossSalary.computeAllGrossSalaries(employees, employer));
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_UNSUPPORTED_PAYMENT_TYPE));
+
+            _context.Verify(c => c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()), Times.Never);
+            _context.Verify(c => c.computeGrossSalary(
+                It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()), Times.Never);
         }
 
         [Test]
-        public void Test_WeeklyGrossSalaryComputation_ZeroRawSalary()
+        public void ComputeAllGrossSalaries_ThrowsException_WhenSalaryBelowZero()
         {
-            employees[0].rawGrossSalary = 0.0;
-            employees[0].hoursNumber = 40;
-            var expectedResult = 0.0;
-            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
-            var result = resultList[0].computedGrossSalary;
-            Assert.That(result, Is.EqualTo(expectedResult));
+            var employer = _fixture.Build<PayrollEmployerModel>()
+                .With(m => m.startDate, DateOnly.MinValue)
+                .With(m => m.endDate, DateOnly.MinValue)
+                .With(m => m.latestEndDate, DateOnly.MinValue)
+                .With(m => m.paymentType, "quincenal")
+                .Create();
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.computedGrossSalary, -1)
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+
+            _context.Setup(c => 
+                c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()))
+                .Verifiable();
+
+            _context.Setup(c =>
+                c.computeGrossSalary(It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+                .Returns(employees);
+
+            var exception = Assert.Throws<Exception>(() => _grossSalary.computeAllGrossSalaries(employees, employer));
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_SALARY_BELOW_ZERO));
+
+            _context.Verify(c => c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()), Times.Once);
+            _context.Verify(c => c.computeGrossSalary(
+                It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()), Times.Once);
         }
 
         [Test]
-        public void Test_WeeklyGrossSalaryComputation_OneHour()
+        public void ComputeAllGrossSalaries_ThrowsException_WhenSalaryAboveLimits()
         {
-            employees[0].rawGrossSalary = 25.0;
-            employees[0].hoursNumber = 1;
-            var expectedResult = 25.0;
-            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
-            var result = resultList[0].computedGrossSalary;
-            Assert.That(result, Is.EqualTo(expectedResult));
+            var employer = _fixture.Build<PayrollEmployerModel>()
+                .With(m => m.startDate, DateOnly.MinValue)
+                .With(m => m.endDate, DateOnly.MinValue)
+                .With(m => m.latestEndDate, DateOnly.MinValue)
+                .With(m => m.paymentType, "quincenal")
+                .Create();
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.computedGrossSalary, Double.MaxValue)
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+
+            _context.Setup(c =>
+                c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()))
+                .Verifiable();
+
+            _context.Setup(c =>
+                c.computeGrossSalary(It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+                .Returns(employees);
+
+            var exception = Assert.Throws<Exception>(() => _grossSalary.computeAllGrossSalaries(employees, employer));
+            Assert.That(exception.Message, Is.EqualTo(EXCEPTION_SALARY_ABOVE_LIMITS));
+
+            _context.Verify(c => c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()), Times.Once);
+            _context.Verify(c => c.computeGrossSalary(
+                It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()), Times.Once);
         }
 
         [Test]
-        public void Test_WeeklyGrossSalaryComputation_HighHours()
+        public void ComputeAllGrossSalaries_ReturnsList_WhenValidValues()
         {
-            employees[0].rawGrossSalary = 10.0;
-            employees[0].hoursNumber = 100;
-            var expectedResult = 1000.0;
-            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
-            var result = resultList[0].computedGrossSalary;
-            Assert.That(result, Is.EqualTo(expectedResult));
+            var employer = _fixture.Build<PayrollEmployerModel>()
+                .With(m => m.startDate, DateOnly.MinValue)
+                .With(m => m.endDate, DateOnly.MinValue)
+                .With(m => m.latestEndDate, DateOnly.MinValue)
+                .With(m => m.paymentType, "quincenal")
+                .Create();
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .With(m => m.hiringDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+
+            _context.Setup(c =>
+                c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()))
+                .Verifiable();
+
+            _context.Setup(c =>
+                c.computeGrossSalary(It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+                .Returns(employees);
+
+            var result = _grossSalary.computeAllGrossSalaries(employees, employer);
+
+            Assert.That(result[0].computedGrossSalary, Is.EqualTo(employees[0].computedGrossSalary));
+
+            _context.Verify(c => c.setStrategy(It.IsAny<IStrategyGrossSalaryComputation>()), Times.Once);
+            _context.Verify(c => c.computeGrossSalary(
+                It.IsAny<List<PayrollEmployeeModel>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>()), Times.Once);
         }
 
         [Test]
-        public void Test_WeeklyGrossSalaryComputation_DecimalPrecision()
+        public void BiweeklyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredBeforeStartDate()
         {
-            employees[0].rawGrossSalary = 13.333;
-            employees[0].hoursNumber = 3;
-            var expectedResult = 39.999;
-            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
-            var result = resultList[0].computedGrossSalary;
-            Assert.That(result, Is.EqualTo(expectedResult).Within(0.001));
-        }
-
-        [Test]
-        public void Test_WeeklyGrossSalaryComputation_NegativeHours()
-        {
-            employees[0].rawGrossSalary = 20.0;
-            employees[0].hoursNumber = -5;
-            var expectedResult = -100.0;
-            var resultList = weekly.ComputeGrossSalary(employees, startDate, endDate);
-            var result = resultList[0].computedGrossSalary;
-            Assert.That(result, Is.EqualTo(expectedResult));
-        }
-
-        [Test]
-        public void Test_BiweeklyGrossSalaryComputation_HiredBeforeStartDate()
-        {
-            employees[0].rawGrossSalary = 1000.0;
-            employees[0].hiringDate = new DateOnly(2020, 1, 1);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 15);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 1000.0)
+                .With(m => m.hiringDate, new DateOnly(2020, 1, 1))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 15);
             var expectedResult = 500.0;
-            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _biweekly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]
-        public void Test_BiweeklyGrossSalaryComputation_HiredOnStartDate()
+        public void BiweeklyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredOnStartDate()
         {
-            employees[0].rawGrossSalary = 900.0;
-            employees[0].hiringDate = new DateOnly(2025, 6, 1);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 15);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 900.0)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 1))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 15);
             var expectedResult = 450.0;
-            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _biweekly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
+
         [Test]
-        public void Test_BiweeklyGrossSalaryComputation_HiredAfterStartDate()
+        public void BiweeklyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredAfterStartDate()
         {
-            employees[0].rawGrossSalary = 900.0;
-            employees[0].hiringDate = new DateOnly(2025, 6, 10);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 15);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 900.0)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 10))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 15);
             var expectedWorkedDays = 6;
-            var expectedResult = (900.0 / 15.0) * expectedWorkedDays;
-            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var expectedResult = (450.0 / 15.0) * expectedWorkedDays;
+
+            var resultList = _biweekly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]
-        public void Test_BiweeklyGrossSalaryComputation_HiredOnLastDay()
+        public void BiweeklyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredOnLastDay()
         {
-            employees[0].rawGrossSalary = 600.0;
-            employees[0].hiringDate = new DateOnly(2025, 6, 15);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 15);
-            var expectedResult = (600.0 / 15.0);
-            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 600.0)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 15))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 15);
+            var expectedResult = (300.0 / 15.0);
+
+            var resultList = _biweekly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]
-        public void Test_BiweeklyGrossSalaryComputation_DecimalPrecision()
+        public void BiweeklyGrossSalaryComputation_ReturnsCorrectValue_WithDecimalPrecision()
         {
-            employees[0].rawGrossSalary = 1234.56;
-            employees[0].hiringDate = new DateOnly(2025, 6, 5);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 15);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 1234.56)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 5))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 15);
             var expectedWorkedDays = 11;
-            var expectedResult = (1234.56 / 15.0) * expectedWorkedDays;
-            var resultList = biweekly.ComputeGrossSalary(employees, startDate, endDate);
+            var expectedResult = (1234.56 / 2.0 / 15.0) * expectedWorkedDays;
+
+            var resultList = _biweekly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult).Within(0.01));
         }
 
         [Test]
-        public void Test_MonthlyGrossSalaryComputation_HiredBeforeStartDate()
+        public void MonthlyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredBeforeStartDate()
         {
-            employees[0].rawGrossSalary = 1500.0;
-            employees[0].hiringDate = new DateOnly(2020, 1, 1);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 30);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 1500.0)
+                .With(m => m.hiringDate, new DateOnly(2020, 1, 1))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 30);
             var expectedResult = 1500.0;
-            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _monthly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]
-        public void Test_MonthlyGrossSalaryComputation_HiredOnStartDate()
+        public void MonthlyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredOnStartDate()
         {
-            employees[0].rawGrossSalary = 1800.0;
-            employees[0].hiringDate = new DateOnly(2025, 6, 1);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 30);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 1800.0)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 1))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 30);
             var expectedResult = 1800.0;
-            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _monthly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]
-        public void Test_MonthlyGrossSalaryComputation_HiredAfterStartDate()
+        public void MonthlyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredAfterStartDate()
         {
-            employees[0].rawGrossSalary = 2100.0;
-            employees[0].hiringDate = new DateOnly(2025, 6, 10);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 30);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 2100.0)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 10))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 30);
             var expectedWorkedDays = 21;
             var expectedResult = (2100.0 / 30.0) * expectedWorkedDays;
-            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _monthly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
+
         [Test]
-        public void Test_MonthlyGrossSalaryComputation_HiredOnLastDay()
+        public void MonthlyGrossSalaryComputation_ReturnsCorrectValue_WhenHiredOnLastDay()
         {
-            employees[0].rawGrossSalary = 3000.0;
-            employees[0].hiringDate = new DateOnly(2025, 6, 30);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 30);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 3000.0)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 30))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 30);
             var expectedResult = (3000.0 / 30.0);
-            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _monthly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]
-        public void Test_MonthlyGrossSalaryComputation_DecimalPrecision()
+        public void MonthlyGrossSalaryComputation_ReturnsCorrectValue_WithDecimalPrecision()
         {
-            employees[0].rawGrossSalary = 1789.45;
-            employees[0].hiringDate = new DateOnly(2025, 6, 5);
-            startDate = new DateOnly(2025, 6, 1);
-            endDate = new DateOnly(2025, 6, 30);
+            var employees = _fixture.Build<PayrollEmployeeModel>()
+                .With(m => m.rawGrossSalary, 1789.45)
+                .With(m => m.hiringDate, new DateOnly(2025, 6, 5))
+                .With(m => m.birthDate, DateOnly.MinValue)
+                .CreateMany(1)
+                .ToList();
+            var startDate = new DateOnly(2025, 6, 1);
+            var endDate = new DateOnly(2025, 6, 30);
             var expectedWorkedDays = 26;
             var expectedResult = (1789.45 / 30.0) * expectedWorkedDays;
-            var resultList = monthly.ComputeGrossSalary(employees, startDate, endDate);
+
+            var resultList = _monthly.computeGrossSalary(employees, startDate, endDate);
             var result = resultList[0].computedGrossSalary;
+
             Assert.That(result, Is.EqualTo(expectedResult).Within(0.01));
         }
     }

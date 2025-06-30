@@ -10,23 +10,24 @@ namespace back_end.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DeductionsController : GeneralController
+    public class DeductionController : GeneralController
     {
         private readonly IDeduction deduction;
 
-        public DeductionsController()
+        public DeductionController()
         {
             deduction = new Deduction();
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ComputeDeductions(List<PayrollEmployeeModel> payrollEmployees)
+        public async Task<IActionResult> ComputeDeductions(List<PayrollEmployeeModel> 
+            payrollEmployees, string paymentType)
         {
             IActionResult iActionResult = BadRequest("Unknown error.");
             try
             {
-                payrollEmployees = await deduction.computeDeductions(payrollEmployees);
+                payrollEmployees = await deduction.calculateDeductions(payrollEmployees, paymentType);
                 iActionResult = Ok(payrollEmployees);
             }
             catch (Exception e)

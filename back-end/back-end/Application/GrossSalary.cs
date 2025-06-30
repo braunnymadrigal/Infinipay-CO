@@ -6,54 +6,78 @@ namespace back_end.Application
 {
     public class GrossSalary : IGrossSalary
     {
-        private const int WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 7;
-        private const int BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 15;
-        private const int MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK = 30;
+        private const string BIWEEKLY_PAYMENT_TYPE = "quincenal";
+        private const string MONTHLY_PAYMENT_TYPE = "mensual";
 
-        private int numberOfWorkedDays;
-        private IContextGrossSalaryComputation contextGrossSalaryComputation;
+        private const double P_VALUE_ON_DECIMAL_SQL_TYPE = 11.0;
+        private const double S_VALUE_ON_DECIMAL_SQL_TYPE = 2.0;
+        private const double EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE = 10.0;
+
+        private IContextGrossSalaryComputation _contextGrossSalaryComputation;
 
         public GrossSalary(IContextGrossSalaryComputation contextGrossSalaryComputation)
         {
-            this.contextGrossSalaryComputation = contextGrossSalaryComputation;
+            _contextGrossSalaryComputation = contextGrossSalaryComputation;
         }
 
         public List<PayrollEmployeeModel> computeAllGrossSalaries(List<PayrollEmployeeModel> 
-            payrollEmployees, DateOnly startDate, DateOnly endDate)
+            payrollEmployees, PayrollEmployerModel payrollEmployer)
         {
-            setNumberOfWorkedDays(startDate, endDate);
-            SetGrossSalaryComputationStrategy();
-            payrollEmployees = contextGrossSalaryComputation.ComputeGrossSalary(payrollEmployees, 
-                startDate, endDate);
+            setGrossSalaryComputationStrategy(payrollEmployer.paymentType);
+            payrollEmployees = _contextGrossSalaryComputation.computeGrossSalary(payrollEmployees, 
+                payrollEmployer.startDate, payrollEmployer.endDate);
+            validateComputedGrossSalaries(payrollEmployees);
             return payrollEmployees;
         }
 
-        private void SetGrossSalaryComputationStrategy()
+        private void setGrossSalaryComputationStrategy(string paymentType)
         {
-            switch (numberOfWorkedDays)
+            switch (paymentType)
             {
-                case WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK:
-                    contextGrossSalaryComputation.SetStrategy(new WeeklyGrossSalaryComputation());
+                case BIWEEKLY_PAYMENT_TYPE:
+                    _contextGrossSalaryComputation.setStrategy(new BiweeklyGrossSalaryComputation());
                     break;
-                case BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK:
-                    contextGrossSalaryComputation.SetStrategy(new BiweeklyGrossSalaryComputation());
-                    break;
-                case MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK:
-                    contextGrossSalaryComputation.SetStrategy(new MonthlyGrossSalaryComputation());
+                case MONTHLY_PAYMENT_TYPE:
+                    _contextGrossSalaryComputation.setStrategy(new MonthlyGrossSalaryComputation());
                     break;
                 default:
-                    throw new Exception("Improper Strategy is tried to be set");
+                    throw new Exception("GrossSalary: Improper strategy have been specified.");
             }
         }
 
-        private void setNumberOfWorkedDays(DateOnly startDate, DateOnly endDate)
+        private void validateComputedGrossSalaries(List<PayrollEmployeeModel> payrollEmployees)
         {
-            var rawNumberOfDays = endDate.DayNumber - startDate.DayNumber;
-            numberOfWorkedDays = rawNumberOfDays <= BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK
-                ? BIWEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK : MONTHLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK;
-            if (rawNumberOfDays <= WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK)
+            foreach (var payrollEmployee in payrollEmployees)
             {
-                numberOfWorkedDays = WEEKLY_EMPLOYEE_MAXIMUM_DAYS_OF_WORK;
+                validateComputedGrossSalaryGreaterThanZero(payrollEmployee.computedGrossSalary);
+                validateComputedGrossSalarySize(payrollEmployee.computedGrossSalary);
+            }
+        }
+
+        private void validateComputedGrossSalarySize(double computedGrossSalary)
+        {
+            var maxSize =
+                (Math.Pow(
+                    EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE,
+                    (P_VALUE_ON_DECIMAL_SQL_TYPE - S_VALUE_ON_DECIMAL_SQL_TYPE)
+                    )
+                ) -
+                (Math.Pow(EXPONENTATION_BASE_VALUE_ON_DECIMAL_SQL_TYPE
+                , -S_VALUE_ON_DECIMAL_SQL_TYPE));
+            if (computedGrossSalary > maxSize)
+            {
+                throw new Exception("The computed gross salary can not exceed" +
+                  "the database limitations");
+            }
+        }
+
+        private void validateComputedGrossSalaryGreaterThanZero(double
+          computedGrossSalary)
+        {
+            if (computedGrossSalary < 0)
+            {
+                throw new Exception("The computed gross salary can not be" +
+                  "less than zero.");
             }
         }
     }
