@@ -35,6 +35,14 @@ namespace back_end.Infraestructure
             }
         }
 
+        public void ExecuteStoredProcedure(SqlCommand command)
+        {
+            command.CommandType = CommandType.StoredProcedure;
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+
         private string BuildConnectionString(string connectionStringContext)
         {
             var builder = WebApplication.CreateBuilder();
