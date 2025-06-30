@@ -12,8 +12,7 @@ public class EmployerReportController : GeneralController
   public EmployerReportController()
   {
     repository = new EmployerReportRepository(
-        new ConnectionRepository(),
-        new UtilityRepository()
+        new ConnectionRepository()
     );
   }
 
