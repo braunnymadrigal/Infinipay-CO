@@ -64,7 +64,7 @@ namespace Tests
       {
         try
         {
-          var element = driver.FindElement(By.CssSelector("div.mx-auto"));
+          var element = driver.FindElement(By.CssSelector("div.container.mt-4"));
           return element.Displayed ? element : null;
         }
         catch (NoSuchElementException)
