@@ -266,14 +266,14 @@ public class PayrollOrchestratorRepository
           dp.id AS DetallePagoId,
           dap.monto,
           dap.tipo,
-          d.nombre AS nombreDeduccion -- <-- nombre del beneficio (si aplica)
+          d.nombre AS nombreDeduccion
       FROM Planilla p
       INNER JOIN EmpleadoDePlanilla ep ON ep.idPlanilla = p.id
       INNER JOIN DetallePago dp ON dp.idPlanilla = p.id AND dp.idEmpleado = ep.idEmpleado
       INNER JOIN Empleado e ON e.idPersonaFisica = ep.idEmpleado
       INNER JOIN PersonaFisica pf ON pf.id = e.idPersonaFisica
       LEFT JOIN DeduccionAPago dap ON dap.idDetallePago = dp.id
-      LEFT JOIN Deduccion d ON dap.idDeduccion = d.id -- <--- JOIN aquí
+      LEFT JOIN Deduccion d ON dap.idDeduccion = d.id
       WHERE p.idPersonaJuridica = (
           SELECT idPersonaJuridica FROM Empleador WHERE idPersonaFisica = @employerId
       )
