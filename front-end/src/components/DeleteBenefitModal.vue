@@ -9,7 +9,11 @@
         <button class="btn btn-sm btn-secondary" @click="$emit('close')">
           Cancelar
         </button>
-        <button class="btn btn-sm btn-danger" @click="confirmDelete">
+        <button
+          id="confirmDeleteButton"
+          class="btn btn-sm btn-danger"
+          @click="confirmDelete"
+        >
           Confirmar
         </button>
       </div>

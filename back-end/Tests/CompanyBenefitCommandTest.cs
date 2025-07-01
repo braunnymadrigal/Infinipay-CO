@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Tests
 {
-    class CompanyBenefitCommandTest
+    public class CompanyBenefitCommandTest
     {
         private CompanyBenefitCommand command;
 

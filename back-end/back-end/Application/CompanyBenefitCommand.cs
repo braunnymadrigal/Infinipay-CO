@@ -96,14 +96,15 @@ namespace back_end.Application
       }
     }
 
-    public async Task DeleteBenefit(Guid id, string loggedUserNickname) {
+    public async Task DeleteBenefit(Guid id, string loggedUserNickname) 
+    {
       if (string.IsNullOrWhiteSpace(loggedUserNickname))
       {
         throw new ArgumentException("Nickname del usuario que borra el beneficio es requerido");
       }
       if (id == Guid.Empty)
       {
-        throw new ArgumentNullException("Id del beneficio es requerido");
+        throw new ArgumentException("Id del beneficio es requerido");
       }
       try {
         var benefit = companyBenefitRepository.getBenefitById(id);
@@ -198,7 +199,7 @@ namespace back_end.Application
       var emailModel = new EmailModel
       {
         recipients = employees,
-        subject = "Nuevo Beneficio Disponible",
+        subject = $"Beneficio eliminado: {benefitName}",
         message = $"Saludos cordiales.\n\n" +
                   $"Se les informa a todos los empleados que adquirieron el beneficio: '{benefitName}' " +
                   $", que la empresa ha decidido eliminar este beneficio de su portal. Se les recomienda revisar" +

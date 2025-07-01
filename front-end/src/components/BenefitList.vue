@@ -44,6 +44,7 @@
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button
+                id="deleteBenefitButton"
                 @click="showDeleteModal(benefit)"
                 class="btn btn-danger btn-sm"
                 style="width: 70px; border: transparent"
