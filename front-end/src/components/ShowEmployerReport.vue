@@ -31,7 +31,8 @@
         <div class="shadow p-4 border rounded"
           style="background-color: #fffdfc; margin-bottom: 30px;">
           <p><strong>Empresa:</strong> {{ report.companyName }}</p>
-          <p><strong>Nombre del empleador:</strong> {{ report.fullName }}</p>
+          <p><strong>Nombre del empleador:</strong>
+            {{ fixNameSpacing(report.fullName) }}</p>
           <p><strong>Periodo de pago:</strong> {{
             formatDate(selectedPeriod.startDate) }} - {{
             formatDate(selectedPeriod.endDate) }}</p>
@@ -48,6 +49,14 @@
             </span></p>
           <p class="label-value-line fw-bold"><span>Total salarios:</span>
             <span>₡{{ formatAmount(selectedPeriod.totalSalaries) }}</span></p>
+            
+          <p v-if="selectedPeriod.totalEmployeeVoluntaryDeductions > 0" class="label-value-line fw-bold">
+            <span>Total deducciones voluntarias:</span>
+            <span>₡{{ formatAmount(selectedPeriod.totalEmployeeVoluntaryDeductions) }}</span>
+          </p>
+          <p v-else class="label-value-line">
+            <em>Sin deducciones voluntarias</em>
+          </p>
 
           <h5 class="mt-4">Pagos de ley del empleador</h5>
           <p v-for="tax in visibleEmployerTaxes" :key="tax.key"
@@ -124,7 +133,7 @@ export default {
         totalEmployerOtrasIna: "INA (1.50%)",
         totalEmployerOtrasBpop: "Aporte Banco Popular (0.25%)",
         totalEmployerLptFcl: "FCL - Fondo de Capitalización Laboral (3.00%)",
-        totalEmployerrLptOpc: "Fondo de Pensiones Complementarias (0.50%)",
+        totalEmployerLptOpc: "Fondo de Pensiones Complementarias (0.50%)",
         totalEmployerLptIns: "INS (1.00%)"
       }
     };
@@ -262,6 +271,11 @@ export default {
         this.alertType = "danger";
         this.alertMessage = "Ocurrió un error inesperado al descargar el pdf.";
       }
+    },
+    fixNameSpacing(fullName) {
+      if (!fullName) return "";
+
+      return fullName.replace(/([a-záéíóúñ])([A-ZÁÉÍÓÚÑ])/g, '$1 $2');
     }
   }
 };

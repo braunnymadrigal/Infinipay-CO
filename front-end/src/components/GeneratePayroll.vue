@@ -144,7 +144,6 @@ export default {
       try {
         const response = await this.$api.getCompanyType();
         this.companyType = response.data?.toLowerCase();
-        console.log("Tipo de planilla:", this.companyType);
       } catch (err) {
         if (!err.response) {
           console.error("Network error o sin respuesta");

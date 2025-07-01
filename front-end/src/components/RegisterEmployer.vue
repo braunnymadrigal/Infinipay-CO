@@ -297,19 +297,31 @@ export default {
       };
 
       this.$api.registerEmployer(employerData)
-      .then((response) => {
-        if (response.data === true) {
-          this.alertMessage = "¡Empleador registrado correctamente!";
-          this.alertMessage = "success";
-          setTimeout(() => {
-            this.$router.push('/RegisterCompany');
-          }, 2500);
-        } else {
-          this.alertMessage = "No se pudo registrar el empleador. \
-            Verifica los datos ingresados.";
+        .then((response) => {
+          if (response.data === true) {
+            this.alertMessage = "¡Empleador registrado correctamente!";
+            this.alertType = "success";
+            setTimeout(() => {
+              this.$router.push('/RegisterCompany');
+            }, 2500);
+          } else {
+            this.alertMessage = "No se pudo registrar el empleador. Verifica los datos ingresados.";
+            this.alertType = "danger";
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 409) {
+            this.alertMessage = error.response.data?.message
+              || "Ya existe un registro con los datos ingresados.";
+          } else if (error.response) {
+            this.alertMessage = error.response.data?.message
+              || "Error inesperado: " + error.response.status;
+          } else {
+            this.alertMessage = "No se pudo conectar con el servidor.";
+          }
           this.alertType = "danger";
-        }
-      })
+        });
+
     }
   }
 };

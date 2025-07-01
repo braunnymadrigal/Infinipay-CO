@@ -74,7 +74,12 @@ namespace back_end.Infraestructure
           });
         }
       }
-      return result;
+      return result
+      .OrderBy(e => e.firstLastName)
+      .ThenBy(e => e.secondLastName)
+      .ThenBy(e => e.firstName)
+      .ThenBy(e => e.secondName)
+      .ToList();
     }
 
     public Guid GetEmployerIdOfAdminOrSupervisor(string logguedId)
