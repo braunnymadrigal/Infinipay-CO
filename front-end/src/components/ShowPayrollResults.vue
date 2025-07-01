@@ -11,8 +11,7 @@
         {{ alertMessage }}
       </div>
 
-      <table class="table table-bordered table-hover"
-      v-if="!loading && payroll.length">
+      <table class="table table-bordered table-hover" v-if="!loading && payroll.length">
         <thead class="table-light">
           <tr>
             <th>#</th>
@@ -24,33 +23,29 @@
           </tr>
         </thead>
         <tbody>
-          <template v-for="planilla in paginatedPayroll" :key="planilla.id">
-            <tr v-for="(employee, i) in planilla.payrollEmployees" :key="i">
-              <td>{{ i + 1 }}</td>
-              <td>{{ fixNameSpacing(employee.employeeName) }}</td>
-              <td>{{ formatDate(planilla.payrollStartDate) }} -
-                {{ formatDate(planilla.payrollEndDate) }}</td>
-              <td>₡{{ formatAmount(employee.employeeComputedGrossSalary) }}</td>
-              <td>
-                <div class="small"
-                  v-for="(ded, j) in employee.employeeDeductions" :key="j">
-                  <strong>{{ formatDeductionType(ded.deductionType) }}:</strong>
-                  ₡{{ formatAmount(ded.deductionAmount) }}
-                </div>
-                <div class="fw-bold mt-1">
-                  Total: ₡{{ calculateDeductions(employee.employeeDeductions) }}
-                </div>
-              </td>
-              <td><strong>₡{{ formatAmount(employee.employeeNetSalary)
-                }}</strong></td>
-            </tr>
-          </template>
+          <tr v-for="(item, index) in paginatedEmployees" :key="index">
+            <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+            <td>{{ fixNameSpacing(item.employee.employeeName) }}</td>
+            <td>{{ formatDate(item.planilla.payrollStartDate) }} -
+                {{ formatDate(item.planilla.payrollEndDate) }}</td>
+            <td>₡{{ formatAmount(item.employee.employeeComputedGrossSalary) }}</td>
+            <td>
+              <div class="small"
+                  v-for="(ded, j) in item.employee.employeeDeductions" :key="j">
+                <strong>{{ formatDeductionType(ded.deductionType) }}:</strong>
+                ₡{{ formatAmount(ded.deductionAmount) }}
+              </div>
+              <div class="fw-bold mt-1">
+                Total: ₡{{ calculateDeductions(item.employee.employeeDeductions) }}
+              </div>
+            </td>
+            <td><strong>₡{{ formatAmount(item.employee.employeeNetSalary) }}</strong></td>
+          </tr>
         </tbody>
       </table>
+
       <p class="text-end text-muted">
-        Total de empleados en esta página:
-        {{ paginatedPayroll.reduce((total, p) => total
-        + p.payrollEmployees.length, 0) }}
+        Total de empleados en esta página: {{ paginatedEmployees.length }}
       </p>
 
       <div class="d-flex justify-content-center align-items-center mt-3 mb-4"
@@ -106,13 +101,22 @@ export default {
     };
   },
   computed: {
-    paginatedPayroll() {
+    flattenedEmployees() {
+      const all = [];
+      for (const planilla of this.payroll) {
+        for (const employee of planilla.payrollEmployees) {
+          all.push({ planilla, employee });
+        }
+      }
+      return all;
+    },
+    paginatedEmployees() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      return this.payroll.slice(start, end);
+      return this.flattenedEmployees.slice(start, end);
     },
     totalPages() {
-      return Math.ceil(this.payroll.length / this.itemsPerPage);
+      return Math.ceil(this.flattenedEmployees.length / this.itemsPerPage);
     }
   },
   mounted() {

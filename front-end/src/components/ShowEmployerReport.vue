@@ -31,7 +31,8 @@
         <div class="shadow p-4 border rounded"
           style="background-color: #fffdfc; margin-bottom: 30px;">
           <p><strong>Empresa:</strong> {{ report.companyName }}</p>
-          <p><strong>Nombre del empleador:</strong> {{ report.fullName }}</p>
+          <p><strong>Nombre del empleador:</strong>
+            {{ fixNameSpacing(report.fullName) }}</p>
           <p><strong>Periodo de pago:</strong> {{
             formatDate(selectedPeriod.startDate) }} - {{
             formatDate(selectedPeriod.endDate) }}</p>
@@ -262,6 +263,11 @@ export default {
         this.alertType = "danger";
         this.alertMessage = "Ocurrió un error inesperado al descargar el pdf.";
       }
+    },
+    fixNameSpacing(fullName) {
+      if (!fullName) return "";
+
+      return fullName.replace(/([a-záéíóúñ])([A-ZÁÉÍÓÚÑ])/g, '$1 $2');
     }
   }
 };
