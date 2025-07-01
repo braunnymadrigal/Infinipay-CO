@@ -251,31 +251,33 @@ public class PayrollOrchestratorRepository
     , string employerId)
   {
     var query = @"
-        SELECT 
-            p.id AS PlanillaId,
-            p.fechaInicio,
-            p.fechaFin,
-            p.estado,
-            pf.id AS PersonaFisicaId,
-            pf.primerNombre,
-            pf.segundoNombre,
-            pf.primerApellido,
-            pf.segundoApellido,
-            dp.salarioBruto,
-            dp.salarioNeto,
-            dp.id AS DetallePagoId,
-            dap.monto,
-            dap.tipo
-        FROM Planilla p
-        INNER JOIN EmpleadoDePlanilla ep ON ep.idPlanilla = p.id
-        INNER JOIN DetallePago dp ON dp.idPlanilla = p.id AND dp.idEmpleado = ep.idEmpleado
-        INNER JOIN Empleado e ON e.idPersonaFisica = ep.idEmpleado
-        INNER JOIN PersonaFisica pf ON pf.id = e.idPersonaFisica
-        LEFT JOIN DeduccionAPago dap ON dap.idDetallePago = dp.id
-        WHERE p.idPersonaJuridica = (
-            SELECT idPersonaJuridica FROM Empleador WHERE idPersonaFisica = @employerId
-        )
-        ORDER BY p.fechaInicio DESC, pf.primerApellido ASC";
+      SELECT 
+          p.id AS PlanillaId,
+          p.fechaInicio,
+          p.fechaFin,
+          p.estado,
+          pf.id AS PersonaFisicaId,
+          pf.primerNombre,
+          pf.segundoNombre,
+          pf.primerApellido,
+          pf.segundoApellido,
+          dp.salarioBruto,
+          dp.salarioNeto,
+          dp.id AS DetallePagoId,
+          dap.monto,
+          dap.tipo,
+          d.nombre AS nombreDeduccion -- <-- nombre del beneficio (si aplica)
+      FROM Planilla p
+      INNER JOIN EmpleadoDePlanilla ep ON ep.idPlanilla = p.id
+      INNER JOIN DetallePago dp ON dp.idPlanilla = p.id AND dp.idEmpleado = ep.idEmpleado
+      INNER JOIN Empleado e ON e.idPersonaFisica = ep.idEmpleado
+      INNER JOIN PersonaFisica pf ON pf.id = e.idPersonaFisica
+      LEFT JOIN DeduccionAPago dap ON dap.idDetallePago = dp.id
+      LEFT JOIN Deduccion d ON dap.idDeduccion = d.id -- <--- JOIN aquí
+      WHERE p.idPersonaJuridica = (
+          SELECT idPersonaJuridica FROM Empleador WHERE idPersonaFisica = @employerId
+      )
+      ORDER BY p.fechaInicio DESC, pf.primerApellido ASC, pf.segundoApellido ASC";
 
     var dataBaseRows = new List<Dictionary<string, object>>();
 
@@ -321,8 +323,18 @@ public class PayrollOrchestratorRepository
       string tipo = (string)row["tipo"];
       if (!tipo.StartsWith("empleador_"))
       {
-        string displayName = DeductionDisplayNames.ContainsKey(tipo)
-          ? DeductionDisplayNames[tipo] : tipo;
+        string displayName;
+        if (tipo == "empleado_beneficio" && row.ContainsKey("nombreDeduccion") && row["nombreDeduccion"] != null)
+        {
+          displayName = row["nombreDeduccion"].ToString();
+        }
+        else
+        {
+          displayName = DeductionDisplayNames.ContainsKey(tipo)
+            ? DeductionDisplayNames[tipo]
+            : tipo;
+        }
+
         filteredEmployees[paymentDetailsId].addDeduction(new DeductionResult
         {
           deductionAmount = (decimal)row["monto"],
