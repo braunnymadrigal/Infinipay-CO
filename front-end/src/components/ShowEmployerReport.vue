@@ -49,6 +49,14 @@
             </span></p>
           <p class="label-value-line fw-bold"><span>Total salarios:</span>
             <span>₡{{ formatAmount(selectedPeriod.totalSalaries) }}</span></p>
+            
+          <p v-if="selectedPeriod.totalEmployeeVoluntaryDeductions > 0" class="label-value-line fw-bold">
+            <span>Total deducciones voluntarias:</span>
+            <span>₡{{ formatAmount(selectedPeriod.totalEmployeeVoluntaryDeductions) }}</span>
+          </p>
+          <p v-else class="label-value-line">
+            <em>Sin deducciones voluntarias</em>
+          </p>
 
           <h5 class="mt-4">Pagos de ley del empleador</h5>
           <p v-for="tax in visibleEmployerTaxes" :key="tax.key"
