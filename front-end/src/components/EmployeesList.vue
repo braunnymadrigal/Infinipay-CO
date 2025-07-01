@@ -22,6 +22,7 @@
     >
       <thead>
         <tr>
+          <th style="white-space: nowrap">#</th>
           <th style="white-space: nowrap">Nombre</th>
           <th style="white-space: nowrap">Cédula</th>
           <th style="white-space: nowrap">Correo</th>
@@ -30,7 +31,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="employee in employees" :key="employee.id">
+        <tr v-for="(employee, index) in employees" :key="employee.id">
+          <td>{{ index + 1 }}</td>
           <td>{{ employee.completeName }}</td>
           <td>{{ employee.identification }}</td>
           <td>{{ employee.email }}</td>
@@ -49,6 +51,7 @@
         </tr>
       </tbody>
     </table>
+    <p class="text-end text-muted">Total de empleados: {{ employees.length }}</p>
   </div>
 
   <div

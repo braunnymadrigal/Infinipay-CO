@@ -15,6 +15,7 @@
       v-if="!loading && payroll.length">
         <thead class="table-light">
           <tr>
+            <th>#</th>
             <th>Empleado</th>
             <th>Periodo</th>
             <th>Salario Bruto</th>
@@ -25,13 +26,14 @@
         <tbody>
           <template v-for="planilla in paginatedPayroll" :key="planilla.id">
             <tr v-for="(employee, i) in planilla.payrollEmployees" :key="i">
+              <td>{{ i + 1 }}</td>
               <td>{{ fixNameSpacing(employee.employeeName) }}</td>
               <td>{{ formatDate(planilla.payrollStartDate) }} -
                 {{ formatDate(planilla.payrollEndDate) }}</td>
               <td>₡{{ formatAmount(employee.employeeComputedGrossSalary) }}</td>
               <td>
-                <div class="small" v-for="(ded, j) in
-                  employee.employeeDeductions" :key="j">
+                <div class="small"
+                  v-for="(ded, j) in employee.employeeDeductions" :key="j">
                   <strong>{{ formatDeductionType(ded.deductionType) }}:</strong>
                   ₡{{ formatAmount(ded.deductionAmount) }}
                 </div>
@@ -39,11 +41,17 @@
                   Total: ₡{{ calculateDeductions(employee.employeeDeductions) }}
                 </div>
               </td>
-              <td><strong>₡{{ formatAmount(employee.employeeNetSalary) }}</strong></td>
+              <td><strong>₡{{ formatAmount(employee.employeeNetSalary)
+                }}</strong></td>
             </tr>
           </template>
         </tbody>
       </table>
+      <p class="text-end text-muted">
+        Total de empleados en esta página:
+        {{ paginatedPayroll.reduce((total, p) => total
+        + p.payrollEmployees.length, 0) }}
+      </p>
 
       <div class="d-flex justify-content-center align-items-center mt-3 mb-4"
       v-if="totalPages > 1" style="gap: 15px;">
@@ -163,13 +171,17 @@ export default {
         maximumFractionDigits: 0
       });
     },
-    formatDeductionType(deductionType) {
-      if (!deductionType) return '';
-      const t = deductionType.toLowerCase();
+    formatDeductionType(type) {
+      if (!type) return '';
+      if (!type.startsWith('empleado_') && !type.startsWith('empleador_')) {
+        return type;
+      }
+
+      const t = type.toLowerCase();
       if (t.includes('ccss')) return 'CCSS';
       if (t.includes('renta')) return 'Renta';
       if (t.includes('beneficio')) return 'Beneficios';
-      return deductionType.charAt(0).toUpperCase() + deductionType.slice(1);
+      return type.charAt(0).toUpperCase() + type.slice(1);
     },
     formatAmount(value) {
       const number = Number(value || 0);
