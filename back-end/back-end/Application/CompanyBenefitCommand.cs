@@ -5,10 +5,10 @@ namespace back_end.Application
 {
   public class CompanyBenefitCommand : ICompanyBenefitCommand
   {
-    private readonly CompanyBenefitRepository companyBenefitRepository;
+    private readonly ICompanyBenefitRepository companyBenefitRepository;
     private readonly IEmailCommand emailService;
 
-    public CompanyBenefitCommand(CompanyBenefitRepository companyBenefitRepository, IEmailCommand emailService)
+    public CompanyBenefitCommand(ICompanyBenefitRepository companyBenefitRepository, IEmailCommand emailService)
     {
       this.companyBenefitRepository = companyBenefitRepository;
       this.emailService = emailService;
@@ -99,11 +99,11 @@ namespace back_end.Application
     public async Task DeleteBenefit(Guid id, string loggedUserNickname) {
       if (string.IsNullOrWhiteSpace(loggedUserNickname))
       {
-        throw new ArgumentException("loggedUserNickname is required");
+        throw new ArgumentException("Nickname del usuario que borra el beneficio es requerido");
       }
       if (id == Guid.Empty)
       {
-        throw new ArgumentNullException("id is required");
+        throw new ArgumentNullException("Id del beneficio es requerido");
       }
       try {
         var benefit = companyBenefitRepository.getBenefitById(id);

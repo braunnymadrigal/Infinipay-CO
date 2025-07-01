@@ -87,7 +87,7 @@ builder.Services.AddScoped<IEmployeeHoursCommand, EmployeeHoursCommand>();
 
 builder.Services.AddScoped<IRentTax, RentTax>();
 builder.Services.AddScoped<EmployeeBenefitRepository>();
-builder.Services.AddScoped<CompanyBenefitRepository>();
+builder.Services.AddScoped<ICompanyBenefitRepository, CompanyBenefitRepository>();
 builder.Services.AddScoped<ICompanyBenefitCommand, CompanyBenefitCommand>();
 builder.Services.AddScoped<IEmailCommand, EmailCommand>();
 builder.Services.Configure<EmailCommand>(

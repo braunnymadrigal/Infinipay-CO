@@ -9,12 +9,12 @@ namespace Tests
 {
     class CompanyBenefitCommandTest
     {
-        CompanyBenefitCommand command;
+        private CompanyBenefitCommand command;
 
         [SetUp]
         public void Setup()
         {
-            command = new CompanyBenefitCommand(null, null);
+            this.command = new CompanyBenefitCommand(null, null);
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace Tests
                     paramOneAPI = "45"
                 }
             };
-            Assert.That(command.IsPercentageValid(dto), Is.True);
+            Assert.That(this.command.IsPercentageValid(dto), Is.True);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Tests
                     paramOneAPI = "abc"
                 }
             };
-            Assert.That(command.IsPercentageValid(dto), Is.False);
+            Assert.That(this.command.IsPercentageValid(dto), Is.False);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Tests
                     paramOneAPI = "150"
                 }
             };
-            Assert.That(command.IsPercentageValid(dto), Is.False);
+            Assert.That(this.command.IsPercentageValid(dto), Is.False);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Tests
                     deductionType = "api"
                 }
             };
-            Assert.That(command.IsDeductionTypeValid(dto), Is.True);
+            Assert.That(this.command.IsDeductionTypeValid(dto), Is.True);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Tests
                     deductionType = "descuento"
                 }
             };
-            Assert.That(command.IsDeductionTypeValid(dto), Is.False);
+            Assert.That(this.command.IsDeductionTypeValid(dto), Is.False);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Tests
                     elegibleEmployees = "tiempoCompleto"
                 }
             };
-            Assert.That(command.IsElegibleEmployeesValid(dto), Is.True);
+            Assert.That(this.command.IsElegibleEmployeesValid(dto), Is.True);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Tests
                     elegibleEmployees = "interno"
                 }
             };
-            Assert.That(command.IsElegibleEmployeesValid(dto), Is.False);
+            Assert.That(this.command.IsElegibleEmployeesValid(dto), Is.False);
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace Tests
                     minEmployeeTime = 2
                 }
             };
-            Assert.That(command.IsMinEmployeeTimeValid(dto), Is.True);
+            Assert.That(this.command.IsMinEmployeeTimeValid(dto), Is.True);
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace Tests
                     minEmployeeTime = -1
                 }
             };
-            Assert.That(command.IsMinEmployeeTimeValid(dto), Is.False);
+            Assert.That(this.command.IsMinEmployeeTimeValid(dto), Is.False);
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace Tests
                     deductionType = "API"
                 }
             };
-            Assert.That(command.IsDeductionTypeValid(dto), Is.False);
+            Assert.That(this.command.IsDeductionTypeValid(dto), Is.False);
         }
 
     }

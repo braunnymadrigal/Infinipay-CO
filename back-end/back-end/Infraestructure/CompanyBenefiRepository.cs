@@ -9,7 +9,7 @@ using back_end.Application;
 
 namespace back_end.Repositories
 {
-    public class CompanyBenefitRepository : IBenefitRepository<CompanyBenefitDTO>
+    public class CompanyBenefitRepository : ICompanyBenefitRepository
     {
         private SqlConnection _connection;
         private string _connectionRoute;

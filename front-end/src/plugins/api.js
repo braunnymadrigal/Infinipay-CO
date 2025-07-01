@@ -167,6 +167,13 @@ export default {
       getCompanyType() {
         return axios.get(`${apiBaseURL}/PayrollEmployer`, authHeader());
       },
+
+      deleteCompanyBenefit(benefitId) {
+        return axios.delete(
+          `${apiBaseURL}/CompanyBenefit/${benefitId}`,
+          authHeader()
+        );
+      },
     };
   },
 };
