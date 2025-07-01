@@ -135,10 +135,6 @@ export default {
           this.alertType = "warning";
         }
       } catch (err) {
-        console.log('Error:', err);
-        console.log('Response:', err.response);
-        console.log('Status:', err.response?.status);
-        console.log('Data:', err.response?.data);
 
         if (!err.response) {
           this.alertMessage = "No tiene permisos para acceder a las planillas.";

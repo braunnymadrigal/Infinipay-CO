@@ -278,10 +278,6 @@ export default {
       this.$router.push("/RegisterEmployee");
     },
 
-    editExample() {
-      //alert("Próximamente llegará la opción 'Editar'.");
-    },
-
     getProfile() {
       this.$api
         .getProfile()
@@ -289,12 +285,8 @@ export default {
           this.showPopup = false;
           this.profile = response.data;
         })
-        .catch((error) => {
+        .catch(() => {
           this.showPopup = true;
-          console.log(error);
-          // setTimeout(() => {
-          //   this.$router.push('LoginUser');
-          // }, 4000);
         });
     },
   },

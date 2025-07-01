@@ -306,7 +306,6 @@ export default {
 
       this.$api.registerCompany(companyData)
       .then(function(response) {
-        console.log("Respuesta del servidor:", response.data);
         if (response.data === true) {
           this.alertMessage ='¡Empresa registrada exitosamente!';
           this.alertType = "success";
