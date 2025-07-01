@@ -40,9 +40,9 @@ namespace back_end.Infraestructure
 
         isSuccess = true;
       }
-      catch (SqlException ex)
+      catch (SqlException)
       {
-        throw new Exception("No se pudo crear nuevo empleado " + ex.Message);
+        throw;
       }
       finally
       {

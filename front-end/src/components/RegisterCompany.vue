@@ -315,7 +315,7 @@ export default {
           }, 2500);
         } else {
             this.alertMessage =
-              "No se pudo registrar el empleador. Verifica los datos ingresados.";
+              "No se pudo registrar la empresa. Verifica los datos ingresados.";
             this.alertType = "danger";
             setTimeout(() => {
               this.$router.push('/');
