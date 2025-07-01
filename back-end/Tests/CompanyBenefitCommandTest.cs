@@ -14,7 +14,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            command = new CompanyBenefitCommand(null);
+            command = new CompanyBenefitCommand(null, null);
         }
 
         [Test]
