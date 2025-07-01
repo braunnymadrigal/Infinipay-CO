@@ -495,6 +495,7 @@ export default {
       if (error.response) {
         const message = error.response.data?.message || "Error desconocido";
         this.alertMessage =(message);
+        this.alertType ="danger";
         setTimeout(() => {
           this.$router.push('MyProfile');
       }, 2500);

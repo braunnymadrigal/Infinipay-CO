@@ -300,7 +300,7 @@ export default {
       .then((response) => {
         if (response.data === true) {
           this.alertMessage = "¡Empleador registrado correctamente!";
-          this.alertMessage = "success";
+          this.alertType = "success";
           setTimeout(() => {
             this.$router.push('/RegisterCompany');
           }, 2500);
