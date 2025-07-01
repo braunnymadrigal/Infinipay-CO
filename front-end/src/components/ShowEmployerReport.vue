@@ -125,7 +125,7 @@ export default {
         totalEmployerOtrasIna: "INA (1.50%)",
         totalEmployerOtrasBpop: "Aporte Banco Popular (0.25%)",
         totalEmployerLptFcl: "FCL - Fondo de Capitalización Laboral (3.00%)",
-        totalEmployerrLptOpc: "Fondo de Pensiones Complementarias (0.50%)",
+        totalEmployerLptOpc: "Fondo de Pensiones Complementarias (0.50%)",
         totalEmployerLptIns: "INS (1.00%)"
       }
     };
