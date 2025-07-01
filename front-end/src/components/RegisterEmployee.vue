@@ -482,23 +482,42 @@ export default {
         creationYear: Number(this.creationYear),
       };
 
-    this.$api.registerEmployee(employeeData)
+  this.$api.registerEmployee(employeeData)
     .then(() => {
       this.showPopup = false;
-      this.alertMessage ="¡Empleado registrado exitosamente!";
+      this.alertMessage = "¡Empleado registrado exitosamente!";
+      this.alertType = "success";
+
       setTimeout(() => {
-          this.$router.push('MyProfile');
+        this.$router.push('MyProfile');
       }, 2500);
     })
     .catch((error) => {
-      this.showPopup = true;
+      this.showPopup = false;
+
       if (error.response) {
+        const status = error.response.status;
         const message = error.response.data?.message || "Error desconocido";
-        this.alertMessage =(message);
-        setTimeout(() => {
-          this.$router.push('MyProfile');
-      }, 2500);
+
+        if (status === 409) {
+          this.alertMessage = message;
+          this.alertType = "danger";
+        } else if (status === 403 || status === 401) {
+          this.showPopup =true;
+          this.alertMessage = "No tiene permisos para realizar esta acción.";
+          this.alertType = "danger";
+        } else {
+          this.alertMessage = "Error inesperado: " + message;
+          this.alertType = "danger";
+        }
+      } else {
+        this.alertMessage = "No se pudo conectar con el servidor.";
+        this.alertType = "danger";
       }
+
+      setTimeout(() => {
+        this.$router.push('MyProfile');
+      }, 2500);
     });
   }
 },

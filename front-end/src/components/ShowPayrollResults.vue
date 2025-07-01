@@ -1,20 +1,26 @@
 <template>
   <div>
     <HeaderCompany />
-    <div class="container mt-4 text-center">
+
+    <div v-if="showPopup" class="d-flex justify-content-center my-5 py-5">
+      <div class="display-1 text-danger" style="padding: 150px;">
+        No tiene permisos para acceder a los resultados de planillas.
+      </div>
+    </div>
+
+    <div v-else class="container mt-4 text-center">
       <h1 style="color: #405D72; margin-bottom: 40px;">
         Planillas de empleados</h1>
-
       <div v-if="alertMessage" :class="['alert', alertType === 'success' ?
         'alert-success' : 'alert-danger']" role="alert"
         style="margin-bottom: 20px;">
         {{ alertMessage }}
       </div>
 
-      <table class="table table-bordered table-hover"
-      v-if="!loading && payroll.length">
+      <table class="table table-bordered table-hover" v-if="!loading && payroll.length">
         <thead class="table-light">
           <tr>
+            <th>#</th>
             <th>Empleado</th>
             <th>Periodo</th>
             <th>Salario Bruto</th>
@@ -23,27 +29,30 @@
           </tr>
         </thead>
         <tbody>
-          <template v-for="planilla in paginatedPayroll" :key="planilla.id">
-            <tr v-for="(employee, i) in planilla.payrollEmployees" :key="i">
-              <td>{{ fixNameSpacing(employee.employeeName) }}</td>
-              <td>{{ formatDate(planilla.payrollStartDate) }} -
-                {{ formatDate(planilla.payrollEndDate) }}</td>
-              <td>₡{{ formatAmount(employee.employeeComputedGrossSalary) }}</td>
-              <td>
-                <div class="small" v-for="(ded, j) in
-                  employee.employeeDeductions" :key="j">
-                  <strong>{{ formatDeductionType(ded.deductionType) }}:</strong>
-                  ₡{{ formatAmount(ded.deductionAmount) }}
-                </div>
-                <div class="fw-bold mt-1">
-                  Total: ₡{{ calculateDeductions(employee.employeeDeductions) }}
-                </div>
-              </td>
-              <td><strong>₡{{ formatAmount(employee.employeeNetSalary) }}</strong></td>
-            </tr>
-          </template>
+          <tr v-for="(item, index) in paginatedEmployees" :key="index">
+            <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+            <td>{{ fixNameSpacing(item.employee.employeeName) }}</td>
+            <td>{{ formatDate(item.planilla.payrollStartDate) }} -
+                {{ formatDate(item.planilla.payrollEndDate) }}</td>
+            <td>₡{{ formatAmount(item.employee.employeeComputedGrossSalary) }}</td>
+            <td>
+              <div class="small"
+                  v-for="(ded, j) in item.employee.employeeDeductions" :key="j">
+                <strong>{{ formatDeductionType(ded.deductionType) }}:</strong>
+                ₡{{ formatAmount(ded.deductionAmount) }}
+              </div>
+              <div class="fw-bold mt-1">
+                Total: ₡{{ calculateDeductions(item.employee.employeeDeductions) }}
+              </div>
+            </td>
+            <td><strong>₡{{ formatAmount(item.employee.employeeNetSalary) }}</strong></td>
+          </tr>
         </tbody>
       </table>
+
+      <p class="text-end text-muted">
+        Total de empleados en esta página: {{ paginatedEmployees.length }}
+      </p>
 
       <div class="d-flex justify-content-center align-items-center mt-3 mb-4"
       v-if="totalPages > 1" style="gap: 15px;">
@@ -95,16 +104,27 @@ export default {
       loading: true,
       alertMessage: "",
       alertType: "",
+      showPopup: false
+
     };
   },
   computed: {
-    paginatedPayroll() {
+    flattenedEmployees() {
+      const all = [];
+      for (const planilla of this.payroll) {
+        for (const employee of planilla.payrollEmployees) {
+          all.push({ planilla, employee });
+        }
+      }
+      return all;
+    },
+    paginatedEmployees() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      return this.payroll.slice(start, end);
+      return this.flattenedEmployees.slice(start, end);
     },
     totalPages() {
-      return Math.ceil(this.payroll.length / this.itemsPerPage);
+      return Math.ceil(this.flattenedEmployees.length / this.itemsPerPage);
     }
   },
   mounted() {
@@ -123,10 +143,6 @@ export default {
           this.alertType = "warning";
         }
       } catch (err) {
-        console.log('Error:', err);
-        console.log('Response:', err.response);
-        console.log('Status:', err.response?.status);
-        console.log('Data:', err.response?.data);
 
         if (!err.response) {
           this.alertMessage = "No tiene permisos para acceder a las planillas.";
@@ -135,8 +151,7 @@ export default {
           const errorMessage = err.response.data?.message || err.message;
 
           if (statusCode === 403) {
-            this.alertMessage =
-              "No tiene permisos para acceder a las planillas.";
+            this.showPopup = true;
           } else if (statusCode === 500) {
             this.alertMessage = "Error del servidor: " + errorMessage;
           } else {
@@ -163,13 +178,17 @@ export default {
         maximumFractionDigits: 0
       });
     },
-    formatDeductionType(deductionType) {
-      if (!deductionType) return '';
-      const t = deductionType.toLowerCase();
+    formatDeductionType(type) {
+      if (!type) return '';
+      if (!type.startsWith('empleado_') && !type.startsWith('empleador_')) {
+        return type;
+      }
+
+      const t = type.toLowerCase();
       if (t.includes('ccss')) return 'CCSS';
       if (t.includes('renta')) return 'Renta';
       if (t.includes('beneficio')) return 'Beneficios';
-      return deductionType.charAt(0).toUpperCase() + deductionType.slice(1);
+      return type.charAt(0).toUpperCase() + type.slice(1);
     },
     formatAmount(value) {
       const number = Number(value || 0);

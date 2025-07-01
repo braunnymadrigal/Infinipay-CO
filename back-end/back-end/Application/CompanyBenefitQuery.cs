@@ -5,9 +5,9 @@ namespace back_end.Application
 {
   public class CompanyBenefitQuery : IBenefitQuery<CompanyBenefitDTO>
   {
-    private readonly CompanyBenefitRepository companyBenefitRepository;
+    private readonly ICompanyBenefitRepository companyBenefitRepository;
 
-    public CompanyBenefitQuery(CompanyBenefitRepository companyBenefitRepository)
+    public CompanyBenefitQuery(ICompanyBenefitRepository companyBenefitRepository)
     {
       this.companyBenefitRepository = companyBenefitRepository;
     }
