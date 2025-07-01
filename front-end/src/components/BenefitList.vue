@@ -44,35 +44,53 @@
           <td>
             <div class="d-flex justify-content-center gap-2">
               <button
+                id="deleteBenefitButton"
+                @click="showDeleteModal(benefit)"
                 class="btn btn-danger btn-sm"
                 style="width: 70px; border: transparent"
               >
                 Eliminar
               </button>
-              <router-link :to="'/BenefitDetails/' + benefit.id">
-                <router-link
-                  :to="`/BenefitUpdate/${benefit.benefit.id}`"
-                  class="btn btn-primary btn-sm"
-                  style="
-                    background-color: #405d72;
-                    border: transparent;
-                    width: 70px;
-                  "
-                >
-                  Editar
-                </router-link>
+              <router-link
+                :to="`/BenefitUpdate/${benefit.benefit.id}`"
+                class="btn btn-primary btn-sm"
+                style="
+                  background-color: #405d72;
+                  border: transparent;
+                  width: 70px;
+                "
+              >
+                Editar
               </router-link>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
+    <DeleteBenefitModal
+      v-if="toggleDeleteModal"
+      :benefit="benefitToDelete"
+      @close="toggleDeleteModal = false"
+      @deleted="updateTable"
+    />
+    <div
+      v-if="showAlert"
+      :class="[
+        'alert',
+        alertType === 'success' ? 'alert-success' : 'alert-danger',
+      ]"
+      role="alert"
+      style="margin-bottom: 20px"
+    >
+      {{ alertMessage }}
+    </div>
   </div>
 
   <MainFooter />
 </template>
 
 <script>
+import DeleteBenefitModal from "./DeleteBenefitModal.vue";
 import HeaderCompany from "./HeaderCompany.vue";
 import MainFooter from "./MainFooter.vue";
 
@@ -81,10 +99,16 @@ export default {
   components: {
     HeaderCompany,
     MainFooter,
+    DeleteBenefitModal,
   },
   data() {
     return {
       benefits: [],
+      toggleDeleteModal: false,
+      benefitToDelete: null,
+      showAlert: false,
+      alertMessage: "Beneficio eliminado correctamente.",
+      alertType: "success",
     };
   },
   methods: {
@@ -112,6 +136,17 @@ export default {
         default:
           return "";
       }
+    },
+    showDeleteModal(benefit) {
+      this.benefitToDelete = benefit;
+      this.toggleDeleteModal = true;
+    },
+    updateTable() {
+      this.getBenefits();
+      this.showAlert = true;
+      setTimeout(() => {
+        this.showAlert = false;
+      }, 5000);
     },
   },
   mounted() {
