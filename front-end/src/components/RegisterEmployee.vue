@@ -486,6 +486,8 @@ export default {
     .then(() => {
       this.showPopup = false;
       this.alertMessage ="¡Empleado registrado exitosamente!";
+      this.alertType ="success";
+
       setTimeout(() => {
           this.$router.push('MyProfile');
       }, 2500);
