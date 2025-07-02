@@ -46,13 +46,15 @@
             </router-link>
 
             <router-link to="/GeneratePayroll" class="mx-2"
-              style="color: #405d72;">Generar Planilla
+                         style="color: #405d72;">
+              Generar Planilla
             </router-link>
 
             <router-link to="/ShowPayrollResults" class="mx-2"
-              style="color: #405d72;">Resultados Planilla
+                         style="color: #405d72;">
+              Resultados Planilla
             </router-link>
-            
+
             <router-link to="/ShowEmployerReport" class="mx-2"
                          style="color: #405d72;">
               Reporte Empleador
@@ -62,7 +64,12 @@
                          style="color: #405d72;">
               Reporte Empleados
             </router-link>
-            
+
+            <router-link to="/AdministratorReport" class="mx-2"
+                         style="color: #405d72;">
+              Historial Planillas
+            </router-link>
+
             <a @click="logout" class="mx-2" style="color: #405d72; cursor: pointer;">
               Salir
             </a>

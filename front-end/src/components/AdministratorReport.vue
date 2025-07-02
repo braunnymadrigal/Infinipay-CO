@@ -1,7 +1,7 @@
 ﻿<template>
   <div>
     <HeaderCompany />
-    <div class="container mt-4 text-center">
+    <div id="print" class="container mt-4 text-center">
       <h1 style="color: #405D72; margin-bottom: 40px;">
         Histórico de Pago de Planilla
       </h1>
@@ -80,13 +80,7 @@
         </div>
       </div>
 
-      <div v-if="alertMessage" :class="['alert', alertType === 'success' ?
-        'alert-success' : 'alert-danger']" role="alert"
-           style="margin-bottom: 20px;">
-        {{ alertMessage }}
-      </div>
-
-      <div class="mt-4">
+      <div v-if="!report" class="mt-4">
         <button class="btn btn-primary"
                 style="background-color: #758694; border: transparent;
                 margin-bottom: 30px; margin-top: 30px;"
@@ -96,7 +90,7 @@
         </button>
       </div>
 
-      <table class="table table-bordered table-hover"
+      <table id="print" class="table table-bordered table-hover"
              v-if="!loading && companiesPayroll.length">
         <thead class="table-light">
           <tr>
@@ -115,41 +109,44 @@
             <td>{{ company.companyName }}</td>
             <td>{{ company.hiringType }}</td>
             <td>
-              Del {{ company.startDate }}
-              al {{ company.endDate }}
+              Del {{ formatDate(company.startDate) }}
+              al {{ formatDate(company.endDate) }}
             </td>
-            <td>{{ company.endDate }}</td>
-            <td>₡{{ company.grossSalary }}</td>
-            <td>₡{{ company.grossEmployerTax }}</td>
-            <td>₡{{ company.voluntaryDeductionsTotal }}</td>
-            <td>₡{{ company.totalEmployerCost }}</td>
+            <td>{{ formatDate(company.endDate) }}</td>
+            <td>₡{{ formatAmount(company.grossSalary) }}</td>
+            <td>₡{{ formatAmount(company.grossEmployerTax) }}</td>
+            <td>₡{{ formatAmount(company.voluntaryDeductionsTotal) }}</td>
+            <td>₡{{ formatAmount(company.totalEmployerCost) }}</td>
 
           </tr>
         </tbody>
       </table>
 
+      <div v-if="!loading && companiesPayroll.length && !report"
+           class="d-flex justify-content-center"
+           style="margin-bottom: 30px;">
+        <button type="submit" class="btn btn-secondary"
+                style="background-color: #405D72; color: white;
+          border: transparent; margin-right: 30px;" @click="sendPDFFile">
+          Enviar PDF a correo electrónico
+        </button>
+
+        <button type="submit" class="btn btn-secondary"
+                style="background-color: #405D72; color: white;
+          border: transparent;" @click="downloadPDFFile">
+          Descargar PDF
+        </button>
+      </div>
+
+      <div v-if="alertMessage && !report" :class="['alert', alertType === 'success' ?
+        'alert-success' : 'alert-danger']" role="alert"
+           style="margin-bottom: 20px;">
+        {{ alertMessage }}
+      </div>
+
       <p v-if="!loading && !companiesPayroll.length">
         No hay resultados para el rango seleccionado.
       </p>
-
-      <p class="text-end text-muted">
-        Total de compañias en esta página: {{ companiesPayroll.length }}
-      </p>
-
-      <div class="d-flex justify-content-center align-items-center mt-3 mb-4"
-           v-if="false" style="gap: 15px;">
-        <button class="btn btn-primary"
-                style="background-color: #758694; border: transparent;">
-          Anterior
-        </button>
-
-        <span>Página { currentPage } de { totalPages }</span>
-
-        <button class="btn btn-primary"
-                style="background-color: #758694; border: transparent;">
-          Siguiente
-        </button>
-      </div>
 
       <div v-else-if="loading">
         <p>Cargando planillas...</p>
@@ -176,6 +173,7 @@ export default {
       companiesPayroll: [],
       error: null,
       loading: false,
+      report: false,
       alertMessage: "",
       alertType: "",
       months: [
@@ -285,6 +283,7 @@ export default {
      },
 
      async getAllCompaniesPayroll() {
+       this.loading = true;
        const start = new Date(this.startDate.year, this.startDate.month - 1,
          this.startDate.day);
 
@@ -292,22 +291,25 @@ export default {
          , this.endDate.day);
 
        try {
-         this.companiesPayroll = await this.$api.getAllCompaniesPayroll(
+         var response = await this.$api.getAllCompaniesPayroll(
            start.toISOString().split("T")[0],
            end.toISOString().split("T")[0]
          );
-         console.log(this.companiesPayroll);
+
+         this.companiesPayroll = response.data;
        } catch (error) {
          const statusCode = error.response.status;
          const errorMessage = error.response.date?.message || error.message;
 
          if (statusCode === 403) {
-           this.alertMessage = "No tiene permisos para generar planillas.";
+           this.alertMessage = "No tiene permisos para generar historial de planillas.";
          } else if (statusCode === 500) {
            this.alertMessage = "Error. Por favor recargar página.";
          } else {
            this.alertMessage = errorMessage;
          }
+       } finally {
+         this.loading = false;
        }
      },
 
@@ -333,17 +335,75 @@ export default {
        this[targetKey].month = dateObj.getMonth() + 1;
        this[targetKey].day = dateObj.getDate();
      },
+
+     formatDate(dateString) {
+       const date = new Date(dateString);
+       return date.toLocaleDateString('es-CR');
+     },
+
+     formatAmount(value) {
+       const number = Number(value || 0);
+       return number.toLocaleString("es-CR", {
+         style: "decimal",
+         useGrouping: true,
+         minimumFractionDigits: 0,
+         maximumFractionDigits: 0
+       });
+     },
+
+     async sendPDFFile() {
+       this.report = true;
+       try {
+         const pdfFile = await this.$utilities.generatePDF('print'
+           , 'reporte_administrador', 'file');
+         const emailData = new FormData();
+         emailData.append("subject", "Reporte de planillas: administrador");
+
+         emailData.append("message", `Estimado/a administrador/a,
+
+        Le compartimos el reporte correspondiente al reporte de planillas de todas las compañias.
+
+        En el archivo adjunto encontrará el detalle del periodo, la información general de la empresa, los totales salarios reportados, contribuciones patronales y deducciones voluntarias.
+
+      Atentamente,
+      Equipo de Infinipay CO`);
+
+         emailData.append("attachments", pdfFile);
+
+         const response = await this.$api.sendEmail(emailData);
+         if (typeof response?.data === "string"
+           && response.data.includes("enviado")) {
+           this.alertType = "success";
+           this.alertMessage = response.data.message
+             || "Correo enviado exitosamente.";
+         } else {
+           this.alertType = "danger";
+           this.alertMessage = "Error al enviar el correo.";
+         }
+       } catch {
+         this.alertType = "danger";
+         this.alertMessage = "Ocurrió un error inesperado al enviar el correo.";
+       } finally {
+         this.report = false;
+       }
+     },
+     async downloadPDFFile() {
+       this.report = true;
+       try {
+         await this.$utilities.generatePDF("print", "reporte_administrador"
+           , "download")
+         this.alertType = "success";
+         this.alertMessage = "PDF descargado correctamente.";
+       } catch {
+         this.alertType = "danger";
+         this.alertMessage = "Ocurrió un error inesperado al descargar el pdf.";
+       } finally {
+         this.report = false;
+       }
+     },
   }
 };
 </script>
 
 <style scoped>
-  .small {
-    font-size: 0.85rem;
-    color: #555;
-  }
-
-  .fw-bold {
-    font-weight: 600;
-  }
 </style>
