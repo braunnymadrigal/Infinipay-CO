@@ -175,8 +175,12 @@ export default {
         );
       },
 
-      getEmployeesData() {
-        return axios.get(`${apiBaseURL}/Employee`, authHeader());
+      showEmployerReport() {
+        return axios.get(`${apiBaseURL}/EmployerReport`, authHeader());
+      },
+
+      showEmployeeReport() {
+        return axios.get(`${apiBaseURL}/EmployeeReport`, authHeader());
       },
     };
   },
