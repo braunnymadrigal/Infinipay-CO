@@ -101,9 +101,8 @@ namespace back_end.Infraestructure
           var grossEmployerTax = row["totalPagosLeyEmpleador"] != DBNull.Value
             ? Convert.ToDouble(row["totalPagosLeyEmpleador"]) : double.MinValue;
 
-          var voluntaryDeductionsTotal = row["totalDeduccionesVoluntarias"]
-            != DBNull.Value ? Convert.ToDouble(row
-            ["totalDeduccionesVoluntarias"]) : double.MinValue;
+          var grossSalary = row["totalSalarios"] != DBNull.Value
+              ? Convert.ToDouble(row["totalSalarios"]) : double.MinValue;
 
           companyPayroll.Add(new PayrollAdministratorModel
           {
@@ -125,14 +124,15 @@ namespace back_end.Infraestructure
               ? DateOnly.FromDateTime(Convert.ToDateTime(row["fechaFin"]))
               : DateOnly.FromDateTime(DateTime.MinValue),
 
-            grossSalary = row["totalSalarios"] != DBNull.Value
-              ? Convert.ToDouble(row["totalSalarios"]) : double.MinValue,
+            grossSalary = grossSalary,
 
             grossEmployerTax = grossEmployerTax,
 
-            voluntaryDeductionsTotal = voluntaryDeductionsTotal,
+            voluntaryDeductionsTotal = row["totalDeduccionesVoluntarias"]
+            != DBNull.Value ? Convert.ToDouble(row
+            ["totalDeduccionesVoluntarias"]) : double.MinValue,
 
-            totalEmployerCost = grossEmployerTax + voluntaryDeductionsTotal,
+            totalEmployerCost = grossEmployerTax + grossSalary,
           });
         }
         return companyPayroll;
