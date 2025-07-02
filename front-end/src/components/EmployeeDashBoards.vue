@@ -167,6 +167,11 @@ export default {
       try {
         const response = await this.$api.getAssignedBenefits();
         this.assignedBenefits = response.data;
+        if (this.assignedBenefits.length != 0) {
+          this.assignedBenefits = this.assignedBenefits.filter(
+            (b) => b.assigned
+          );
+        }
       } catch (err) {
         console.error("Error al obtener asignaciones de beneficios:", err);
       }
