@@ -85,6 +85,14 @@
               Metricas Empleador
             </router-link>
 
+            <router-link
+              to="/EmployeeDashboards"
+              class="mx-2"
+              style="color: #405d72"
+            >
+              Metricas de Empleado
+            </router-link>
+
             <a
               @click="logout"
               class="mx-2"

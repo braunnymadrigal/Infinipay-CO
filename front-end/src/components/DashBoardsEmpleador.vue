@@ -1,6 +1,16 @@
 <template>
   <HeaderCompany />
   <div
+    v-if="showPopup"
+    @click.stop
+    class="d-flex justify-content-center my-5 py-5"
+  >
+    <div class="display-1 text-danger" style="padding: 150px">
+      No tiene permisos para ver esta informacion.
+    </div>
+  </div>
+  <div
+    v-else
     class="charts-container"
     style="
       display: flex;
@@ -97,6 +107,7 @@ export default {
   },
   data() {
     return {
+      showPopup: false,
       employees: [],
       contractTypeChart: { data: null, options: null },
       payrollChart: { data: null, options: null },
@@ -122,10 +133,12 @@ export default {
     async getEmployees() {
       try {
         const response = await this.$api.getEmployeesData();
+        this.showPopup = false;
         this.employees = response.data;
         this.buildContractChart();
       } catch (error) {
         console.error("Error fetching employees:", error);
+        this.showPopup = true;
       }
     },
     async getBenefitsPerEmployee() {
