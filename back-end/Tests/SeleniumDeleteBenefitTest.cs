@@ -82,6 +82,8 @@ namespace Tests
     public void TearDown()
     {
       this._driver.Quit();
+      _driver.Dispose();
+      _driver = null;
     }
   }
 }
