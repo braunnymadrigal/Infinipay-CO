@@ -109,8 +109,8 @@ const router = createRouter({
       component: ShowEmployeeReport,
     },
     {
-      path: "/Dashboards",
-      name: "Dashboards",
+      path: "/DashboardsEmpleador",
+      name: "DashboardsEmpleador",
       component: DashBoardsEmpleador,
     },
   ],

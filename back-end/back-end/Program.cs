@@ -96,7 +96,7 @@ builder.Services.Configure<EmailCommand>(
 builder.Services.AddScoped<IBenefitQuery<EmployeeBenefitDTO>
   , EmployeeBenefitQuery>();
 
-builder.Services.AddScoped<IBenefitQuery<CompanyBenefitDTO>
+builder.Services.AddScoped<ICompanyBenefitQuery
   , CompanyBenefitQuery>();
 
 builder.Services.AddScoped<IEmployeeBenefitAssignment

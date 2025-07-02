@@ -13,11 +13,11 @@ namespace back_end.Controllers
     [ApiController]
     public class CompanyBenefitController : ControllerBase
     {
-        private readonly IBenefitQuery<CompanyBenefitDTO> companybenefitQuery;
+        private readonly ICompanyBenefitQuery companybenefitQuery;
         private readonly ICompanyBenefitCommand companybenefitCommand;
 
         public CompanyBenefitController(
-            IBenefitQuery<CompanyBenefitDTO> companybenefitQuery, 
+            ICompanyBenefitQuery companybenefitQuery, 
             ICompanyBenefitCommand companybenefitCommand)
         {
             this.companybenefitQuery = companybenefitQuery;
@@ -191,5 +191,38 @@ namespace back_end.Controllers
             }
 
         }
+
+        [Authorize(Roles = "empleador,administrador")]
+        [HttpGet("assignments")]
+        public async Task<ActionResult<List<KeyValuePair<string, int>>>> GetBenefitsPerEmployees()
+        {
+            try
+            {
+                var loggedUserNickname = getLoggedUserNickname();
+
+                if (string.IsNullOrEmpty(loggedUserNickname))
+                {
+                    return NotFound("No se pudo obtener el nombre de usuario");
+                }
+
+                var benefits = companybenefitQuery.getBenefitsPerEmployees(loggedUserNickname);
+
+                if (benefits == null || !benefits.Any())
+                {
+                    return NotFound("Beneficios no encontrados");
+                }
+
+                return Ok(benefits);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = "Error obteniendo beneficios por empleados",
+                    details = ex.Message
+                });
+            }
+        }
+
     }
 }

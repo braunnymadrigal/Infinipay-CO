@@ -396,5 +396,38 @@ namespace back_end.Repositories
                     _connection.Close();
             }
         }
+
+        public List<KeyValuePair<string, int>> GetBenefitsPerEmployees(string loggedUserNickname)
+        {
+            var query = @"
+                SELECT TOP 5 b.nombre, COUNT(b.nombre) AS cantidad FROM BeneficioPorEmpleado bpe
+                JOIN Beneficio b ON b.id = bpe.idBeneficio
+                JOIN Persona p ON p.id = bpe.idEmpleado
+                JOIN PersonaFisica pf ON pf.id = p.id
+                WHERE b.idPersonaJuridica = 
+                (SELECT TOP 1 pj.id FROM PersonaJuridica pj
+                JOIN Empleador er ON er.idPersonaJuridica = pj.id
+                JOIN Usuario u ON u.idPersonaFisica = er.idPersonaFisica
+                WHERE u.nickname = @nickname)
+                GROUP BY b.nombre ORDER BY cantidad DESC;";
+
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@nickname", SqlDbType.VarChar) { Value = loggedUserNickname }
+            };
+
+            var table = GetQueryTable(query, parameters);
+
+            var benefitsCount = new List<KeyValuePair<string, int>>();
+
+            foreach (DataRow row in table.Rows)
+            {
+                string benefitName = row["nombre"].ToString();
+                int count = Convert.ToInt32(row["cantidad"]);
+                benefitsCount.Add(new KeyValuePair<string, int>(benefitName, count));
+            }
+
+            return benefitsCount;
+        }
     }
 }
