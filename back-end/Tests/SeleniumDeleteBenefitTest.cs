@@ -30,7 +30,10 @@ namespace Tests
       _wait.Until(driver => driver.Url.Contains("/MyProfile"));
       _driver.Navigate().GoToUrl("http://localhost:8080/BenefitList");
 
-      var benefitList = _wait.Until(d => d.FindElement(By.TagName("table")));
+      _wait.Until(driver => driver.FindElements(By.TagName("tr"))
+          .Any(tr => tr.Text.Contains("Beneficio A Eliminar Con Selenium")));
+
+      var benefitList = _driver.FindElement(By.TagName("table"));
       var filas = benefitList.FindElements(By.TagName("tr"));
 
       bool encontrado = false;
@@ -51,8 +54,7 @@ namespace Tests
         Assert.Fail("No se encontró el beneficio a eliminar en la lista.");
       }
 
-      var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-      var modalDeleteButton = wait.Until(d => d.FindElement(By.Id("confirmDeleteButton")));
+      var modalDeleteButton = _wait.Until(d => d.FindElement(By.Id("confirmDeleteButton")));
       modalDeleteButton.Click();
 
       _wait.Until(driver => !driver.PageSource.Contains("Beneficio A Eliminar Con Selenium"));
@@ -73,6 +75,7 @@ namespace Tests
 
       Assert.IsTrue(borrado, "El beneficio aún aparece en la lista, no se eliminó correctamente.");
     }
+
 
 
     [TearDown]
