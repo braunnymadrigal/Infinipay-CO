@@ -19,7 +19,7 @@ namespace Tests
       driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
 
-      wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+      wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
     }
 
     private void Login(string user, string password)
@@ -211,7 +211,7 @@ namespace Tests
     [Test]
     public void LoginAndEditFistName()
     {
-      var newName = "Kiro";
+      var newName = "Pepe";
 
       Login("daniel.gomez", "Garatos24!");
 
@@ -246,6 +246,8 @@ namespace Tests
 
       editBtn.Click();
 
+      Thread.Sleep(5000);
+
       var firstNameEdit = wait.Until(driver => driver.FindElement(
         By.CssSelector("#firstName")));
 
@@ -260,7 +262,7 @@ namespace Tests
           .ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline:" +
           " 'nearest'});", saveBtn);
 
-      Thread.Sleep(1000);
+      Thread.Sleep(5000);
 
       saveBtn.Click();
 
@@ -284,7 +286,7 @@ namespace Tests
     [Test]
     public void LoginAndEditSecondName()
     {
-      var newName = "Rolo";
+      var newName = "Roberto";
 
       Login("daniel.gomez", "Garatos24!");
 
@@ -318,6 +320,7 @@ namespace Tests
         " > a")));
 
       editBtn.Click();
+      Thread.Sleep(5000);
 
       var secondNameEdit = wait.Until(driver => driver.FindElement(
         By.CssSelector("#secondName")));
@@ -333,7 +336,7 @@ namespace Tests
           .ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline:" +
           " 'nearest'});", saveBtn);
 
-      Thread.Sleep(1000);
+      Thread.Sleep(5000);
 
       saveBtn.Click();
 
@@ -356,7 +359,7 @@ namespace Tests
     [Test]
     public void LoginAndEditId()
     {
-      var newUserId = "119140110";
+      var newUserId = "119509990";
 
       Login("daniel.gomez", "Garatos24!");
 
@@ -390,7 +393,7 @@ namespace Tests
         " > a")));
 
       editBtn.Click();
-
+      Thread.Sleep(5000);
       var idEdit = wait.Until(driver => driver.FindElement(
         By.CssSelector("#idNumber")));
 
@@ -405,7 +408,7 @@ namespace Tests
           .ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline:" +
           " 'nearest'});", saveBtn);
 
-      Thread.Sleep(1000);
+      Thread.Sleep(5000);
 
       saveBtn.Click();
 
@@ -420,6 +423,10 @@ namespace Tests
         By.CssSelector("#app > div.modal.fade.show.d-block > div > div" +
         " > div.modal-body > p:nth-child(2)"))).Text;
 
+      Console.WriteLine(newUserId);
+      Console.WriteLine(oldId);
+      Console.WriteLine(newId);
+
       Assert.IsFalse(oldId.Contains(newUserId));
       Assert.IsFalse(oldId.Contains(newId));
       Assert.IsTrue(newId.Contains(newUserId));
@@ -428,7 +435,7 @@ namespace Tests
     [Test]
     public void LoginAndEditPhoneNumber()
     {
-      var newPhoneNumber = "22331129";
+      var newPhoneNumber = "45975345";
 
       Login("daniel.gomez", "Garatos24!");
 
@@ -463,6 +470,8 @@ namespace Tests
 
       editBtn.Click();
 
+      Thread.Sleep(5000);
+
       var idEdit = wait.Until(driver => driver.FindElement(
         By.CssSelector("#phoneNumber")));
 
@@ -477,7 +486,7 @@ namespace Tests
           .ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline:" +
           " 'nearest'});", saveBtn);
 
-      Thread.Sleep(1000);
+      Thread.Sleep(5000);
 
       saveBtn.Click();
 
