@@ -409,6 +409,7 @@ namespace back_end.Repositories
                 JOIN Empleador er ON er.idPersonaJuridica = pj.id
                 JOIN Usuario u ON u.idPersonaFisica = er.idPersonaFisica
                 WHERE u.nickname = @nickname)
+                AND bpe.borrado = 0
                 GROUP BY b.nombre ORDER BY cantidad DESC;";
 
             var parameters = new SqlParameter[]
