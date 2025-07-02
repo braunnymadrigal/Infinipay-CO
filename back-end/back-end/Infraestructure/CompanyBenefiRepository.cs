@@ -9,7 +9,7 @@ using back_end.Application;
 
 namespace back_end.Repositories
 {
-    public class CompanyBenefitRepository : IBenefitRepository<CompanyBenefitDTO>
+    public class CompanyBenefitRepository : ICompanyBenefitRepository
     {
         private SqlConnection _connection;
         private string _connectionRoute;
@@ -111,6 +111,29 @@ namespace back_end.Repositories
             return count > 0;
         }
 
+        public List<string> getEmployeesWithBenefit(Guid id)
+        {
+            var query = @"
+            SELECT p.correoElectronico FROM BeneficioPorEmpleado bpe
+            JOIN Persona p ON bpe.idEmpleado = p.id
+            WHERE bpe.idBeneficio = @benefitId";
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@benefitId", SqlDbType.UniqueIdentifier) { Value = id }
+            };
+
+            var table = GetQueryTable(query, parameters);
+            var employees = new List<string>();
+            foreach (DataRow row in table.Rows)
+            {
+                if (row["correoElectronico"] != DBNull.Value)
+                {
+                    employees.Add(Convert.ToString(row["correoElectronico"]));
+                }
+            }
+            return employees;
+        }
+
         public List<CompanyBenefitDTO> getBenefits(string nickname)
         {
             var query = @"
@@ -125,7 +148,8 @@ namespace back_end.Repositories
                     JOIN Auditoria a ON a.id = b.idAuditoria
                     JOIN Deduccion d ON d.idBeneficio = b.id
                     JOIN Formula f ON f.id = d.idFormula
-                WHERE u.nickname = @nickname;
+                WHERE u.nickname = @nickname AND b.borrado = 0
+                ORDER BY b.nombre;
             ";
 
             var parameters = new SqlParameter[]
@@ -230,7 +254,6 @@ namespace back_end.Repositories
 
             return null;
         }
-
 
         public bool CreateBenefit(CompanyBenefitDTO companyBenefit, string loggedUserNickname)
         {
@@ -342,6 +365,70 @@ namespace back_end.Repositories
                 if (_connection.State == ConnectionState.Open)
                     _connection.Close();
             }
+        }
+
+        public void DeleteBenefit(Guid id, string loggedUserNickname)
+        {
+            try
+            {
+                if (_connection.State != ConnectionState.Open)
+                    _connection.Open();
+
+                using (var transaction = _connection.BeginTransaction())
+                {
+                    using (var cmd = new SqlCommand("DeleteBenefit", _connection, transaction))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@User", loggedUserNickname);
+                        cmd.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al eliminar el beneficio: " + ex.Message, ex);
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                    _connection.Close();
+            }
+        }
+
+        public List<KeyValuePair<string, int>> GetBenefitsPerEmployees(string loggedUserNickname)
+        {
+            var query = @"
+                SELECT TOP 5 b.nombre, COUNT(b.nombre) AS cantidad FROM BeneficioPorEmpleado bpe
+                JOIN Beneficio b ON b.id = bpe.idBeneficio
+                JOIN Persona p ON p.id = bpe.idEmpleado
+                JOIN PersonaFisica pf ON pf.id = p.id
+                WHERE b.idPersonaJuridica = 
+                (SELECT TOP 1 pj.id FROM PersonaJuridica pj
+                JOIN Empleador er ON er.idPersonaJuridica = pj.id
+                JOIN Usuario u ON u.idPersonaFisica = er.idPersonaFisica
+                WHERE u.nickname = @nickname)
+                AND bpe.borrado = 0
+                GROUP BY b.nombre ORDER BY cantidad DESC;";
+
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@nickname", SqlDbType.VarChar) { Value = loggedUserNickname }
+            };
+
+            var table = GetQueryTable(query, parameters);
+
+            var benefitsCount = new List<KeyValuePair<string, int>>();
+
+            foreach (DataRow row in table.Rows)
+            {
+                string benefitName = row["nombre"].ToString();
+                int count = Convert.ToInt32(row["cantidad"]);
+                benefitsCount.Add(new KeyValuePair<string, int>(benefitName, count));
+            }
+
+            return benefitsCount;
         }
     }
 }

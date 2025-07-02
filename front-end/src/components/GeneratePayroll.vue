@@ -144,7 +144,6 @@ export default {
       try {
         const response = await this.$api.getCompanyType();
         this.companyType = response.data?.toLowerCase();
-        console.log("Tipo de planilla:", this.companyType);
       } catch (err) {
         if (!err.response) {
           console.error("Network error o sin respuesta");
@@ -195,16 +194,6 @@ export default {
         return;
       }
 
-      const today = this.clearTime(new Date());
-      const startClean = this.clearTime(start);
-      const endClean = this.clearTime(end);
-
-      if (startClean > today || endClean > today) {
-        this.dateAlertMessage = "No se pueden seleccionar fechas futuras.";
-        this.isLoading = false;
-        return;
-      }
-
       const payload = {
         startDate: start.toISOString().split("T")[0],
         endDate: end.toISOString().split("T")[0]
@@ -230,7 +219,12 @@ export default {
             )) {
               this.alertMessage =
               "Ya existen registros de planilla para la fecha seleccionada.";           
-            } else {
+            } else if (statusCode === 500) {
+              "PayrollEmployer: Date range month is in the future."
+              this.alertMessage =
+              "No se pueden seleccionar fechas futuras para la generación de planilla";  
+            }
+            else {
               this.alertMessage = "Error del servidor: " + errorMessage;
             }
           } else {

@@ -306,7 +306,6 @@ export default {
 
       this.$api.registerCompany(companyData)
       .then(function(response) {
-        console.log("Respuesta del servidor:", response.data);
         if (response.data === true) {
           this.alertMessage ='¡Empresa registrada exitosamente!';
           this.alertType = "success";
@@ -315,7 +314,7 @@ export default {
           }, 2500);
         } else {
             this.alertMessage =
-              "No se pudo registrar el empleador. Verifica los datos ingresados.";
+              "No se pudo registrar la empresa. Verifica los datos ingresados.";
             this.alertType = "danger";
             setTimeout(() => {
               this.$router.push('/');

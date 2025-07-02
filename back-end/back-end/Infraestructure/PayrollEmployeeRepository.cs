@@ -202,7 +202,7 @@ namespace back_end.Infraestructure
                 WHERE 
 	                e.idEmpleadorContratador = @employerId and 
 	                e.fechaDespido is null and
-	                e.fechaContratacion <= @endDate
+	                e.fechaContratacion <= @endDate and (bp.ElegibleParaPlanilla = 1 OR d.id IS NULL)
 
                 ORDER BY p.id, d.id, pla.id;";
             return query;

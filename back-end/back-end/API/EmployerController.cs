@@ -2,6 +2,7 @@
 using back_end.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace back_end.API
 {
@@ -16,7 +17,7 @@ namespace back_end.API
   public class EmployerController : ControllerBase
   {
     private readonly EmployerRepository _employerRepository;
-    
+
     public EmployerController()
     {
       _employerRepository = new EmployerRepository();
@@ -29,43 +30,40 @@ namespace back_end.API
       {
         if (employer == null)
         {
-          return BadRequest();
+          return BadRequest(new { message
+            = "Datos del empleador no proporcionados." });
         }
-        EmployerRepository employerRepository = new EmployerRepository();
-        var result = employerRepository.createNewEmployer(employer);
+
+        var result = _employerRepository.createNewEmployer(employer);
         return new JsonResult(result);
       }
-      catch (Exception ex)
+      catch (SqlException sqlEx)
       {
-        var errorResponse = new { message = "", details = ex.Message };
+        if (sqlEx.Message.Contains("CEDULA_DUPLICADA"))
+        {
+          return Conflict(new { message
+            = "Error: ya existe un empleador registrado con esa cédula." });
+        }
+        else if (sqlEx.Message.Contains("EMAIL_DUPLICADO"))
+        {
+          return Conflict(new { message
+            = "Error: ya existe un empleador registrado con ese correo electrónico." });
+        }
+        else if (sqlEx.Message.Contains("TELEFONO_DUPLICADO"))
+        {
+          return Conflict(new { message
+            = "Error: ya existe un empleador registrado con ese número de teléfono." });
+        }
+        else if (sqlEx.Message.Contains("USERNAME_DUPLICADO"))
+        {
+          return Conflict(new { message
+            = "Error: ya existe un empleador registrado con ese nombre de usuario." });
+        }
 
-        if (ex.Message.Contains("CEDULA_DUPLICADA"))
-        {
-          return Conflict(new {
-            message = "Error: ya existe un empleador registrado con" +
-            "esa cédula." });
-        }
-        else if (ex.Message.Contains("TELEFONO_DUPLICADO"))
-        {
-          return Conflict(new {
-            message = "Error: ya existe un empleador registrado con ese" +
-            "número de teléfono." });
-        }
-        else if (ex.Message.Contains("EMAIL_DUPLICADO"))
-        {
-          return Conflict(new {
-            message = "Error: ya existe un empleador registrado con ese" +
-            "correo electrónico." });
-        }
-        else if (ex.Message.Contains("USERNAME_DUPLICADO"))
-        {
-          return Conflict(new {
-            message = "Error: ya existe un empleador registrado con ese" +
-            "nombre de usuario." });
-        }
-        return StatusCode(StatusCodes.Status500InternalServerError
-          , new { message = "Error creando empleador", details = ex.Message });
+        return StatusCode(StatusCodes.Status500InternalServerError,
+          new { message = "Error en la base de datos", details = sqlEx.Message });
       }
+
     }
   }
 }

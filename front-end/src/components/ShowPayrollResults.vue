@@ -1,10 +1,16 @@
 <template>
   <div>
     <HeaderCompany />
-    <div class="container mt-4 text-center">
+
+    <div v-if="showPopup" class="d-flex justify-content-center my-5 py-5">
+      <div class="display-1 text-danger" style="padding: 150px;">
+        No tiene permisos para acceder a los resultados de planillas.
+      </div>
+    </div>
+
+    <div v-else class="container mt-4 text-center">
       <h1 style="color: #405D72; margin-bottom: 40px;">
         Planillas de empleados</h1>
-
       <div v-if="alertMessage" :class="['alert', alertType === 'success' ?
         'alert-success' : 'alert-danger']" role="alert"
         style="margin-bottom: 20px;">
@@ -98,6 +104,8 @@ export default {
       loading: true,
       alertMessage: "",
       alertType: "",
+      showPopup: false
+
     };
   },
   computed: {
@@ -135,10 +143,6 @@ export default {
           this.alertType = "warning";
         }
       } catch (err) {
-        console.log('Error:', err);
-        console.log('Response:', err.response);
-        console.log('Status:', err.response?.status);
-        console.log('Data:', err.response?.data);
 
         if (!err.response) {
           this.alertMessage = "No tiene permisos para acceder a las planillas.";
@@ -147,8 +151,7 @@ export default {
           const errorMessage = err.response.data?.message || err.message;
 
           if (statusCode === 403) {
-            this.alertMessage =
-              "No tiene permisos para acceder a las planillas.";
+            this.showPopup = true;
           } else if (statusCode === 500) {
             this.alertMessage = "Error del servidor: " + errorMessage;
           } else {

@@ -197,9 +197,8 @@ export default {
           this.employees = response.data;
           this.isLoading = false;
         })
-        .catch((error) => {
+        .catch(() => {
           this.showPopup = true;
-          console.error("Error al obtener empleados:", error);
           this.isLoading = false;
         });
     },

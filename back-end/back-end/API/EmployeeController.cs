@@ -136,6 +136,27 @@ namespace back_end.API
       }
     }
 
+    [Authorize(Roles = "empleador,administrador")]
+    [HttpGet]
+    public async Task<ActionResult<List<EmployeeModel>>> GetAllEmployees()
+    {
+      try
+      {
+        var loggedUsername = GetLoggedUsername();
+        if (string.IsNullOrEmpty(loggedUsername))
+        {
+          return Unauthorized(new { message = "Usuario no autenticado" });
+        }
+        var employees = _employeeQuery.GetAllEmployees(loggedUsername);
+        return Ok(employees);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError
+          , new { message = "Error obteniendo empleados", details = ex.Message });
+      }
+    }
+
     private string GetLoggedUsername() {
       string loggedId = "";
         var identity = HttpContext.User.Identity as ClaimsIdentity;

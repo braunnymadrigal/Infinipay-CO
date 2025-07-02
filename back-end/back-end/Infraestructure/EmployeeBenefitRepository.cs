@@ -95,7 +95,7 @@ namespace back_end.Repositories
                ON bpe.idEmpleado = e.idPersonaFisica AND bpe.idBeneficio = b.id
         WHERE u.nickname = @nickname
           AND (c.tipoContrato = b.empleadoElegible OR b.empleadoElegible
-            = 'todos');
+            = 'todos') AND b.borrado = 0;
       ";
     }
 

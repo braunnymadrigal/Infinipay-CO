@@ -31,5 +31,28 @@ namespace back_end.Application
           throw new Exception("Error retrieving employee: " + ex.Message);
         }
     }
+
+    public List<EmployeeModel> GetAllEmployees(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+          throw new ArgumentException("Invalid user ID.");
+        }
+        Console.WriteLine("Fetching employees for user ID: " + userId);
+        try
+        {
+          var companyId = _employeeRepository.getCompanyId(userId);
+          if (companyId == Guid.Empty)
+          {
+            throw new Exception("Company ID not found for the given user ID.");
+          }
+          return _employeeRepository.GetAllEmployees(companyId);
+        }
+        catch (Exception ex)
+        {
+          throw new Exception("Error retrieving employees: " + ex.Message);
+        }
+    }
+
   }
 }

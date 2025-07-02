@@ -26,6 +26,8 @@
     public decimal totalEmployerOtrasImas { get; set; }
     public decimal totalEmployerOtrasFamiliares { get; set; }
     public decimal totalEmployerOtrasBpop { get; set; }
+    public decimal totalEmployeeVoluntaryDeductions { get; set; }
+    public List<DeductionResult> voluntaryDeductions { get; set; } = new();
 
   }
 

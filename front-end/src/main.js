@@ -29,6 +29,8 @@ import UpdateBenefitForm from "./components/UpdateBenefitForm.vue";
 import ShowEmployeeReport from "./components/ShowEmployeeReport.vue";
 import ShowEmployerReport from "./components/ShowEmployerReport.vue";
 import AdministratorReport from "./components/AdministratorReport.vue";
+import DashBoardsEmpleador from "./components/DashBoardsEmpleador.vue";
+import EmployeeDashboards from "./components/EmployeeDashBoards.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -99,7 +101,6 @@ const router = createRouter({
       component: UpdateBenefitForm,
     },
     {
-
       path: "/ShowEmployerReport",
       name: "ShowEmployerReport",
       component: ShowEmployerReport,
@@ -113,6 +114,16 @@ const router = createRouter({
       path: "/AdministratorReport",
       name: "AdministratorReport",
       component: AdministratorReport,
+    },
+    {
+      path: "/DashboardsEmpleador",
+      name: "DashboardsEmpleador",
+      component: DashBoardsEmpleador,
+    },
+    {
+      path: "/EmployeeDashboards",
+      name: "EmployeeDashboards",
+      component: EmployeeDashboards,
     },
   ],
 });
