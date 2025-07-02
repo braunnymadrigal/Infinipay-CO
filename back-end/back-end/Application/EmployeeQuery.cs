@@ -38,7 +38,6 @@ namespace back_end.Application
         {
           throw new ArgumentException("Invalid user ID.");
         }
-        Console.WriteLine("Fetching employees for user ID: " + userId);
         try
         {
           var companyId = _employeeRepository.getCompanyId(userId);
