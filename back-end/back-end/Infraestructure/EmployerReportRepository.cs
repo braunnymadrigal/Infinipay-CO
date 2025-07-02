@@ -22,7 +22,20 @@ namespace back_end.Infraestructure
       try
       {
         var rows = executeEmployerQuery(connection, transaction, employerId);
+        var voluntaryDeductions = executeVoluntaryDeductionsSumQuery(connection
+          , transaction, employerId);
         transaction.Commit();
+
+        foreach (var period in rows)
+        {
+          var periodoKey = (DateTime)period["fechaInicio"];
+          if (voluntaryDeductions.TryGetValue(periodoKey
+            , out decimal deducciones))
+            period["total_deducciones_voluntarias"] = deducciones;
+          else
+            period["total_deducciones_voluntarias"] = 0m;
+        }
+
         return buildEmployerReport(rows);
       }
       catch (Exception ex)
@@ -47,8 +60,8 @@ namespace back_end.Infraestructure
           dp.fechaFin,
           SUM(CASE WHEN c.tipoContrato = 'horas' THEN ROUND(dp.salarioBruto/ 10.0, 0) ELSE 0 END) AS totalHoras,
           SUM(CASE WHEN c.tipoContrato = 'tiempoCompleto' THEN ROUND(dp.salarioBruto/ 10.0, 0) ELSE 0 END) AS totalTiempoCompleto,
-          SUM(CASE WHEN c.tipoContrato = 'servicios' THEN ROUND (dp.salarioBruto/ 10.0, 0) ELSE 0 END) AS totalServicios,
-          SUM(CASE WHEN c.tipoContrato = 'medioTiempo' THEN ROUND (dp.salarioBruto/ 10.0, 0) ELSE 0 END) AS totalMedioTiempo,
+          SUM(CASE WHEN c.tipoContrato = 'servicios' THEN ROUND(dp.salarioBruto/ 10.0, 0) ELSE 0 END) AS totalServicios,
+          SUM(CASE WHEN c.tipoContrato = 'medioTiempo' THEN ROUND(dp.salarioBruto/ 10.0, 0) ELSE 0 END) AS totalMedioTiempo,
           SUM(ROUND(dp.salarioBruto/ 10.0, 0)) AS totalSalarios,
           SUM(CASE WHEN dap.tipo = 'empleador_ccss_ivm' THEN dap.monto ELSE 0 END) AS total_empleador_ccss_ivm,
           SUM(CASE WHEN dap.tipo = 'empleador_ccss_sem' THEN dap.monto ELSE 0 END) AS total_empleador_ccss_sem,
@@ -60,7 +73,6 @@ namespace back_end.Infraestructure
           SUM(CASE WHEN dap.tipo = 'empleador_otras_imas' THEN dap.monto ELSE 0 END) AS total_empleador_otras_imas,
           SUM(CASE WHEN dap.tipo = 'empleador_otras_familiares' THEN dap.monto ELSE 0 END) AS total_empleador_otras_familiares,
           SUM(CASE WHEN dap.tipo = 'empleador_otras_bpop' THEN dap.monto ELSE 0 END) AS total_empleador_otras_bpop
-
         FROM Empleador emp
         JOIN PersonaJuridica pj ON pj.id = emp.idPersonaJuridica
         JOIN Empleado e ON e.idEmpleadorContratador = emp.idPersonaFisica
@@ -78,7 +90,7 @@ namespace back_end.Infraestructure
           dp.fechaInicio,
           dp.fechaFin
         ORDER BY dp.fechaInicio DESC;
-      ";
+    ";
 
       using var cmd = new SqlCommand(sql, conn, tx);
       cmd.Parameters.AddWithValue("@employerId", Guid.Parse(employerId));
@@ -92,6 +104,38 @@ namespace back_end.Infraestructure
             ? null : rdr.GetValue(i)));
       }
       return list;
+    }
+
+    private Dictionary<DateTime, decimal>
+      executeVoluntaryDeductionsSumQuery(SqlConnection conn, SqlTransaction tx
+      , string employerId)
+    {
+      const string sql = @"
+        SELECT
+          dp.fechaInicio,
+          SUM(dap.monto) AS totalVoluntaryDeductions
+        FROM DeduccionAPago dap
+        JOIN DetallePago dp ON dp.id = dap.idDetallePago
+        JOIN Empleado e ON e.idPersonaFisica = dp.idEmpleado
+        WHERE e.idEmpleadorContratador = @employerId
+          AND dap.tipo NOT LIKE 'empleador_%'
+        GROUP BY dp.fechaInicio;
+    ";
+
+      using var cmd = new SqlCommand(sql, conn, tx);
+      cmd.Parameters.AddWithValue("@employerId", Guid.Parse(employerId));
+
+      var dict = new Dictionary<DateTime, decimal>();
+      using var rdr = cmd.ExecuteReader();
+      while (rdr.Read())
+      {
+        var fechaInicio = (DateTime)rdr["fechaInicio"];
+        var totalDeductions =
+          rdr.IsDBNull(rdr.GetOrdinal("totalVoluntaryDeductions"))
+          ? 0m : (decimal)rdr["totalVoluntaryDeductions"];
+        dict[fechaInicio] = totalDeductions;
+      }
+      return dict;
     }
 
     private EmployerPayrollReport buildEmployerReport(List<Dictionary<string,
@@ -108,19 +152,17 @@ namespace back_end.Infraestructure
         companyName = (string)first["empresaNombre"],
         periodSummaries = new List<PayPeriodSummary>()
       };
-      Debug.WriteLine("Salarios en bruto:");
+
       foreach (var r in rows)
       {
-        Debug.WriteLine("totalSalarios = " + r["totalSalarios"]);
-
         report.periodSummaries.Add(new PayPeriodSummary
         {
           startDate = (DateTime)r["fechaInicio"],
           endDate = (DateTime)r["fechaFin"],
           totalEmpHoursSalary = (decimal)r["totalHoras"],
           totalEmpFullTimeSalary = (decimal)r["totalTiempoCompleto"],
-          totalEmpHalfTimeSalary = (decimal)r["totalServicios"],
-          totalEmpServicesSalary = (decimal)r["totalMedioTiempo"],
+          totalEmpHalfTimeSalary = (decimal)r["totalMedioTiempo"],
+          totalEmpServicesSalary = (decimal)r["totalServicios"],
           totalSalaries = (decimal)r["totalSalarios"],
 
           totalEmployerCcssIvm = (decimal)r["total_empleador_ccss_ivm"],
@@ -131,13 +173,18 @@ namespace back_end.Infraestructure
           totalEmployerLptIns = (decimal)r["total_empleador_lpt_ins"],
           totalEmployerOtrasIna = (decimal)r["total_empleador_otras_ina"],
           totalEmployerOtrasImas = (decimal)r["total_empleador_otras_imas"],
-          totalEmployerOtrasFamiliares =
-            (decimal)r["total_empleador_otras_familiares"],
-          totalEmployerOtrasBpop = (decimal)r["total_empleador_otras_bpop"]
+          totalEmployerOtrasFamiliares 
+            = (decimal)r["total_empleador_otras_familiares"],
+          totalEmployerOtrasBpop = (decimal)r["total_empleador_otras_bpop"],
+
+          totalEmployeeVoluntaryDeductions =
+          r.ContainsKey("total_deducciones_voluntarias")
+          ? (decimal)r["total_deducciones_voluntarias"] : 0m
         });
       }
 
       return report;
     }
+
   }
 }

@@ -50,6 +50,14 @@
           <p class="label-value-line fw-bold"><span>Total salarios:</span>
             <span>₡{{ formatAmount(selectedPeriod.totalSalaries) }}</span></p>
 
+          <p v-if="selectedPeriod.totalEmployeeVoluntaryDeductions > 0" class="label-value-line fw-bold">
+            <span>Total deducciones voluntarias:</span>
+            <span>₡{{ formatAmount(selectedPeriod.totalEmployeeVoluntaryDeductions) }}</span>
+          </p>
+          <p v-else class="label-value-line">
+            <em>Sin deducciones voluntarias</em>
+          </p>
+
           <h5 class="mt-4">Pagos de ley del empleador</h5>
           <p v-for="tax in visibleEmployerTaxes" :key="tax.key"
             class="label-value-line">
@@ -202,7 +210,7 @@ export default {
           const errorMessage = err.response.data?.message || err.message;
 
           if (statusCode === 403) {
-            this.alertMessage = "No tiene permisos para generar planillas.";
+            this.showPopup = true;
           } else if (statusCode === 500) {
             if (errorMessage.includes(
               "PayrollEmployer: Start date should be 1 day after latest end date."
