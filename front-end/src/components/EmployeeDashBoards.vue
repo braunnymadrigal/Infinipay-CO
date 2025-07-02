@@ -1,9 +1,17 @@
 <template>
   <div>
     <HeaderCompany />
-
     <div
-      v-if="report && selectedPayment"
+      v-if="showPopup"
+      @click.stop
+      class="d-flex justify-content-center my-5 py-5"
+    >
+      <div class="display-1 text-danger" style="padding: 150px">
+        No tiene permisos para ver esta informacion.
+      </div>
+    </div>
+    <div
+      v-else-if="report && selectedPayment && profile && !showPopup"
       class="charts-container"
       style="
         display: flex;
@@ -101,6 +109,7 @@ export default {
   },
   data() {
     return {
+      showPopup: false,
       report: null,
       selectedPayment: null,
       payrollChart: { data: null, options: null },
@@ -142,6 +151,14 @@ export default {
         const response = await this.$api.getProfile();
         this.showPopup = false;
         this.profile = response.data;
+        if (
+          this.profile.Rol === "empleador" ||
+          this.profile.Rol === "superAdmin"
+        ) {
+          this.showPopup = true;
+        } else {
+          this.showPopup = false;
+        }
       } catch (err) {
         console.error("Error al obtener el perfil:", err);
       }
