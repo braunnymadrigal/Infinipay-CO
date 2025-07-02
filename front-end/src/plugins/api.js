@@ -176,6 +176,16 @@ export default {
       showEmployeeReport() {
         return axios.get(`${apiBaseURL}/EmployeeReport`, authHeader());
       },
+
+      getAllCompaniesPayroll(startDate, endDate) {
+        return axios.get(`${apiBaseURL}/AdministratorReport`, {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+          ...authHeader(),
+        });
+      }
     };
   },
 };
