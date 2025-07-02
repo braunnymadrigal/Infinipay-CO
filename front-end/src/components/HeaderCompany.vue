@@ -78,6 +78,14 @@
               Reporte Empleados
             </router-link>
             <router-link
+              to="/DashboardsEmpleador"
+              class="mx-2"
+              style="color: #405d72"
+            >
+              Metricas Empleador
+            </router-link>
+
+            <router-link
               to="/EmployeeDashboards"
               class="mx-2"
               style="color: #405d72"

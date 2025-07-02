@@ -5,5 +5,6 @@ namespace back_end.Application
   public interface IEmployeeQuery
   {
     public EmployeeModel GetEmployee(Guid id);
+    public List<EmployeeModel> GetAllEmployees(string userId);
   }
 }

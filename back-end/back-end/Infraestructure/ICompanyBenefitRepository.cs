@@ -12,5 +12,6 @@ namespace back_end.Repositories
         void UpdateBenefit(Guid id, CompanyBenefitDTO companyBenefit, string loggedUserNickname);
         void DeleteBenefit(Guid id, string loggedUserNickname);
         List<string> getEmployeesWithBenefit(Guid id);
+        List<KeyValuePair<string, int>> GetBenefitsPerEmployees(string loggedUserNickname);
     }
 }
