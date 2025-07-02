@@ -105,6 +105,11 @@ builder.Services.AddScoped<IEmployeeBenefitAssignment
 builder.Services.AddScoped<IEmailQueryRepository, EmailQueryRepository>();
 builder.Services.AddScoped<IEmailCommandRepository, EmailCommandRepository>();
 
+builder.Services.AddScoped<IAdministratorReportQuery
+  , AdministratorReportQuery>();
+
+builder.Services.AddScoped<IAdministratorReportRepository
+  , AdministratorReportRepository>();
 
 var app = builder.Build();
 
