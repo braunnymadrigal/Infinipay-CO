@@ -100,8 +100,8 @@
             <th>Fecha de Pago</th>
             <th>Salario Bruto</th>
             <th>Cargas Sociales Empleador</th>
-            <th>Deducciones voluntarias</th>
-            <th>Costo empleador</th>
+            <th>Deducciones Voluntarias</th>
+            <th>Costo Empleador</th>
           </tr>
         </thead>
         <tbody>
