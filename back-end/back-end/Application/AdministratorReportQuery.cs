@@ -20,11 +20,17 @@ namespace back_end.Application
       {
         var errorMsg = string.Empty;
 
-        if (startDate == DateOnly.MinValue) errorMsg
+        var crTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central" +
+          " America Standard Time");
+        DateTime localTimeCr
+          = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, crTimeZone);
+        DateOnly todayCr = DateOnly.FromDateTime(localTimeCr);
+
+        if (startDate > todayCr) errorMsg
             += "Fecha inicial invalida. ";
 
-        if (endDate == DateOnly.MaxValue) errorMsg
-            += "Fecha final invalida ";
+        if (endDate > todayCr) errorMsg
+            += "Fecha final invalida. ";
 
         if (errorMsg != string.Empty) throw new Exception(errorMsg);
 
