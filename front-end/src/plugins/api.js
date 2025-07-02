@@ -182,6 +182,17 @@ export default {
       showEmployeeReport() {
         return axios.get(`${apiBaseURL}/EmployeeReport`, authHeader());
       },
+
+      getEmployeesData() {
+        return axios.get(`${apiBaseURL}/Employee`, authHeader());
+      },
+
+      getBenefitAssignments() {
+        return axios.get(
+          `${apiBaseURL}/CompanyBenefit/assignments`,
+          authHeader()
+        );
+      },
     };
   },
 };

@@ -14,7 +14,7 @@ namespace back_end.Infraestructure
     {
       var builder = WebApplication.CreateBuilder();
       _connectionRoute =
-        builder.Configuration.GetConnectionString("InfinipayDBContext");
+      builder.Configuration.GetConnectionString("InfinipayDBContext");
     }
 
     private bool dataAlreadyExists(string table, string field, string value
@@ -78,6 +78,33 @@ namespace back_end.Infraestructure
       throw new Exception("No se encontró un usuario con ese ID.");
     }
 
+    public Guid getCompanyId(string id)
+    {
+      var query = @"
+        SELECT pj.id 
+        FROM PersonaJuridica pj 
+        JOIN Empleador em ON em.idPersonaJuridica = pj.id
+        JOIN Usuario u ON em.idPersonaFisica = u.idPersonaFisica
+        WHERE u.idPersonaFisica = @id";
+
+      using (var connection = new SqlConnection(_connectionRoute))
+      using (var command = new SqlCommand(query, connection))
+      {
+        command.Parameters.AddWithValue("@id", id);
+        connection.Open();
+        
+        var result = command.ExecuteScalar();
+
+        if (result == null || result == DBNull.Value)
+        {
+          throw new Exception("No se encontró una empresa asociada a ese nickname.");
+        }
+
+        return (Guid)result;
+      }
+    }
+
+
     public EmployeeModel GetEmployeeById(Guid id)
     {
       using (var connection = GetConnection())
@@ -111,6 +138,59 @@ namespace back_end.Infraestructure
               try
               {
                 return mapEmployee(reader);
+              }
+              catch (Exception ex)
+              {
+                Debug.WriteLine("Error reading employee data: " + ex.Message);
+                throw new Exception("Error al leer los datos del empleado.");
+              }
+            }
+          }
+        }
+      }
+      throw new Exception("Empleado no encontrado.");
+    }
+
+    public List<EmployeeModel> GetAllEmployees(Guid companyId)
+    {
+      using (var connection = GetConnection())
+      {
+        connection.Open();
+        var query = @"
+            SELECT p.correoElectronico, p.identificacion, 
+             p.numeroTelefono, p.fechaNacimiento,
+             pf.primerNombre, pf.segundoNombre, 
+             pf.primerApellido, pf.segundoApellido, 
+             pf.genero, d.provincia, d.canton, d.distrito, 
+             d.otrasSenas, e.rol, e.fechaContratacion, u.nickname,
+             c.fechaCreacion, c.reportaHoras, c.salarioBruto, 
+             c.tipoContrato 
+            FROM Empleado e 
+            JOIN Persona p ON p.id = e.idPersonaFisica
+            JOIN PersonaFisica pf ON pf.id = e.idPersonaFisica 
+            JOIN Direccion d ON d.idPersona = p.id
+            JOIN Usuario u ON u.idPersonaFisica = pf.id 
+            JOIN Contrato c ON c.idEmpleado = e.idPersonaFisica
+			JOIN Empleador er ON er.idPersonaFisica = e.idEmpleadorContratador
+			WHERE er.idPersonaJuridica = @id
+            ORDER BY pf.primerApellido, pf.segundoApellido, pf.primerNombre;";
+
+        using (var cmd = new SqlCommand(query, connection))
+        {
+          cmd.Parameters.AddWithValue("@id", companyId);
+
+          using (var reader = cmd.ExecuteReader())
+          {
+            if (reader.Read())
+            {
+              try
+              {
+                var employees = new List<EmployeeModel>();
+                do
+                {
+                  employees.Add(mapEmployee(reader));
+                } while (reader.Read());
+                return employees;
               }
               catch (Exception ex)
               {
