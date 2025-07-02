@@ -47,7 +47,7 @@
             <router-link to="/CompanyList" class="mx-2" style="color: #405d72">
               Empresas
             </router-link>
-
+            
             <router-link
               to="/GeneratePayroll"
               class="mx-2"
@@ -77,6 +77,12 @@
             >
               Reporte Empleados
             </router-link>
+
+            <router-link to="/AdministratorReport" class="mx-2"
+                         style="color: #405d72;">
+              Historial Planillas
+            </router-link>
+            
             <router-link
               to="/DashboardsEmpleador"
               class="mx-2"
