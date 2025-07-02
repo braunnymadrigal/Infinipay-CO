@@ -190,7 +190,7 @@ export default {
           plugins: {
             title: {
               display: true,
-              text: "Employeados Por Tipo de Contrato",
+              text: "Empleados Por Tipo de Contrato",
               font: {
                 size: 26,
                 color: "black",
