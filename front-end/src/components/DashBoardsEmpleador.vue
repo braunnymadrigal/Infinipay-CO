@@ -108,6 +108,7 @@ export default {
   data() {
     return {
       showPopup: false,
+      profile: null,
       employees: [],
       contractTypeChart: { data: null, options: null },
       payrollChart: { data: null, options: null },
@@ -133,12 +134,10 @@ export default {
     async getEmployees() {
       try {
         const response = await this.$api.getEmployeesData();
-        this.showPopup = false;
         this.employees = response.data;
         this.buildContractChart();
       } catch (error) {
         console.error("Error fetching employees:", error);
-        this.showPopup = true;
       }
     },
     async getBenefitsPerEmployee() {
@@ -159,6 +158,23 @@ export default {
         }
       } catch (error) {
         console.error("Error fetching payroll report:", error);
+      }
+    },
+    async getProfile() {
+      try {
+        const response = await this.$api.getProfile();
+        this.showPopup = false;
+        this.profile = response.data;
+        if (
+          this.profile.Rol === "empleador" ||
+          this.profile.Rol === "superAdmin"
+        ) {
+          this.showPopup = true;
+        } else {
+          this.showPopup = false;
+        }
+      } catch (err) {
+        console.error("Error al obtener el perfil:", err);
       }
     },
     buildContractChart() {
