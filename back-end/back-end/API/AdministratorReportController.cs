@@ -17,7 +17,7 @@ namespace back_end.API
       this.administratorReportQuery = administratorReportQuery;
     }
 
-    //[Authorize(Roles = "superAdmin")]
+    [Authorize(Roles = "superAdmin")]
     [HttpGet]
     public ActionResult<List<PayrollAdministratorModel>>
       getAllCompaniesPayroll([FromQuery] DateOnly startDate
